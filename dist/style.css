@@ -1,0 +1,31 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: #000;
+}
+
+.layout {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    height: 100%;
+}
+
+.canvas-container {
+    flex: 1;
+    height: 100%;
+    border: 5px solid #fff;
+    overflow: hidden;
+}
+
+.canvas {
+    display: block;
+}
+
+.panel {
+    width: 300px;
+}
