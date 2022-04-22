@@ -18,7 +18,7 @@ body {
 .canvas-container {
     flex: 1;
     height: 100%;
-    border: 5px solid #fff;
+    border: 5px solid #000;
     overflow: hidden;
 }
 
