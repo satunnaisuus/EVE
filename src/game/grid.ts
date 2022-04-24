@@ -3,6 +3,7 @@ import UInt from "../common/uint";
 import { Cell } from "./cell";
 import { EmptyCell } from "./empty-cell";
 import { Size } from "./size";
+import { WallCell } from "./wall";
 
 export default class Grid {
     private grid: Cell[][];
@@ -24,6 +25,10 @@ export default class Grid {
         this.grid[x.getValue()][y.getValue()] = cell;
     }
 
+    public getCell(x: UInt, y: UInt): Cell {
+        return this.grid[x.getValue()][y.getValue()];
+    }
+
     private initializeGrid(): void {
         const grid = [];
 
@@ -31,7 +36,7 @@ export default class Grid {
             grid[x] = [];
 
             for (let y = 0; y < this.size.getHeight().getValue(); y++) {
-                grid[x][y] = new EmptyCell();
+                grid[x][y] = x === 0 || y === 0 || x === this.size.getWidth().getValue() - 1 || y === this.size.getHeight().getValue() - 1 ? new WallCell() : new EmptyCell();
             }
         }
 

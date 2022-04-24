@@ -1,9 +1,13 @@
+import UInt from "../common/uint";
+import { EmptyCell } from "../game/empty-cell";
 import Game from "../game/game";
+import { Organism } from "../game/organism";
+import { WallCell } from "../game/wall";
 
 const STYLES = {
     CELL_BORDER_WIDTH: 1,
     CELL_BORDER_COLOR: '#ffffff',
-    CELL_WALL_COLOR: '#0000ff',
+    CELL_WALL_COLOR: '#5f5f5f',
     CELL_ORGANISM_COLOR: '#00ff00',
     CELL_EMPTY_COLOR: '#000000',
 };
@@ -40,7 +44,27 @@ export default class CanvasRenderer {
 
         for (let x = 0; x < this.game.getGrid().getSize().getWidth().getValue(); x++) {
             for (let y = 0; y < this.game.getGrid().getSize().getHeight().getValue(); y++) {
-                
+                const cell = this.game.getGrid().getCell(new UInt(x), new UInt(y));
+                cell.visit({
+                    visitEmpty: (cell: EmptyCell) => {
+                        this.context.fillStyle = STYLES.CELL_EMPTY_COLOR;
+                        const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                        const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                        this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                    },
+                    visitWall: (cell: WallCell) => {
+                        this.context.fillStyle = STYLES.CELL_WALL_COLOR;
+                        const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                        const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                        this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                    },
+                    visitOrganism: (cell: Organism) => {
+                        this.context.fillStyle = STYLES.CELL_ORGANISM_COLOR;
+                        const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                        const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                        this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                    }
+                });
             }
         }
 

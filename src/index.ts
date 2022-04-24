@@ -1,6 +1,9 @@
 import PositiveInt from "./common/positive-int";
+import UInt from "./common/uint";
 import Game from "./game/game";
+import { Organism } from "./game/organism";
 import { Size } from "./game/size";
+import { WallCell } from "./game/wall";
 import CanvasRenderer from "./render/canvas-renderer";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -18,6 +21,10 @@ const size = new Size(
     new PositiveInt(20)
 );
 const game = new Game(size);
+
+game.getGrid().insert(new UInt(3), new UInt(5), new WallCell());
+game.getGrid().insert(new UInt(5), new UInt(5), new Organism());
+
 const renderer = new CanvasRenderer(canvas, game);
 
 renderer.render();
