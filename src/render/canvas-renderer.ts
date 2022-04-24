@@ -21,51 +21,44 @@ export default class CanvasRenderer {
         let width, height;
 
         const size = this.game.getGrid().getSize();
-
         const gameRatio = size.getRatio();
         const canvasRatio = this.canvas.width / this.canvas.height;
-
-        let cellSize;
+        
         let startPosition = [0, 0];
 
         if (gameRatio > canvasRatio) {
             width = this.canvas.width;
-            height = Math.floor(this.canvas.width / gameRatio);
-            cellSize = Math.floor(
-                (width - STYLES.CELL_BORDER_WIDTH) / this.game.getGrid().getSize().getWidth().getValue() - STYLES.CELL_BORDER_WIDTH
-            );
-            startPosition[1] = Math.floor((this.canvas.height - height) / 2);
+            height = this.canvas.width / gameRatio;
+            startPosition[1] = (this.canvas.height - height) / 2;
         } else {
-            width = Math.floor(this.canvas.height * gameRatio);
+            width = this.canvas.height * gameRatio;
             height = this.canvas.height;
-            cellSize = 
-                (height - STYLES.CELL_BORDER_WIDTH * (this.game.getGrid().getSize().getHeight().getValue() + 1)) / this.game.getGrid().getSize().getHeight().getValue()
-            ;
-            startPosition[0] = Math.floor((this.canvas.width - width) / 2);
+            startPosition[0] = (this.canvas.width - width) / 2;
         }
+
+        const cellSize = (width - STYLES.CELL_BORDER_WIDTH) / this.game.getGrid().getSize().getWidth().getValue() - STYLES.CELL_BORDER_WIDTH;
 
         for (let x = 0; x < this.game.getGrid().getSize().getWidth().getValue(); x++) {
             for (let y = 0; y < this.game.getGrid().getSize().getHeight().getValue(); y++) {
-                const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
                 
-                this.context.lineWidth = STYLES.CELL_BORDER_WIDTH;
-                this.context.strokeStyle = STYLES.CELL_BORDER_COLOR;
-                this.context.beginPath();
-                this.context.moveTo(cursorX + cellSize, cursorY);
-                this.context.lineTo(cursorX, cursorY);
-                this.context.lineTo(cursorX, cursorY + cellSize);
-                this.context.stroke();
             }
         }
 
-        this.context.lineWidth = STYLES.CELL_BORDER_WIDTH;
-        this.context.strokeStyle = STYLES.CELL_BORDER_COLOR;
-        this.context.beginPath();
-        this.context.moveTo(startPosition[0] + width - STYLES.CELL_BORDER_WIDTH, startPosition[1]);
-        this.context.lineTo(startPosition[0] + width - STYLES.CELL_BORDER_WIDTH, startPosition[1] + height - STYLES.CELL_BORDER_WIDTH);
-        this.context.lineTo(startPosition[0], startPosition[1] + height - STYLES.CELL_BORDER_WIDTH);
-        this.context.stroke();
+        for (let x = 0; x < this.game.getGrid().getSize().getWidth().getValue(); x++) {
+            this.context.fillStyle = STYLES.CELL_BORDER_COLOR;
+            const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+            this.context.fillRect(cursorX, startPosition[1], STYLES.CELL_BORDER_WIDTH, height);            
+        }
+
+        for (let y = 0; y < this.game.getGrid().getSize().getHeight().getValue(); y++) {
+            this.context.fillStyle = STYLES.CELL_BORDER_COLOR;
+            const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+            this.context.fillRect(startPosition[0], cursorY, width, STYLES.CELL_BORDER_WIDTH);
+        }
+
+        this.context.fillStyle = STYLES.CELL_BORDER_COLOR;
+        this.context.fillRect(startPosition[0] + width - STYLES.CELL_BORDER_WIDTH,  startPosition[1], STYLES.CELL_BORDER_WIDTH, height);
+        this.context.fillRect(startPosition[0],  startPosition[1] + height - STYLES.CELL_BORDER_WIDTH, width, STYLES.CELL_BORDER_WIDTH);
     }
 
     public clear() {
