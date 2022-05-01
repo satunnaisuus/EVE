@@ -1,7 +1,6 @@
+import CellFactory from "./game/cell-factory";
 import Game from "./game/game";
-import { Organism } from "./game/organism";
 import { Size } from "./game/size";
-import { WallCell } from "./game/wall";
 import CanvasRenderer from "./render/canvas-renderer";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -14,16 +13,17 @@ function fitCanvas(canvas: HTMLCanvasElement, container: HTMLElement) {
 
 fitCanvas(canvas, canvasContainer);
 
+const cellFactory = new CellFactory();
 const size = new Size(125, 70);
-const game = new Game(size);
+const game = new Game(size, cellFactory);
 
-game.getGrid().insert(3, 5, new WallCell());
-game.getGrid().insert(5, 5, new Organism());
+game.getGrid().insert(3, 5, cellFactory.createWall());
+game.getGrid().insert(5, 5, cellFactory.createOrganism());
 
 for (let x = 0; x < size.getWidth(); x++) {
     for (let y = 0; y < size.getHeight(); y++) {
         if (x === 0 || y === 0 || x === size.getWidth() - 1 || y === size.getHeight() - 1) {
-            game.getGrid().insert(x, y, new WallCell());
+            game.getGrid().insert(x, y, cellFactory.createWall());
         }
     }
 }

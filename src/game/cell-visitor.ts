@@ -1,5 +1,5 @@
 import { EmptyCell } from "./empty-cell";
-import { Organism } from "./organism";
+import { OrganismCell } from "./organism-cell";
 import { WallCell } from "./wall";
 
 export default interface CellVisitor {
@@ -7,5 +7,5 @@ export default interface CellVisitor {
 
     visitWall(cell: WallCell): void;
 
-    visitOrganism(cell: Organism): void;
+    visitOrganism(cell: OrganismCell): void;
 }

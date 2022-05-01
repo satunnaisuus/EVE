@@ -1,6 +1,6 @@
 import { EmptyCell } from "../game/empty-cell";
 import Game from "../game/game";
-import { Organism } from "../game/organism";
+import { OrganismCell } from "../game/organism-cell";
 import { WallCell } from "../game/wall";
 
 const STYLES = {
@@ -57,7 +57,7 @@ export default class CanvasRenderer {
                         const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
                         this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
                     },
-                    visitOrganism: (cell: Organism) => {
+                    visitOrganism: (cell: OrganismCell) => {
                         this.context.fillStyle = STYLES.CELL_ORGANISM_COLOR;
                         const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
                         const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);

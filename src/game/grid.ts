@@ -1,14 +1,14 @@
 import { assertGreaterOrEqualThan, assertLessThan } from "../common/asserts";
 import { Cell } from "./cell";
-import { EmptyCell } from "./empty-cell";
+import CellFactory from "./cell-factory";
 import { Size } from "./size";
-import { WallCell } from "./wall";
 
 export default class Grid {
     private cells: {[key: `${number}:${number}`]: Cell} = {};
 
     constructor(
-        private size: Size
+        private size: Size,
+        private cellFactory: CellFactory
     ) {
         
     }
@@ -33,6 +33,6 @@ export default class Grid {
             return cell;
         }
 
-        return new EmptyCell();
+        return this.cellFactory.createEmpty();
     }
 }
