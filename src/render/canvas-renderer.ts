@@ -1,11 +1,10 @@
-import UInt from "../common/uint";
 import { EmptyCell } from "../game/empty-cell";
 import Game from "../game/game";
 import { Organism } from "../game/organism";
 import { WallCell } from "../game/wall";
 
 const STYLES = {
-    CELL_BORDER_WIDTH: 1,
+    CELL_BORDER_WIDTH: 0.2,
     CELL_BORDER_COLOR: '#ffffff',
     CELL_WALL_COLOR: '#5f5f5f',
     CELL_ORGANISM_COLOR: '#00ff00',
@@ -40,11 +39,11 @@ export default class CanvasRenderer {
             startPosition[0] = (this.canvas.width - width) / 2;
         }
 
-        const cellSize = (width - STYLES.CELL_BORDER_WIDTH) / this.game.getGrid().getSize().getWidth().getValue() - STYLES.CELL_BORDER_WIDTH;
+        const cellSize = (width - STYLES.CELL_BORDER_WIDTH) / this.game.getGrid().getSize().getWidth() - STYLES.CELL_BORDER_WIDTH;
 
-        for (let x = 0; x < this.game.getGrid().getSize().getWidth().getValue(); x++) {
-            for (let y = 0; y < this.game.getGrid().getSize().getHeight().getValue(); y++) {
-                const cell = this.game.getGrid().getCell(new UInt(x), new UInt(y));
+        for (let x = 0; x < this.game.getGrid().getSize().getWidth(); x++) {
+            for (let y = 0; y < this.game.getGrid().getSize().getHeight(); y++) {
+                const cell = this.game.getGrid().getCell(x, y);
                 cell.visit({
                     visitEmpty: (cell: EmptyCell) => {
                         this.context.fillStyle = STYLES.CELL_EMPTY_COLOR;
@@ -68,13 +67,13 @@ export default class CanvasRenderer {
             }
         }
 
-        for (let x = 0; x < this.game.getGrid().getSize().getWidth().getValue(); x++) {
+        for (let x = 0; x < this.game.getGrid().getSize().getWidth(); x++) {
             this.context.fillStyle = STYLES.CELL_BORDER_COLOR;
             const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
             this.context.fillRect(cursorX, startPosition[1], STYLES.CELL_BORDER_WIDTH, height);            
         }
 
-        for (let y = 0; y < this.game.getGrid().getSize().getHeight().getValue(); y++) {
+        for (let y = 0; y < this.game.getGrid().getSize().getHeight(); y++) {
             this.context.fillStyle = STYLES.CELL_BORDER_COLOR;
             const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
             this.context.fillRect(startPosition[0], cursorY, width, STYLES.CELL_BORDER_WIDTH);

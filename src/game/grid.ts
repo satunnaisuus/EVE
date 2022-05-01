@@ -1,5 +1,4 @@
-import { assertLessThan } from "../common/asserts";
-import UInt from "../common/uint";
+import { assertGreaterOrEqualThan, assertLessThan } from "../common/asserts";
 import { Cell } from "./cell";
 import { EmptyCell } from "./empty-cell";
 import { Size } from "./size";
@@ -18,25 +17,27 @@ export default class Grid {
         return this.size;
     }
 
-    public insert(x: UInt, y: UInt, cell: Cell): void {
-        assertLessThan(x, this.size.getWidth().getValue());
-        assertLessThan(y, this.size.getHeight().getValue());
+    public insert(x: number, y: number, cell: Cell): void {
+        assertLessThan(x, this.size.getWidth());
+        assertLessThan(y, this.size.getHeight());
+        assertGreaterOrEqualThan(x, 0);
+        assertGreaterOrEqualThan(y, 0);
 
-        this.grid[x.getValue()][y.getValue()] = cell;
+        this.grid[x][y] = cell;
     }
 
-    public getCell(x: UInt, y: UInt): Cell {
-        return this.grid[x.getValue()][y.getValue()];
+    public getCell(x: number, y: number): Cell {
+        return this.grid[x][y];
     }
 
     private initializeGrid(): void {
         const grid = [];
 
-        for (let x = 0; x < this.size.getWidth().getValue(); x++) {
+        for (let x = 0; x < this.size.getWidth(); x++) {
             grid[x] = [];
 
-            for (let y = 0; y < this.size.getHeight().getValue(); y++) {
-                grid[x][y] = x === 0 || y === 0 || x === this.size.getWidth().getValue() - 1 || y === this.size.getHeight().getValue() - 1 ? new WallCell() : new EmptyCell();
+            for (let y = 0; y < this.size.getHeight(); y++) {
+                grid[x][y] = x === 0 || y === 0 || x === this.size.getWidth() - 1 || y === this.size.getHeight() - 1 ? new WallCell() : new EmptyCell();
             }
         }
 

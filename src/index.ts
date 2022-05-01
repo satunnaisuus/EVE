@@ -1,5 +1,3 @@
-import PositiveInt from "./common/positive-int";
-import UInt from "./common/uint";
 import Game from "./game/game";
 import { Organism } from "./game/organism";
 import { Size } from "./game/size";
@@ -16,14 +14,11 @@ function fitCanvas(canvas: HTMLCanvasElement, container: HTMLElement) {
 
 fitCanvas(canvas, canvasContainer);
 
-const size = new Size(
-    new PositiveInt(19),
-    new PositiveInt(20)
-);
+const size = new Size(125, 70);
 const game = new Game(size);
 
-game.getGrid().insert(new UInt(3), new UInt(5), new WallCell());
-game.getGrid().insert(new UInt(5), new UInt(5), new Organism());
+game.getGrid().insert(3, 5, new WallCell());
+game.getGrid().insert(5, 5, new Organism());
 
 const renderer = new CanvasRenderer(canvas, game);
 
@@ -32,4 +27,4 @@ renderer.render();
 window.addEventListener('resize', () => {
     fitCanvas(canvas, canvasContainer);
     renderer.render();
-})
+});

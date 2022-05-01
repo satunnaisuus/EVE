@@ -1,30 +1,31 @@
-import PositiveInt from "../common/positive-int";
+import { assertGreaterOrEqualThan } from "../common/asserts";
 
 export class Size {
     constructor(
-        private width: PositiveInt,
-        private height: PositiveInt
+        private width: number,
+        private height: number
     ) {
-        
+        assertGreaterOrEqualThan(width, 0);
+        assertGreaterOrEqualThan(height, 0);
     }
 
-    public getWidth(): PositiveInt {
+    public getWidth(): number {
         return this.width;
     }
 
-    public setWidth(width: PositiveInt): Size {
+    public setWidth(width: number): Size {
         return new Size(width, this.height);
     }
 
-    public getHeight(): PositiveInt {
+    public getHeight(): number {
         return this.height;
     }
 
-    public setHeight(height: PositiveInt): Size {
+    public setHeight(height: number): Size {
         return new Size(this.width, height);
     }
 
     public getRatio(): number {
-        return this.width.getValue() / this.height.getValue();
+        return this.width / this.height;
     }
 }
