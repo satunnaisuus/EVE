@@ -20,6 +20,14 @@ const game = new Game(size);
 game.getGrid().insert(3, 5, new WallCell());
 game.getGrid().insert(5, 5, new Organism());
 
+for (let x = 0; x < size.getWidth(); x++) {
+    for (let y = 0; y < size.getHeight(); y++) {
+        if (x === 0 || y === 0 || x === size.getWidth() - 1 || y === size.getHeight() - 1) {
+            game.getGrid().insert(x, y, new WallCell());
+        }
+    }
+}
+
 const renderer = new CanvasRenderer(canvas, game);
 
 renderer.render();

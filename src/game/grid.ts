@@ -5,12 +5,12 @@ import { Size } from "./size";
 import { WallCell } from "./wall";
 
 export default class Grid {
-    private grid: Cell[][];
+    private cells: {[key: `${number}:${number}`]: Cell} = {};
 
     constructor(
         private size: Size
     ) {
-        this.initializeGrid();
+        
     }
 
     public getSize(): Size {
@@ -23,24 +23,16 @@ export default class Grid {
         assertGreaterOrEqualThan(x, 0);
         assertGreaterOrEqualThan(y, 0);
 
-        this.grid[x][y] = cell;
+        this.cells[`${x}:${y}`] = cell;
     }
 
     public getCell(x: number, y: number): Cell {
-        return this.grid[x][y];
-    }
+        const cell = this.cells[`${x}:${y}`];
 
-    private initializeGrid(): void {
-        const grid = [];
-
-        for (let x = 0; x < this.size.getWidth(); x++) {
-            grid[x] = [];
-
-            for (let y = 0; y < this.size.getHeight(); y++) {
-                grid[x][y] = x === 0 || y === 0 || x === this.size.getWidth() - 1 || y === this.size.getHeight() - 1 ? new WallCell() : new EmptyCell();
-            }
+        if (cell) {
+            return cell;
         }
 
-        this.grid = grid;
+        return new EmptyCell();
     }
 }
