@@ -41,30 +41,28 @@ export default class CanvasRenderer {
 
         const cellSize = (width - STYLES.CELL_BORDER_WIDTH) / this.game.getGrid().getSize().getWidth() - STYLES.CELL_BORDER_WIDTH;
 
-        for (let x = 0; x < this.game.getGrid().getSize().getWidth(); x++) {
-            for (let y = 0; y < this.game.getGrid().getSize().getHeight(); y++) {
-                const cell = this.game.getGrid().getCell(x, y);
-                cell.visit({
-                    visitEmpty: (cell: EmptyCell) => {
-                        this.context.fillStyle = STYLES.CELL_EMPTY_COLOR;
-                        const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                        const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                        this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
-                    },
-                    visitWall: (cell: WallCell) => {
-                        this.context.fillStyle = STYLES.CELL_WALL_COLOR;
-                        const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                        const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                        this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
-                    },
-                    visitOrganism: (cell: OrganismCell) => {
-                        this.context.fillStyle = STYLES.CELL_ORGANISM_COLOR;
-                        const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                        const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                        this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
-                    }
-                });
-            }
+        for (const {x, y} of this.game.getGrid()) {
+            const cell = this.game.getGrid().getCell(x, y);
+            cell.visit({
+                visitEmpty: (cell: EmptyCell) => {
+                    this.context.fillStyle = STYLES.CELL_EMPTY_COLOR;
+                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                },
+                visitWall: (cell: WallCell) => {
+                    this.context.fillStyle = STYLES.CELL_WALL_COLOR;
+                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                },
+                visitOrganism: (cell: OrganismCell) => {
+                    this.context.fillStyle = STYLES.CELL_ORGANISM_COLOR;
+                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                }
+            });
         }
 
         for (let x = 0; x < this.game.getGrid().getSize().getWidth(); x++) {

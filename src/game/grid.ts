@@ -1,6 +1,7 @@
 import { assertGreaterOrEqualThan, assertLessThan } from "../common/asserts";
 import { Cell } from "./cell";
 import CellFactory from "./cell-factory";
+import GridIterator from "./grid-iterator";
 import { Size } from "./size";
 
 export default class Grid {
@@ -13,6 +14,14 @@ export default class Grid {
         
     }
 
+    *[Symbol.iterator]() {
+        const iterator = new GridIterator(this);
+
+        while (iterator.hasNext()) {
+            yield iterator.next();
+        }
+    }
+    
     public getSize(): Size {
         return this.size;
     }
@@ -24,6 +33,10 @@ export default class Grid {
         assertGreaterOrEqualThan(y, 0);
 
         this.cells[`${x}:${y}`] = cell;
+    }
+
+    public delete(x: number, y: number): void {
+        delete this.cells[`${x}:${y}`];
     }
 
     public getCell(x: number, y: number): Cell {

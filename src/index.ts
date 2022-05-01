@@ -20,11 +20,9 @@ const game = new Game(size, cellFactory);
 game.getGrid().insert(3, 5, cellFactory.createWall());
 game.getGrid().insert(5, 5, cellFactory.createOrganism());
 
-for (let x = 0; x < size.getWidth(); x++) {
-    for (let y = 0; y < size.getHeight(); y++) {
-        if (x === 0 || y === 0 || x === size.getWidth() - 1 || y === size.getHeight() - 1) {
-            game.getGrid().insert(x, y, cellFactory.createWall());
-        }
+for (const {x, y} of game.getGrid()) {
+    if (x === 0 || y === 0 || x === size.getWidth() - 1 || y === size.getHeight() - 1) {
+        game.getGrid().insert(x, y, cellFactory.createWall());
     }
 }
 
