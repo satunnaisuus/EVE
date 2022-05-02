@@ -1,9 +1,15 @@
 import { Cell } from "./cell";
 import CellContext from "./cell-context";
+import CellFactory from "./cell-factory";
 import cellVisitor from "./cell-visitor";
+
+const MAX_LIFETIME = 100;
+const INITIAL_ENERGY = 100;
 
 export class OrganismCell extends Cell {
     private lifetime: number = 0;
+
+    private energy: number = INITIAL_ENERGY;
 
     getLifetime(): number {
         return this.lifetime;
@@ -14,7 +20,10 @@ export class OrganismCell extends Cell {
     }
 
     update(context: CellContext): void {
-        this.lifetime++;
+        if (this.lifetime > MAX_LIFETIME || this.energy <= 0) {
+            context.replace((factory: CellFactory) => factory.createEmpty());
+            return;
+        }
 
         const getRandomOffest = () => {
             const random = Math.random() * 3;
@@ -33,6 +42,9 @@ export class OrganismCell extends Cell {
         }
 
         context.moveByOffest(getRandomOffest(), getRandomOffest());
+
+        this.lifetime++;
+        this.energy--;
     }
 
     isStatic(): boolean {

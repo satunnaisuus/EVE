@@ -1,10 +1,13 @@
+import { Cell } from "./cell";
+import CellFactory from "./cell-factory";
 import Grid from "./grid";
 
 export default class CellContext {
     constructor(
         private grid: Grid,
         private x: number,
-        private y: number
+        private y: number,
+        private factory: CellFactory
     ) {
 
     }
@@ -19,6 +22,10 @@ export default class CellContext {
             this.grid.delete(this.x, this.y);
             this.grid.insert(coordinates[0], coordinates[1], cell);
         }
+    }
+
+    replace(createCell: (factory: CellFactory) => Cell) {
+        this.grid.insert(this.x, this.y, createCell(this.factory));
     }
 
     private getCoordinatesbyOffset(x: number, y: number): [number, number] {

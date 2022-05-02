@@ -1,7 +1,6 @@
 import CellContext from "./cell-context";
 import CellFactory from "./cell-factory";
 import Grid from "./grid";
-import GridIterator from "./grid-iterator";
 import { Size } from "./size";
 
 export default class Game {
@@ -14,7 +13,7 @@ export default class Game {
     update(): void {
         for (const {x, y, cell} of this.grid) {
             if (! cell.isStatic()) {
-                const context = new CellContext(this.grid, x, y);
+                const context = new CellContext(this.grid, x, y, this.cellFactory);
                 cell.update(context);
             }
         }
