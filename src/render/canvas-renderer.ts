@@ -42,8 +42,7 @@ export default class CanvasRenderer {
 
         const cellSize = (width - STYLES.CELL_BORDER_WIDTH) / this.game.getGrid().getSize().getWidth() - STYLES.CELL_BORDER_WIDTH;
 
-        for (const {x, y} of this.game.getGrid()) {
-            const cell = this.game.getGrid().getCell(x, y);
+        for (const {x, y, cell} of this.game.getGrid()) {
             cell.visit({
                 visitEmpty: (cell: EmptyCell) => {
                     this.context.fillStyle = STYLES.CELL_EMPTY_COLOR;

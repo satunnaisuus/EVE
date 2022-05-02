@@ -5,4 +5,9 @@ export class EmptyCell extends Cell {
     visit(visitor: cellVisitor): void {
         visitor.visitEmpty(this);
     }
+
+
+    isEmpty(): boolean {
+        return true;
+    }
 }

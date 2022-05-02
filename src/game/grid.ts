@@ -15,7 +15,7 @@ export default class Grid {
     }
 
     *[Symbol.iterator]() {
-        const iterator = new GridIterator(this);
+        const iterator = new GridIterator(this.createSnapshot(), this.size);
 
         while (iterator.hasNext()) {
             yield iterator.next();
@@ -47,5 +47,21 @@ export default class Grid {
         }
 
         return this.cellFactory.createEmpty();
+    }
+
+    private createSnapshot(): Cell[][] {
+        const result = [];
+
+        for (let x = 0; x < this.size.getWidth(); x++) {
+            if (! result[x]) {
+                result[x] = [];
+            }
+
+            for (let y = 0; y < this.size.getHeight(); y++) {
+                result[x][y] = this.getCell(x, y);
+            }
+        }
+
+        return result;
     }
 }

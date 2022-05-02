@@ -29,12 +29,14 @@ for (const {x, y} of game.getGrid()) {
 const renderer = new CanvasRenderer(canvas, game);
 renderer.render();
 
+const tickDelay = 50;
+
 let timerId = setTimeout(function tick() {
     game.update();
     renderer.render();
 
-    timerId = setTimeout(tick, 1000);
-}, 1000);
+    timerId = setTimeout(tick, tickDelay);
+}, tickDelay);
 
 window.addEventListener('resize', () => {
     fitCanvas(canvas, canvasContainer);
