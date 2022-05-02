@@ -1,3 +1,4 @@
+import { Direction } from "../game/direction";
 import { EmptyCell } from "../game/empty-cell";
 import Game from "../game/game";
 import { OrganismCell } from "../game/organism-cell";
@@ -8,7 +9,7 @@ const STYLES = {
     CELL_BORDER_COLOR: '#ffffff',
     CELL_WALL_COLOR: '#5f5f5f',
     CELL_ORGANISM_COLOR: '#00ff00',
-    CELL_ORGANISM_TEXT_COLOR: '#000000',
+    CELL_ORGANISM_EYE_COLOR: '#ff0000',
     CELL_EMPTY_COLOR: '#000000',
 };
 
@@ -62,9 +63,39 @@ export default class CanvasRenderer {
                     const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
                     this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
 
-                    this.context.fillStyle = STYLES.CELL_ORGANISM_TEXT_COLOR;
-                    this.context.font = cellSize + "px serif";
-                    this.context.fillText(cell.getLifetime().toString(), cursorX, cursorY + cellSize);
+                    const eyeSize = cellSize / 3;
+
+                    let eyeOffset;
+
+                    switch (cell.getDirection()) {
+                        case Direction.NORTH_WEST:
+                            eyeOffset = [0, 0];
+                            break;
+                        case Direction.NORTH:
+                            eyeOffset = [eyeSize, 0];
+                            break;
+                        case Direction.NORTH_EAST:
+                            eyeOffset = [eyeSize * 2, 0];
+                            break;
+                        case Direction.SOUTH_WEST:
+                            eyeOffset = [0, eyeSize * 2];
+                            break;
+                        case Direction.SOUTH:
+                            eyeOffset = [eyeSize, eyeSize * 2];
+                            break;
+                        case Direction.SOUTH_EAST:
+                            eyeOffset = [eyeSize * 2, eyeSize * 2];
+                            break;
+                        case Direction.WEST:
+                            eyeOffset = [0, eyeSize];
+                            break;
+                        case Direction.EAST:
+                            eyeOffset = [eyeSize * 2, eyeSize];
+                            break;
+                    }
+
+                    this.context.fillStyle = STYLES.CELL_ORGANISM_EYE_COLOR;
+                    this.context.fillRect(cursorX + eyeOffset[0], cursorY + eyeOffset[1], eyeSize, eyeSize);
                 }
             });
         }
