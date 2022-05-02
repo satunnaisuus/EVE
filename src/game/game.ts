@@ -10,7 +10,11 @@ export default class Game {
     }
 
     update(): void {
-
+        for (const {cell} of this.grid) {
+            if (! cell.isStatic()) {
+                cell.update();
+            }
+        }
     }
 
     getGrid(): Grid {

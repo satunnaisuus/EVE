@@ -8,6 +8,7 @@ const STYLES = {
     CELL_BORDER_COLOR: '#ffffff',
     CELL_WALL_COLOR: '#5f5f5f',
     CELL_ORGANISM_COLOR: '#00ff00',
+    CELL_ORGANISM_TEXT_COLOR: '#000000',
     CELL_EMPTY_COLOR: '#000000',
 };
 
@@ -61,6 +62,10 @@ export default class CanvasRenderer {
                     const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
                     const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
                     this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+
+                    this.context.fillStyle = STYLES.CELL_ORGANISM_TEXT_COLOR;
+                    this.context.font = cellSize + "px serif";
+                    this.context.fillText(cell.getLifetime().toString(), cursorX, cursorY + cellSize);
                 }
             });
         }
