@@ -1,14 +1,13 @@
 import { Cell } from "./cell";
 import CellContext from "./cell-context";
 import CellFactory from "./cell-factory";
+import CellVisitor from "./cell-visitor";
 import cellVisitor from "./cell-visitor";
 import { Direction } from "./direction";
-import { EmptyCell } from "./empty-cell";
 import Genome from "./genome";
 import { MeatCell } from "./meat-cell";
 import { OrganismAction } from "./organism-action";
 import { PlantCell } from "./plant-cell";
-import { WallCell } from "./wall";
 
 const MAX_LIFETIME = 100;
 const INITIAL_ENERGY = 70;
@@ -57,7 +56,6 @@ export class OrganismCell extends Cell {
         const offsetByDirection = Direction.getOffset(this.direction);
         const cell = context.getByOffest(...offsetByDirection);
         
-
         const action = this.genome.getAction(this, cell);
 
         if (action === OrganismAction.STEP) {
@@ -76,22 +74,12 @@ export class OrganismCell extends Cell {
                 context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
             }
         } else if (action === OrganismAction.ATTACK) {
-            cell.visit({
-                visitEmpty: (cell: EmptyCell) => {
-                    
-                },
-                visitWall: (cell: WallCell) => {
-                    
-                },
-                visitPlant: (cell: PlantCell) => {
-                    
-                },
-                visitMeat: (cell: MeatCell) => {
-                    
-                },
-                visitOrganism: (cell: OrganismCell) => {
+            const self = this;
+
+            cell.visit(new class extends CellVisitor {
+                visitOrganism(cell: OrganismCell): void {
                     cell.kill();
-                    this.energy--;
+                    self.energy--;
                 }
             });
         } else if (action === OrganismAction.EAT) {
@@ -101,21 +89,13 @@ export class OrganismCell extends Cell {
                 this.energy += energy;
             }
 
-            cell.visit({
-                visitEmpty: (cell: EmptyCell) => {
-                    
-                },
-                visitWall: (cell: WallCell) => {
-                    
-                },
-                visitPlant: (cell: PlantCell) => {
-                    eat(ENERGY_PLANT);
-                },
-                visitMeat: (cell: MeatCell) => {
+            cell.visit(new class extends CellVisitor {
+                visitMeat(cell: MeatCell): void {
                     eat(ENERGY_MEAT);
-                },
-                visitOrganism: (cell: OrganismCell) => {
-                    
+                }
+
+                visitPlant(cell: PlantCell): void {
+                    eat(ENERGY_PLANT);
                 }
             });
         }
