@@ -10,6 +10,10 @@ export default class CellFactory {
 
     private empty: EmptyCell;
 
+    private plant: PlantCell;
+
+    private meat: MeatCell;
+
     createWall(): WallCell {
         if (this.wall) {
             return this.wall;
@@ -31,10 +35,18 @@ export default class CellFactory {
     }
 
     createPlant(): PlantCell {
-        return new PlantCell();
+        if (this.plant) {
+            return this.plant;
+        }
+
+        return this.plant = new PlantCell();
     }
 
     createMeat(): MeatCell {
-        return new MeatCell();
+        if (this.meat) {
+            return this.meat;
+        }
+
+        return this.meat = new MeatCell();
     }
 }
