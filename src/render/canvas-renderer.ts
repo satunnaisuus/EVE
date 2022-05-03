@@ -7,8 +7,6 @@ import { PlantCell } from "../game/plant-cell";
 import { WallCell } from "../game/wall";
 
 const STYLES = {
-    CELL_BORDER_WIDTH: 0.2,
-    CELL_BORDER_COLOR: '#ffffff',
     CELL_WALL_COLOR: '#5f5f5f',
     CELL_ORGANISM_COLOR: '#0B5FA5',
     CELL_ORGANISM_EYE_COLOR: '#66A1D2',
@@ -25,8 +23,6 @@ export default class CanvasRenderer {
     }
 
     public render() {
-        this.clear();
-
         let width, height;
 
         const size = this.game.getGrid().getSize();
@@ -45,39 +41,39 @@ export default class CanvasRenderer {
             startPosition[0] = (this.canvas.width - width) / 2;
         }
 
-        const cellSize = (width - STYLES.CELL_BORDER_WIDTH) / this.game.getGrid().getSize().getWidth() - STYLES.CELL_BORDER_WIDTH;
+        const cellSize = width / this.game.getGrid().getSize().getWidth();
 
         for (const {x, y, cell} of this.game.getGrid()) {
             cell.visit({
                 visitEmpty: (cell: EmptyCell) => {
                     this.context.fillStyle = STYLES.CELL_EMPTY_COLOR;
-                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                    const cursorX = startPosition[0] + x * cellSize;
+                    const cursorY = startPosition[1] + y * cellSize;
+                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
                 },
                 visitWall: (cell: WallCell) => {
                     this.context.fillStyle = STYLES.CELL_WALL_COLOR;
-                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                    const cursorX = startPosition[0] + x * cellSize;
+                    const cursorY = startPosition[1] + y * cellSize;
+                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
                 },
                 visitPlant: (cell: PlantCell) => {
                     this.context.fillStyle = STYLES.CELL_PLANT_COLOR;
-                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                    const cursorX = startPosition[0] + x * cellSize;
+                    const cursorY = startPosition[1] + y * cellSize;
+                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
                 },
                 visitMeat: (cell: MeatCell) => {
                     this.context.fillStyle = STYLES.CELL_MEAT_COLOR;
-                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                    const cursorX = startPosition[0] + x * cellSize;
+                    const cursorY = startPosition[1] + y * cellSize;
+                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
                 },
                 visitOrganism: (cell: OrganismCell) => {
                     this.context.fillStyle = STYLES.CELL_ORGANISM_COLOR;
-                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                    const cursorX = startPosition[0] + x * cellSize;
+                    const cursorY = startPosition[1] + y * cellSize;
+                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
 
                     const eyeSize = cellSize / 3;
 
@@ -115,25 +111,5 @@ export default class CanvasRenderer {
                 }
             });
         }
-
-        for (let x = 0; x < this.game.getGrid().getSize().getWidth(); x++) {
-            this.context.fillStyle = STYLES.CELL_BORDER_COLOR;
-            const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
-            this.context.fillRect(cursorX, startPosition[1], STYLES.CELL_BORDER_WIDTH, height);            
-        }
-
-        for (let y = 0; y < this.game.getGrid().getSize().getHeight(); y++) {
-            this.context.fillStyle = STYLES.CELL_BORDER_COLOR;
-            const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
-            this.context.fillRect(startPosition[0], cursorY, width, STYLES.CELL_BORDER_WIDTH);
-        }
-
-        this.context.fillStyle = STYLES.CELL_BORDER_COLOR;
-        this.context.fillRect(startPosition[0] + width - STYLES.CELL_BORDER_WIDTH,  startPosition[1], STYLES.CELL_BORDER_WIDTH, height);
-        this.context.fillRect(startPosition[0],  startPosition[1] + height - STYLES.CELL_BORDER_WIDTH, width, STYLES.CELL_BORDER_WIDTH);
-    }
-
-    public clear() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
