@@ -10,7 +10,25 @@ export default class Game {
         this.grid = new Grid(size, cellFactory);
     }
 
+    generatePlants(): void {
+        const countEmpty = this.grid.countEmpty();
+
+        if (countEmpty === 0) {
+            return;
+        }
+
+        const chance = 1 / this.grid.countEmpty();
+
+        for (const {x, y, cell} of this.grid) {
+            if (cell.isEmpty() && Math.random() < chance) {
+                this.grid.insert(x, y, this.cellFactory.createPlant());
+            }
+        }
+    }
+
     update(): void {
+        this.generatePlants();
+
         for (const {x, y, cell} of this.grid) {
             if (! cell.isStatic()) {
                 const context = new CellContext(this.grid, x, y, this.cellFactory);

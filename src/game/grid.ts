@@ -49,6 +49,20 @@ export default class Grid {
         return this.cellFactory.createEmpty();
     }
 
+    public countEmpty(): number {
+        let result = 0;
+
+        for (let x = 0; x < this.size.getWidth(); x++) {
+            for (let y = 0; y < this.size.getHeight(); y++) {
+                if (!this.cells[`${x}:${y}`] || this.cells[`${x}:${y}`].isEmpty()) {
+                    result++;
+                }
+            }
+        }
+
+        return result;
+    }
+
     private createSnapshot(): Cell[][] {
         const result = [];
 

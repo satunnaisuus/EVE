@@ -2,15 +2,17 @@ import { Direction } from "../game/direction";
 import { EmptyCell } from "../game/empty-cell";
 import Game from "../game/game";
 import { OrganismCell } from "../game/organism-cell";
+import { PlantCell } from "../game/plant-cell";
 import { WallCell } from "../game/wall";
 
 const STYLES = {
     CELL_BORDER_WIDTH: 0.2,
     CELL_BORDER_COLOR: '#ffffff',
     CELL_WALL_COLOR: '#5f5f5f',
-    CELL_ORGANISM_COLOR: '#00ff00',
+    CELL_ORGANISM_COLOR: '#0000ff',
     CELL_ORGANISM_EYE_COLOR: '#ff0000',
     CELL_EMPTY_COLOR: '#000000',
+    CELL_PLANT_COLOR: '#00ff00',
 };
 
 export default class CanvasRenderer {
@@ -53,6 +55,12 @@ export default class CanvasRenderer {
                 },
                 visitWall: (cell: WallCell) => {
                     this.context.fillStyle = STYLES.CELL_WALL_COLOR;
+                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                },
+                visitPlant: (cell: PlantCell) => {
+                    this.context.fillStyle = STYLES.CELL_PLANT_COLOR;
                     const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
                     const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
                     this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
