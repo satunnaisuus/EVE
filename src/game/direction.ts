@@ -12,12 +12,12 @@ export enum Direction {
 export namespace Direction {
     export function getOffset(direction: Direction): [number, number] {
         switch (direction) {
-            case Direction.NORTH: return [1, 0];
-            case Direction.NORTH_EAST: return [1, 1];
-            case Direction.NORTH_WEST: return [-1, 1];
-            case Direction.SOUTH: return [0, -1];
-            case Direction.SOUTH_EAST: return [1, -1];
-            case Direction.SOUTH_WEST: return [-1, -1];
+            case Direction.NORTH: return [0, -1];
+            case Direction.NORTH_EAST: return [1, -1];
+            case Direction.NORTH_WEST: return [-1, -1];
+            case Direction.SOUTH: return [0, 1];
+            case Direction.SOUTH_EAST: return [1, 1];
+            case Direction.SOUTH_WEST: return [-1, 1];
             case Direction.EAST: return [1, 0];
             case Direction.WEST: return [-1, 0];
         }

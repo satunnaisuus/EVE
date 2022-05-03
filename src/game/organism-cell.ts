@@ -54,7 +54,7 @@ export class OrganismCell extends Cell {
             return;
         }
 
-        const offsetByDirection = this.getOffsetByDirection();
+        const offsetByDirection = Direction.getOffset(this.direction);
         const cell = context.getByOffest(...offsetByDirection);
         
 
@@ -133,26 +133,5 @@ export class OrganismCell extends Cell {
 
     isSimilar(cell: OrganismCell): boolean {
         return this.genome.isSimilar(cell.getGenome());
-    }
-
-    private getOffsetByDirection(): [number, number] {
-        switch (this.direction) {
-            case Direction.NORTH_WEST:
-                return [-1, -1];
-            case Direction.NORTH:
-                return [0, -1];
-            case Direction.NORTH_EAST:
-                return [1, -1];
-            case Direction.SOUTH_WEST:
-                return [-1, 1];
-            case Direction.SOUTH:
-                return [0, 1];
-            case Direction.SOUTH_EAST:
-                return [1, 1];
-            case Direction.WEST:
-                return [-1, 0];
-            case Direction.EAST:
-                return [1, 0];
-        }
     }
 }
