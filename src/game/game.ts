@@ -4,6 +4,8 @@ import Grid from "./grid";
 import { Size } from "./size";
 
 export default class Game {
+    private step = 0;
+
     private grid: Grid;
 
     constructor(size: Size, private cellFactory: CellFactory) {
@@ -35,9 +37,15 @@ export default class Game {
                 cell.update(context);
             }
         }
+
+        this.step++;
     }
 
     getGrid(): Grid {
         return this.grid;
+    }
+
+    getStep(): number {
+        return this.step;
     }
 }
