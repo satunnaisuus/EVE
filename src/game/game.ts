@@ -33,8 +33,9 @@ export default class Game {
 
         for (const {x, y, cell} of this.grid) {
             if (! cell.isStatic()) {
-                const context = new CellContext(this.grid, x, y, this.cellFactory);
-                cell.update(context);
+                cell.update(
+                    new CellContext(this.grid, x, y, this.cellFactory)
+                );
             }
         }
 

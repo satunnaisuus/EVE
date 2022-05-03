@@ -50,13 +50,11 @@ export default class Grid {
     }
 
     public countEmpty(): number {
-        let result = 0;
+        let result = this.size.getCellCount();
 
-        for (let x = 0; x < this.size.getWidth(); x++) {
-            for (let y = 0; y < this.size.getHeight(); y++) {
-                if (!this.cells[`${x}:${y}`] || this.cells[`${x}:${y}`].isEmpty()) {
-                    result++;
-                }
+        for (const key in this.cells) {
+            if (this.cells[key as `${number}:${number}`].isEmpty()) {
+                result--;
             }
         }
 
