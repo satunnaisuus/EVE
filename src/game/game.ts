@@ -17,7 +17,7 @@ export default class Game {
             return;
         }
 
-        const chance = 1 / this.grid.countEmpty();
+        const chance = this.grid.countEmpty() / this.grid.getSize().getCellCount() / 100;
 
         for (const {x, y, cell} of this.grid) {
             if (cell.isEmpty() && Math.random() < chance) {

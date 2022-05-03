@@ -1,4 +1,5 @@
 import { EmptyCell } from "./empty-cell";
+import Genome from "./genome";
 import { MeatCell } from "./meat-cell";
 import { OrganismCell } from "./organism-cell";
 import { PlantCell } from "./plant-cell";
@@ -25,8 +26,8 @@ export default class CellFactory {
         return this.empty = new EmptyCell();
     }
 
-    createOrganism(): OrganismCell {
-        return new OrganismCell();
+    createOrganism(genome: Genome, energy: number = undefined): OrganismCell {
+        return new OrganismCell(genome, energy);
     }
 
     createPlant(): PlantCell {

@@ -18,6 +18,8 @@ export namespace Direction {
             case Direction.SOUTH: return [0, -1];
             case Direction.SOUTH_EAST: return [1, -1];
             case Direction.SOUTH_WEST: return [-1, -1];
+            case Direction.EAST: return [1, 0];
+            case Direction.WEST: return [-1, 0];
         }
     }
 
@@ -27,5 +29,31 @@ export namespace Direction {
             .filter(n => !Number.isNaN(n)) as unknown as Direction[];
 
         return enumValues[Math.floor(Math.random() * enumValues.length)];
+    }
+
+    export function rotateLeft(direction: Direction): Direction {
+        switch (direction) {
+            case Direction.NORTH: return Direction.NORTH_WEST;
+            case Direction.NORTH_EAST: return Direction.NORTH;
+            case Direction.NORTH_WEST: return Direction.WEST;
+            case Direction.SOUTH: return Direction.SOUTH_EAST;
+            case Direction.SOUTH_EAST: return Direction.EAST;
+            case Direction.SOUTH_WEST: return Direction.SOUTH;
+            case Direction.EAST: return Direction.NORTH_EAST;
+            case Direction.WEST: return Direction.SOUTH_WEST;
+        }
+    }
+
+    export function rotateRight(direction: Direction): Direction {
+        switch (direction) {
+            case Direction.NORTH: return Direction.NORTH_EAST;
+            case Direction.NORTH_EAST: return Direction.EAST;
+            case Direction.NORTH_WEST: return Direction.NORTH;
+            case Direction.SOUTH: return Direction.SOUTH_WEST;
+            case Direction.SOUTH_EAST: return Direction.SOUTH;
+            case Direction.SOUTH_WEST: return Direction.WEST;
+            case Direction.EAST: return Direction.SOUTH_EAST;
+            case Direction.WEST: return Direction.NORTH_WEST;
+        }
     }
 }

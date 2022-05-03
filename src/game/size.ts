@@ -28,4 +28,8 @@ export class Size {
     public getRatio(): number {
         return this.width / this.height;
     }
+
+    public getCellCount(): number {
+        return this.width * this.height;
+    }
 }

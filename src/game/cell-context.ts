@@ -12,7 +12,7 @@ export default class CellContext {
 
     }
 
-    moveByOffest(x: number, y: number) {
+    moveByOffest(x: number, y: number): void {
         const coordinates = this.getCoordinatesbyOffset(x, y);
 
         const cell = this.grid.getCell(this.x, this.y);
@@ -22,6 +22,14 @@ export default class CellContext {
             this.grid.delete(this.x, this.y);
             this.grid.insert(coordinates[0], coordinates[1], cell);
         }
+    }
+
+    deleteByOffset(x: number, y: number): void {
+        this.grid.delete(...this.getCoordinatesbyOffset(x, y));
+    }
+
+    getByOffest(x: number, y: number): Cell {
+        return this.grid.getCell(...this.getCoordinatesbyOffset(x, y));
     }
 
     replace(createCell: (factory: CellFactory) => Cell) {
