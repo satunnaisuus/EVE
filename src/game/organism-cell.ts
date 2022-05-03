@@ -1,3 +1,4 @@
+import Color from "../common/color";
 import { Cell } from "./cell";
 import CellContext from "./cell-context";
 import CellFactory from "./cell-factory";
@@ -20,6 +21,7 @@ export class OrganismCell extends Cell {
     private direction: Direction;
 
     constructor(
+        private color: Color,
         private genome: Genome,
         private energy: number = INITIAL_ENERGY
     ) {
@@ -71,7 +73,7 @@ export class OrganismCell extends Cell {
             if (cell.isEmpty()) {
                 context.moveByOffest(...offsetByDirection);
                 this.energy = Math.floor(this.energy / 2);
-                context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
+                context.replace((factory: CellFactory) => factory.createOrganism(this.color, this.genome.clone(), this.energy));
             }
         } else if (action === OrganismAction.ATTACK) {
             const self = this;
@@ -113,5 +115,9 @@ export class OrganismCell extends Cell {
 
     isSimilar(cell: OrganismCell): boolean {
         return this.genome.isSimilar(cell.getGenome());
+    }
+
+    getColor(): Color {
+        return this.color;
     }
 }

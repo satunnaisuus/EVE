@@ -1,3 +1,4 @@
+import Color from "./common/color";
 import CellFactory from "./game/cell-factory";
 import Game from "./game/game";
 import Genome from "./game/genome";
@@ -15,7 +16,7 @@ function fitCanvas(canvas: HTMLCanvasElement, container: HTMLElement) {
 fitCanvas(canvas, canvasContainer);
 
 const cellFactory = new CellFactory();
-const size = new Size(125, 70);
+const size = new Size(200, 100);
 const game = new Game(size, cellFactory);
 
 for (const {x, y} of game.getGrid()) {
@@ -32,14 +33,14 @@ for (const {x, y, cell} of game.getGrid()) {
 
 for (const {x, y, cell} of game.getGrid()) {
     if (cell.isEmpty() && Math.random() < 0.01) {
-        game.getGrid().insert(x, y, cellFactory.createOrganism(Genome.createRandom()));
+        game.getGrid().insert(x, y, cellFactory.createOrganism(Color.random(), Genome.createRandom()));
     }
 }
 
 const renderer = new CanvasRenderer(canvas, game);
 renderer.render();
 
-const tickDelay = 50;
+const tickDelay = 0;
 
 let timerId = setTimeout(function tick() {
     game.update();

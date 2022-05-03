@@ -1,3 +1,4 @@
+import Color from "../common/color";
 import { EmptyCell } from "./empty-cell";
 import Genome from "./genome";
 import { MeatCell } from "./meat-cell";
@@ -30,8 +31,8 @@ export default class CellFactory {
         return this.empty = new EmptyCell();
     }
 
-    createOrganism(genome: Genome, energy: number = undefined): OrganismCell {
-        return new OrganismCell(genome, energy);
+    createOrganism(color: Color, genome: Genome, energy: number = undefined): OrganismCell {
+        return new OrganismCell(color, genome, energy);
     }
 
     createPlant(): PlantCell {

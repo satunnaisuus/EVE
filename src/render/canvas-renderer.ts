@@ -70,7 +70,7 @@ export default class CanvasRenderer {
                     this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
                 },
                 visitOrganism: (cell: OrganismCell) => {
-                    this.context.fillStyle = STYLES.CELL_ORGANISM_COLOR;
+                    this.context.fillStyle = cell.getColor().toHexFormat();
                     const cursorX = startPosition[0] + x * cellSize;
                     const cursorY = startPosition[1] + y * cellSize;
                     this.context.fillRect(cursorX, cursorY, cellSize, cellSize);

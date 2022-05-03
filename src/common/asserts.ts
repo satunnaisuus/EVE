@@ -23,7 +23,7 @@ export function assertLessThan(value: any, comparedValue: any): void {
 }
 
 export function assertLessOrEqualThan(value: any, comparedValue: any): void {
-    if (value < comparedValue) {
+    if (value > comparedValue) {
         throw new AssertLessOrEqualThanError;
     }
 }
