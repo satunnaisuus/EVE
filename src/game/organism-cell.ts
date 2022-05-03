@@ -37,7 +37,7 @@ export class OrganismCell extends Cell {
 
     update(context: CellContext): void {
         if (this.lifetime > MAX_LIFETIME || this.energy <= 0) {
-            context.replace((factory: CellFactory) => factory.createEmpty());
+            context.replace((factory: CellFactory) => factory.createMeat());
             return;
         }
 

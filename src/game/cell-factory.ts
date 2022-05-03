@@ -1,4 +1,5 @@
 import { EmptyCell } from "./empty-cell";
+import { MeatCell } from "./meat-cell";
 import { OrganismCell } from "./organism-cell";
 import { PlantCell } from "./plant-cell";
 import { WallCell } from "./wall";
@@ -30,5 +31,9 @@ export default class CellFactory {
 
     createPlant(): PlantCell {
         return new PlantCell();
+    }
+
+    createMeat(): MeatCell {
+        return new MeatCell();
     }
 }

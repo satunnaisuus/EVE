@@ -1,6 +1,7 @@
 import { Direction } from "../game/direction";
 import { EmptyCell } from "../game/empty-cell";
 import Game from "../game/game";
+import { MeatCell } from "../game/meat-cell";
 import { OrganismCell } from "../game/organism-cell";
 import { PlantCell } from "../game/plant-cell";
 import { WallCell } from "../game/wall";
@@ -13,6 +14,7 @@ const STYLES = {
     CELL_ORGANISM_EYE_COLOR: '#ff0000',
     CELL_EMPTY_COLOR: '#000000',
     CELL_PLANT_COLOR: '#00ff00',
+    CELL_MEAT_COLOR: '#ff0000',
 };
 
 export default class CanvasRenderer {
@@ -61,6 +63,12 @@ export default class CanvasRenderer {
                 },
                 visitPlant: (cell: PlantCell) => {
                     this.context.fillStyle = STYLES.CELL_PLANT_COLOR;
+                    const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
+                    this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
+                },
+                visitMeat: (cell: MeatCell) => {
+                    this.context.fillStyle = STYLES.CELL_MEAT_COLOR;
                     const cursorX = startPosition[0] + x * (cellSize + STYLES.CELL_BORDER_WIDTH);
                     const cursorY = startPosition[1] + y * (cellSize + STYLES.CELL_BORDER_WIDTH);
                     this.context.fillRect(cursorX, cursorY, cellSize + STYLES.CELL_BORDER_WIDTH * 2, cellSize + STYLES.CELL_BORDER_WIDTH * 2);
