@@ -1,28 +1,30 @@
-import { Direction } from "../game/direction";
-import { EmptyCell } from "../game/empty-cell";
 import Game from "../game/game";
-import { MeatCell } from "../game/meat-cell";
-import { OrganismCell } from "../game/organism-cell";
-import { PlantCell } from "../game/plant-cell";
-import { WallCell } from "../game/wall";
+import StategyInterface from "./strategy-interface";
+import DefaultStrategy from "./strategy/default-strategy";
+import EnergyStrategy from "./strategy/energy-strategy";
+import GenesisStrategy from "./strategy/genesis-strategy";
 
-const STYLES = {
-    CELL_WALL_COLOR: '#5f5f5f',
-    CELL_ORGANISM_COLOR: '#0B5FA5',
-    CELL_ORGANISM_EYE_COLOR: '#66A1D2',
-    CELL_EMPTY_COLOR: '#000000',
-    CELL_PLANT_COLOR: '#399200',
-    CELL_MEAT_COLOR: '#FE7276',
-};
+export type RenderStrategy = 'none' | 'default' | 'energy' | 'genesis';
 
 export default class CanvasRenderer {
     private context: CanvasRenderingContext2D;
 
-    constructor(private canvas: HTMLCanvasElement, private game: Game) {
+    private renderStrategy: StategyInterface;
+
+    constructor(
+        private canvas: HTMLCanvasElement,
+        private game: Game,
+        renderStrategy: RenderStrategy
+    ) {
         this.context = canvas.getContext('2d');
+        this.setRenderStrategy(renderStrategy);
     }
 
     public render() {
+        if (! this.renderStrategy) {
+            return;
+        }
+        
         let width, height;
 
         const size = this.game.getGrid().getSize();
@@ -44,72 +46,22 @@ export default class CanvasRenderer {
         const cellSize = width / this.game.getGrid().getSize().getWidth();
 
         for (const {x, y, cell} of this.game.getGrid()) {
-            cell.visit({
-                visitEmpty: (cell: EmptyCell) => {
-                    this.context.fillStyle = STYLES.CELL_EMPTY_COLOR;
-                    const cursorX = startPosition[0] + x * cellSize;
-                    const cursorY = startPosition[1] + y * cellSize;
-                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
-                },
-                visitWall: (cell: WallCell) => {
-                    this.context.fillStyle = STYLES.CELL_WALL_COLOR;
-                    const cursorX = startPosition[0] + x * cellSize;
-                    const cursorY = startPosition[1] + y * cellSize;
-                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
-                },
-                visitPlant: (cell: PlantCell) => {
-                    this.context.fillStyle = STYLES.CELL_PLANT_COLOR;
-                    const cursorX = startPosition[0] + x * cellSize;
-                    const cursorY = startPosition[1] + y * cellSize;
-                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
-                },
-                visitMeat: (cell: MeatCell) => {
-                    this.context.fillStyle = STYLES.CELL_MEAT_COLOR;
-                    const cursorX = startPosition[0] + x * cellSize;
-                    const cursorY = startPosition[1] + y * cellSize;
-                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
-                },
-                visitOrganism: (cell: OrganismCell) => {
-                    this.context.fillStyle = cell.getColor().toHexFormat();
-                    const cursorX = startPosition[0] + x * cellSize;
-                    const cursorY = startPosition[1] + y * cellSize;
-                    this.context.fillRect(cursorX, cursorY, cellSize, cellSize);
+            const cursorX = startPosition[0] + x * cellSize;
+            const cursorY = startPosition[1] + y * cellSize;
 
-                    const eyeSize = cellSize / 3;
+            cell.visit(this.renderStrategy.createVisitor(cursorX, cursorY, cellSize));
+        }
+    }
 
-                    let eyeOffset;
-
-                    switch (cell.getDirection()) {
-                        case Direction.NORTH_WEST:
-                            eyeOffset = [0, 0];
-                            break;
-                        case Direction.NORTH:
-                            eyeOffset = [eyeSize, 0];
-                            break;
-                        case Direction.NORTH_EAST:
-                            eyeOffset = [eyeSize * 2, 0];
-                            break;
-                        case Direction.SOUTH_WEST:
-                            eyeOffset = [0, eyeSize * 2];
-                            break;
-                        case Direction.SOUTH:
-                            eyeOffset = [eyeSize, eyeSize * 2];
-                            break;
-                        case Direction.SOUTH_EAST:
-                            eyeOffset = [eyeSize * 2, eyeSize * 2];
-                            break;
-                        case Direction.WEST:
-                            eyeOffset = [0, eyeSize];
-                            break;
-                        case Direction.EAST:
-                            eyeOffset = [eyeSize * 2, eyeSize];
-                            break;
-                    }
-
-                    this.context.fillStyle = STYLES.CELL_ORGANISM_EYE_COLOR;
-                    this.context.fillRect(cursorX + eyeOffset[0], cursorY + eyeOffset[1], eyeSize, eyeSize);
-                }
-            });
+    setRenderStrategy(strategy: RenderStrategy): void {
+        if (strategy === 'none') {
+            this.renderStrategy = null;
+        } else if (strategy === 'default') {
+            this.renderStrategy = new DefaultStrategy(this.context);
+        } else if (strategy === 'energy') {
+            this.renderStrategy = new EnergyStrategy(this.context);
+        } else if (strategy === 'genesis') {
+            this.renderStrategy = new GenesisStrategy(this.context);
         }
     }
 }

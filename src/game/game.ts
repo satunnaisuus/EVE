@@ -22,7 +22,7 @@ export default class Game {
 
     private grid: Grid;
 
-    private timeoutDelay: number = 0;
+    private timeoutDelay: number = 40;
 
     private timeoutId: ReturnType<typeof setTimeout>;
 

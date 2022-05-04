@@ -3,7 +3,6 @@ import { Cell } from "./cell";
 import CellContext from "./cell-context";
 import CellFactory from "./cell-factory";
 import CellVisitor from "./cell-visitor";
-import cellVisitor from "./cell-visitor";
 import { Direction } from "./direction";
 import Genome from "./genome";
 import { MeatCell } from "./meat-cell";
@@ -45,7 +44,7 @@ export class OrganismCell extends Cell {
         return this.genome;
     }
 
-    visit(visitor: cellVisitor): void {
+    visit(visitor: CellVisitor): void {
         visitor.visitOrganism(this);
     }
 
@@ -62,17 +61,17 @@ export class OrganismCell extends Cell {
 
         if (action === OrganismAction.STEP) {
             context.moveByOffest(...offsetByDirection);
-            this.energy--;
+            this.changeEnergy(-1);
         } else if (action === OrganismAction.ROTATE_LEFT) {
             this.direction = Direction.rotateLeft(this.direction);
-            this.energy--;
+            this.changeEnergy(-1);
         } else if (action === OrganismAction.ROTATE_RIGHT) {
             this.direction = Direction.rotateLeft(this.direction);
-            this.energy--;
+            this.changeEnergy(-1);
         } else if (action === OrganismAction.DIVIDE) {
             if (cell.isEmpty()) {
                 context.moveByOffest(...offsetByDirection);
-                this.energy = Math.floor(this.energy / 2);
+                this.changeEnergy(Math.floor(this.energy / -2));
                 context.replace((factory: CellFactory) => factory.createOrganism(this.color, this.genome.clone(), this.energy));
             }
         } else if (action === OrganismAction.ATTACK) {
@@ -81,14 +80,14 @@ export class OrganismCell extends Cell {
             cell.visit(new class extends CellVisitor {
                 visitOrganism(cell: OrganismCell): void {
                     cell.kill();
-                    self.energy--;
+                    self.changeEnergy(-1);
                 }
             });
         } else if (action === OrganismAction.EAT) {
             const eat = (energy: number) => {
                 context.deleteByOffset(...offsetByDirection);
                 context.moveByOffest(...offsetByDirection);
-                this.energy += energy;
+                this.changeEnergy(energy);
             }
 
             cell.visit(new class extends CellVisitor {
@@ -103,6 +102,16 @@ export class OrganismCell extends Cell {
         }
 
         this.lifetime++;
+    }
+
+    changeEnergy(value: number) {
+        this.energy += value;
+
+        if (this.energy > 100) {
+            this.energy = 100;
+        } else if (this.energy < 0) {
+            this.energy = 0;
+        }
     }
 
     kill() {
