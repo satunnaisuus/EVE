@@ -1,6 +1,6 @@
 import Color from "./common/color";
 import CellFactory from "./game/cell-factory";
-import Game from "./game/game";
+import Game, { GameEvents } from "./game/game";
 import Genome from "./game/genome";
 import { Size } from "./game/size";
 import CanvasRenderer from "./render/canvas-renderer";
@@ -40,14 +40,11 @@ for (const {x, y, cell} of game.getGrid()) {
 const renderer = new CanvasRenderer(canvas, game);
 renderer.render();
 
-const tickDelay = 0;
-
-let timerId = setTimeout(function tick() {
-    game.update();
+game.subscribe('step', (game: Game) => {
     renderer.render();
+});
 
-    timerId = setTimeout(tick, tickDelay);
-}, tickDelay);
+game.start();
 
 window.addEventListener('resize', () => {
     fitCanvas(canvas, canvasContainer);

@@ -3,13 +3,41 @@ import CellFactory from "./cell-factory";
 import Grid from "./grid";
 import { Size } from "./size";
 
+class Event {
+    constructor() {
+        
+    }
+}
+
+export class GameEvents {
+    preStep: typeof Event = Event;
+    postStep: typeof Event = Event;
+    step: typeof Event = Event;
+    start: typeof Event = Event;
+    pause: typeof Event = Event;
+}
+
 export default class Game {
-    private step = 0;
+    private step: number = 0;
 
     private grid: Grid;
 
+    private timeoutDelay: number = 0;
+
+    private timeoutId: ReturnType<typeof setTimeout>;
+
+    private eventSubscribers: Record<keyof GameEvents, ((game: Game) => any)[]>;
+
     constructor(size: Size, private cellFactory: CellFactory) {
         this.grid = new Grid(size, cellFactory);
+
+        this.eventSubscribers = {
+            preStep: [],
+            postStep: [],
+            step: [],
+            start: [],
+            pause: [],
+        }; 
     }
 
     generatePlants(): void {
@@ -28,7 +56,9 @@ export default class Game {
         }
     }
 
-    update(): void {
+    nextStep(): void {
+        this.fireEvent('preStep');
+        
         this.generatePlants();
 
         for (const {x, y, cell} of this.grid) {
@@ -39,7 +69,33 @@ export default class Game {
             }
         }
 
+        this.fireEvent('step');
+
         this.step++;
+
+        this.fireEvent('postStep');
+    }
+
+    start(): void {
+        if (this.timeoutId) {
+            return;
+        }
+
+        const game = this;
+
+        this.timeoutId = setTimeout(function tick() {
+            game.nextStep();
+            game.timeoutId = setTimeout(tick, game.timeoutDelay);
+        }, this.timeoutDelay);
+
+        this.fireEvent('start');
+    }
+
+    pause(): void {
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.fireEvent('pause');
+        }
     }
 
     getGrid(): Grid {
@@ -48,5 +104,13 @@ export default class Game {
 
     getStep(): number {
         return this.step;
+    }
+
+    subscribe<T extends keyof GameEvents>(type: T, callback: (game: Game) => any): void {
+        this.eventSubscribers[type].push(callback);
+    }
+
+    private fireEvent(type: keyof GameEvents): void {
+        this.eventSubscribers[type].forEach(callback => callback(this));
     }
 }
