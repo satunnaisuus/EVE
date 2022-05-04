@@ -94,6 +94,7 @@ export default class Game {
     pause(): void {
         if (this.timeoutId) {
             clearTimeout(this.timeoutId);
+            this.timeoutId = null;
             this.fireEvent('pause');
         }
     }
@@ -104,6 +105,10 @@ export default class Game {
 
     getStep(): number {
         return this.step;
+    }
+
+    getCellFactory(): CellFactory {
+        return this.cellFactory;
     }
 
     subscribe<T extends keyof GameEvents>(type: T, callback: (game: Game) => any): void {
