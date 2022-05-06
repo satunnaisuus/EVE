@@ -8,7 +8,7 @@ import useSize from "./hooks/use-size";
 interface Props {
     theme: string;
     paused: boolean;
-    options: GameOptions
+    stepDelay: number;
 }
 
 export default function GameComponent(props: Props) {
@@ -21,6 +21,7 @@ export default function GameComponent(props: Props) {
         const game = createGame(props.options);
         setGame(game);
         ! props.paused && game.start();
+        game.setTimeoutDelay(props.stepDelay);
         return () => game.pause();
     }, [props.options]);
 
@@ -51,6 +52,11 @@ export default function GameComponent(props: Props) {
         game && (props.paused ? game.pause() : game.start());
         return () => {};
     }, [props.paused]);
+
+    useEffect(() => {
+        game && game.setTimeoutDelay(props.stepDelay);
+        return () => {};
+    }, [props.stepDelay]);
 
     return (
         <div ref={containerRef} className="canvas-container">

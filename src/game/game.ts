@@ -111,6 +111,10 @@ export default class Game {
         return this.cellFactory;
     }
 
+    setTimeoutDelay(value: number): void {
+        this.timeoutDelay = value;
+    }
+
     subscribe<T extends keyof GameEvents>(type: T, callback: (game: Game) => any): void {
         this.eventSubscribers[type].push(callback);
     }
