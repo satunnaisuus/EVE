@@ -6,10 +6,12 @@ interface Props {
     theme: string;
     paused: boolean;
     stepDelay: number;
+    options: GameOptions;
     onChangeTheme: (theme: string) => any;
     onStart: () => any;
     onPause: () => any;
     onChangeStepDelay: (value: number) => any;
+    onNewSimulation: (options: GameOptions) => any;
 }
 
 export default function Panel(props: Props) {
@@ -44,6 +46,9 @@ export default function Panel(props: Props) {
             <div>
                 {props.paused && <button className="btn" onClick={() => props.onStart()}>Start</button>}
                 {! props.paused && <button className="btn" onClick={() => props.onPause()}>Pause</button>}
+            </div>
+            <div>
+                <button className="btn" onClick={() => props.onNewSimulation(props.options)}>New simulation</button>
             </div>
         </div>
     );

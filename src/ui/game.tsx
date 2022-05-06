@@ -9,6 +9,7 @@ interface Props {
     theme: string;
     paused: boolean;
     stepDelay: number;
+    options: GameOptions;
 }
 
 export default function GameComponent(props: Props) {

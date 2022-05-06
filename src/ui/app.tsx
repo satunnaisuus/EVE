@@ -7,6 +7,7 @@ import Panel from "./panel";
 export default function App() {
     const [theme, setTheme] = useState('default');
     const [paused, setPaused] = useState(true);
+    const [options, setOptions] = useState<GameOptions>({walls: WALL_TYPE.AROUND});
     const [stepDelay, setStepDelay] = useState(100);
 
     return (
@@ -16,10 +17,12 @@ export default function App() {
                 theme={theme} 
                 paused={paused}
                 stepDelay={stepDelay}
+                options={options}
                 onChangeTheme={(theme) => setTheme(theme)}
                 onStart={() => setPaused(false)}
                 onPause={() => setPaused(true)}
                 onChangeStepDelay={(value) => setStepDelay(value)}
+                onNewSimulation={(options) => {setOptions({...options}); setPaused(true)}}
             />
         </div>
     );
