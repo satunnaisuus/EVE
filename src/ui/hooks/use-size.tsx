@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 
-export default function useSize(): [number, number, (node: HTMLElement) => void] {
+export function useSize(): [number, number, (node: HTMLElement) => void] {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [unobserve, setUnobserve] = useState<() => any>();
