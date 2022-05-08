@@ -87,6 +87,7 @@ export class Store {
     private newRenderer(): void {
         if (this.game && this.canvas) {
             this.renderer = new CanvasRenderer(this.canvas, this.game, this.rendererTheme);
+            this.renderer.render();
             this.game.subscribe('step', (game) => this.renderer.render());
         }
     }

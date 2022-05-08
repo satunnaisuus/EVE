@@ -1,23 +1,22 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { useState } from "react";
-import createGame from "../game/game-factory";
+import styled from "styled-components";
+import { Flex } from "./components/flex";
 import { GameComponent } from "./components/game";
-import { PanelComponent } from "./components/panel";
-import { StoreContext } from "./context";
-import { Store } from './store';
+import { SidebarComponent } from "./components/sidebar";
 
-const App = observer(() => {
-    const [store] = useState(() => new Store(createGame, {}));
+const StyledApp = styled.div`
+    height: 100vh;
+    background: #000;
+    display: flex;
+    color: #fff;
+`;
 
-    return (
-        <StoreContext.Provider value={store}>
-            <div className="layout">
-                <GameComponent />
-                <PanelComponent />
-            </div>
-        </StoreContext.Provider>
-    );
-});
-
-export default App;
+export const App = observer(() => (
+    <StyledApp>
+        <Flex>
+            <GameComponent />
+            <SidebarComponent />
+        </Flex>
+    </StyledApp>
+));

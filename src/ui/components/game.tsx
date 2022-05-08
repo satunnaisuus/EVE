@@ -3,6 +3,13 @@ import { useEffect, useRef, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { useSize } from "../hooks/use-size";
 import { StoreContext } from "../context";
+import styled from "styled-components";
+
+const StyledGame = styled.div`
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+`;
 
 export const GameComponent = observer(() => {
     const canvasRef = useRef();
@@ -20,8 +27,8 @@ export const GameComponent = observer(() => {
     }, [width, height]);
 
     return (
-        <div ref={containerRef} className="canvas-container">
-            <canvas width={width} height={height} ref={canvasRef} className="canvas"></canvas>
-        </div>
+        <StyledGame ref={containerRef}>
+            <canvas width={width} height={height} ref={canvasRef}></canvas>
+        </StyledGame>
     );
 });
