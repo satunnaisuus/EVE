@@ -28,7 +28,7 @@ const StyledButton = styled.button<Props>`
     color: #fff;
     border-radius: 10px;
     cursor: pointer;
-    padding: 10px 20px;
+    padding: 10px;
     ${({width}) => width && `width: ${width};`}
     ${({apperance}) => {
         const styles = Apperance[apperance || 'default'];

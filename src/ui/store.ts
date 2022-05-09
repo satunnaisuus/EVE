@@ -125,6 +125,10 @@ export class Store {
         return this.organismCount;
     }
 
+    makeStep(): void {
+        this.game && this.game.nextStep();
+    }
+
     private newRenderer(): void {
         if (this.game && this.canvas) {
             this.renderer = new CanvasRenderer(this.canvas, this.game, this.rendererTheme);
