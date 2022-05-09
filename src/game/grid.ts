@@ -1,6 +1,8 @@
 import { assertGreaterOrEqualThan, assertLessThan } from "../common/asserts";
 import { Cell } from "./cell";
 import CellFactory from "./cell-factory";
+import Game from "./game";
+import { DeleteCellEvent, InsertCellEvent } from "./game-events";
 import GridIterator from "./grid-iterator";
 import { Size } from "./size";
 
@@ -8,6 +10,7 @@ export default class Grid {
     private cells: {[key: `${number}:${number}`]: Cell} = {};
 
     constructor(
+        private game: Game,
         private size: Size,
         private cellFactory: CellFactory
     ) {
@@ -33,9 +36,17 @@ export default class Grid {
         assertGreaterOrEqualThan(y, 0);
 
         this.cells[`${x}:${y}`] = cell;
+
+        this.game.fireEvent('insertCell', new InsertCellEvent(
+            cell.getType()
+        ));
     }
 
     public delete(x: number, y: number): void {
+        this.game.fireEvent('deleteCell', new DeleteCellEvent(
+            this.getCell(x, y).getType()
+        ));
+
         delete this.cells[`${x}:${y}`];
     }
 

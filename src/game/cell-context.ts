@@ -33,6 +33,7 @@ export default class CellContext {
     }
 
     replace(createCell: (factory: CellFactory) => Cell) {
+        this.grid.delete(this.x, this.y);
         this.grid.insert(this.x, this.y, createCell(this.factory));
     }
 

@@ -1,5 +1,6 @@
-import { makeObservable, observable, computed, action } from "mobx";
+import { makeObservable, observable, computed, action, runInAction } from "mobx";
 import Game from "../game/game";
+import { DeleteCellEvent } from "../game/game-events";
 import createGame, { GameOptions } from "../game/game-factory";
 import CanvasRenderer, { RenderStrategy } from "../render/canvas-renderer";
 
@@ -19,6 +20,17 @@ export class Store {
     @observable
     private stepDelay: number = 50;
 
+    @observable
+    private step: number = 0;
+
+    @observable
+    private stepsPerSecond: number = 0;
+
+    private stepsPreviusPeriod: number = 0;
+
+    @observable
+    private organismCount: number = 0;
+
     constructor(
         private gameFactory: typeof createGame,
         private options: GameOptions,
@@ -26,6 +38,11 @@ export class Store {
         makeObservable(this);
 
         this.newGame(options);
+
+        setInterval(() => runInAction(() => {
+            this.stepsPerSecond = (this.step - this.stepsPreviusPeriod);
+            this.stepsPreviusPeriod = this.step;
+        }), 1000);
     }
 
     render(): void {
@@ -34,10 +51,22 @@ export class Store {
 
     @action
     newGame(options?: GameOptions): void {
+        this.game && this.game.pause();
         this.paused = true;
         this.game = this.gameFactory(options);
         this.game.setTimeoutDelay(this.stepDelay);
         this.newRenderer();
+        this.step = 0;
+        this.stepsPreviusPeriod = 0;
+        this.stepsPerSecond = 0;
+        this.organismCount = 0;
+        this.game.subscribe('postStep', (event) => runInAction(() => {this.step = this.game.getStep()}));
+        this.game.subscribe('deleteCell', (event: DeleteCellEvent) => runInAction(() => {
+            event.type === 'organism' && this.organismCount--;
+        }));
+        this.game.subscribe('insertCell', (event: DeleteCellEvent) => runInAction(() => {
+            event.type === 'organism' && this.organismCount++;
+        }));
     }
 
     setCanvas(canvas: HTMLCanvasElement): void {
@@ -82,6 +111,18 @@ export class Store {
 
     getStepDelay(): number {
         return this.stepDelay;
+    }
+
+    getStep(): number {
+        return this.step;
+    }
+
+    getStepsPerSecond(): number {
+        return this.stepsPerSecond;
+    }
+
+    getOrganismCount(): number {
+        return this.organismCount;
     }
 
     private newRenderer(): void {

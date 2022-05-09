@@ -66,6 +66,11 @@ export const SidebarComponent = observer(() => {
                 </div>
             </Card>
             <Card>
+                <div>Step: {store.getStep()}</div>
+                <div>Steps per second: {store.getStepsPerSecond()}</div>
+                <div>Organisms: {store.getOrganismCount()}</div>
+            </Card>
+            <Card>
                 <Row>
                     <Column>
                         <Button width="100%" onClick={() => store.newGame()}>New simulation</Button>

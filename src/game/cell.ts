@@ -15,4 +15,6 @@ export abstract class Cell {
     isEmpty(): boolean {
         return false;
     }
+
+    abstract getType(): string;
 }

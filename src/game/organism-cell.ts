@@ -28,6 +28,10 @@ export class OrganismCell extends Cell {
         this.direction = Direction.random();
     }
 
+    getType(): string {
+        return 'organism';
+    }
+
     getLifetime(): number {
         return this.lifetime;
     }

@@ -1,21 +1,8 @@
 import CellContext from "./cell-context";
 import CellFactory from "./cell-factory";
+import { GameEvents, Event } from "./game-events";
 import Grid from "./grid";
 import { Size } from "./size";
-
-class Event {
-    constructor() {
-        
-    }
-}
-
-export class GameEvents {
-    preStep: typeof Event = Event;
-    postStep: typeof Event = Event;
-    step: typeof Event = Event;
-    start: typeof Event = Event;
-    pause: typeof Event = Event;
-}
 
 export default class Game {
     private step: number = 0;
@@ -26,10 +13,10 @@ export default class Game {
 
     private timeoutId: ReturnType<typeof setTimeout>;
 
-    private eventSubscribers: Record<keyof GameEvents, ((game: Game) => any)[]>;
+    private eventSubscribers: Record<keyof GameEvents, ((event: Event) => any)[]>;
 
     constructor(size: Size, private cellFactory: CellFactory) {
-        this.grid = new Grid(size, cellFactory);
+        this.grid = new Grid(this, size, cellFactory);
 
         this.eventSubscribers = {
             preStep: [],
@@ -37,7 +24,9 @@ export default class Game {
             step: [],
             start: [],
             pause: [],
-        }; 
+            deleteCell: [],
+            insertCell: [],
+        };
     }
 
     generatePlants(): void {
@@ -115,11 +104,12 @@ export default class Game {
         this.timeoutDelay = value;
     }
 
-    subscribe<T extends keyof GameEvents>(type: T, callback: (game: Game) => any): void {
+    subscribe<T extends keyof GameEvents>(type: T, callback: (event: Event) => any): void {
         this.eventSubscribers[type].push(callback);
     }
 
-    private fireEvent(type: keyof GameEvents): void {
-        this.eventSubscribers[type].forEach(callback => callback(this));
+    fireEvent(type: keyof GameEvents, event?: Event): void {
+        event = event || new Event();
+        this.eventSubscribers[type].forEach(callback => callback(event));
     }
 }
