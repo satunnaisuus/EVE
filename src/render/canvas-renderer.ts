@@ -4,12 +4,14 @@ import DefaultStrategy from "./strategy/default-strategy";
 import EnergyStrategy from "./strategy/energy-strategy";
 import GenesisStrategy from "./strategy/genesis-strategy";
 
-export type RenderStrategy = 'none' | 'default' | 'energy' | 'genesis';
+export type RenderStrategy = 'default' | 'energy' | 'genesis';
 
 export default class CanvasRenderer {
     private context: CanvasRenderingContext2D;
 
     private renderStrategy: StategyInterface;
+
+    private disabled: boolean;
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -22,7 +24,7 @@ export default class CanvasRenderer {
     }
 
     public render() {
-        if (! this.renderStrategy) {
+        if (! this.renderStrategy || this.disabled) {
             return;
         }
         
@@ -54,10 +56,16 @@ export default class CanvasRenderer {
         }
     }
 
+    enable(): void {
+        this.disabled = false;
+    }
+
+    disable(): void {
+        this.disabled = true;
+    }
+
     setRenderStrategy(strategy: RenderStrategy): void {
-        if (strategy === 'none') {
-            this.renderStrategy = null;
-        } else if (strategy === 'default') {
+        if (strategy === 'default') {
             this.renderStrategy = new DefaultStrategy(this.context);
         } else if (strategy === 'energy') {
             this.renderStrategy = new EnergyStrategy(this.context);

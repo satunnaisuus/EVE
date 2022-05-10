@@ -56,6 +56,9 @@ export class Store {
     private rendererTheme: RenderStrategy = 'default';
 
     @observable
+    private renderingDisabled: boolean = false;
+
+    @observable
     private paused: boolean = true;
 
     @observable
@@ -103,6 +106,7 @@ export class Store {
         this.game = this.gameFactory(this.options.toGameOptions());
         this.game.setTimeoutDelay(this.stepDelay);
         this.newRenderer();
+        this.setRenderingDisabled(false);
         this.step = 0;
         this.stepsPreviusPeriod = 0;
         this.stepsPerSecond = 0;
@@ -149,6 +153,16 @@ export class Store {
 
     isPaused(): boolean {
         return this.paused;
+    }
+
+    isRenderingDisabled(): boolean {
+        return this.renderingDisabled;
+    }
+
+    @action
+    setRenderingDisabled(value: boolean): void {
+        this.renderingDisabled = value;
+        this.renderer && (value ? this.renderer.disable() : this.renderer.enable())
     }
 
     @action
