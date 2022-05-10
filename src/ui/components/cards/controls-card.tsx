@@ -18,7 +18,7 @@ const renderThemes = [
     {label: 'Default', value: 'default'},
     {label: 'Genesis', value: 'genesis'},
     {label: 'Energy', value: 'energy'},
-]
+];
 
 export const ControlsCard = observer(() => {
     const store = useContext(StoreContext);

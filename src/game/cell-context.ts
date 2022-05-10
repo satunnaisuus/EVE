@@ -2,6 +2,10 @@ import { Cell } from "./cell";
 import CellFactory from "./cell-factory";
 import Grid from "./grid";
 
+class OutofBoundsError extends Error {
+
+}
+
 export default class CellContext {
     constructor(
         private grid: Grid,
@@ -13,14 +17,18 @@ export default class CellContext {
     }
 
     moveByOffest(x: number, y: number): void {
-        const coordinates = this.getCoordinatesbyOffset(x, y);
+        try {
+            const coordinates = this.getCoordinatesbyOffset(x, y);
 
-        const cell = this.grid.getCell(this.x, this.y);
-        const nextCell = this.grid.getCell(...coordinates);
+            const cell = this.grid.getCell(this.x, this.y);
+            const nextCell = this.grid.getCell(...coordinates);
 
-        if (nextCell.isEmpty()) {
-            this.grid.delete(this.x, this.y);
-            this.grid.insert(coordinates[0], coordinates[1], cell);
+            if (nextCell.isEmpty()) {
+                this.grid.delete(this.x, this.y);
+                this.grid.insert(coordinates[0], coordinates[1], cell);
+            }
+        } catch (e) {
+            
         }
     }
 
@@ -29,7 +37,11 @@ export default class CellContext {
     }
 
     getByOffest(x: number, y: number): Cell {
-        return this.grid.getCell(...this.getCoordinatesbyOffset(x, y));
+        try {
+            return this.grid.getCell(...this.getCoordinatesbyOffset(x, y));
+        } catch (error) {
+            return this.factory.createWall();
+        }
     }
 
     replace(createCell: (factory: CellFactory) => Cell) {
@@ -38,17 +50,30 @@ export default class CellContext {
     }
 
     private getCoordinatesbyOffset(x: number, y: number): [number, number] {
+        const loop = this.grid.getLoopMode();
+
+        const loopX = loop === 'full' || loop === 'horizontal';
+        const loopY = loop === 'full' || loop === 'vertical';
+
         const size = this.grid.getSize();
 
         let resultX = this.x + x;
         let resultY = this.y + y;
 
-        while (resultX < 0) {
-            resultX += size.getWidth();
+        if (loopX) {
+            while (resultX < 0) {
+                resultX += size.getWidth();
+            }
+        } else if (resultX < 0 || resultX > size.getWidth() - 1) {
+            throw new OutofBoundsError();
         }
 
-        while (resultY < 0) {
-            resultY += size.getHeight();
+        if (loopY) {
+            while (resultY < 0) {
+                resultY += size.getHeight();
+            }
+        } else if (resultY < 0 || resultY > size.getHeight() - 1) {
+            throw new OutofBoundsError();
         }
 
         return [resultX % size.getWidth(), resultY % size.getHeight()];

@@ -10,6 +10,15 @@ import { Row } from "../layout/row";
 import { Column } from "../layout/column";
 import { FormRow } from "../form/form-row";
 import { NumberInput } from "../form/number-input";
+import { Select } from "../form/select";
+import { LoopType } from "../../../game/grid";
+
+const LoopTypes = [
+    {label: 'None', value: 'none'},
+    {label: 'Full', value: 'full'},
+    {label: 'Horizontal', value: 'horizontal'},
+    {label: 'Vertical', value: 'vertical'},
+]
 
 export const NewSimulationCard = observer(() => {
     const store = useContext(StoreContext);
@@ -24,6 +33,9 @@ export const NewSimulationCard = observer(() => {
                 </FormRow>
                 <FormRow label="Grid height">
                     <NumberInput onChange={(value) => options.setHeight(value)} value={options.getHeight()} />
+                </FormRow>
+                <FormRow label="Loop">
+                    <Select onSelect={(value) => options.setLoop(value as LoopType)} options={LoopTypes} value={options.getLoop()} />
                 </FormRow>
             </>}
             <Row>

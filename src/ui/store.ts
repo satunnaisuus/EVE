@@ -2,6 +2,7 @@ import { makeObservable, observable, action, runInAction } from "mobx";
 import Game from "../game/game";
 import { DeleteCellEvent } from "../game/game-events";
 import createGame, { GameOptions } from "../game/game-factory";
+import { LoopType } from "../game/grid";
 import CanvasRenderer, { RenderStrategy } from "../render/canvas-renderer";
 import { saveOptions } from "./options-storage";
 
@@ -11,6 +12,9 @@ class Options {
 
     @observable
     private height: number;
+
+    @observable
+    private loop: LoopType;
 
     constructor(options: GameOptions) {
         this.width = options.width || 200;
@@ -37,10 +41,20 @@ class Options {
         this.height = height;
     }
 
+    getLoop(): LoopType {
+        return this.loop;
+    }
+
+    @action
+    setLoop(loop: LoopType): void {
+        this.loop = loop;
+    }
+
     toGameOptions(): GameOptions {
         return {
             width: this.width,
             height: this.height,
+            loop: this.loop,
         };
     }
 }

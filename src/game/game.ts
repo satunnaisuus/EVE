@@ -1,7 +1,7 @@
 import CellContext from "./cell-context";
 import CellFactory from "./cell-factory";
 import { GameEvents, Event } from "./game-events";
-import Grid from "./grid";
+import Grid, { LoopType } from "./grid";
 import { Size } from "./size";
 
 export default class Game {
@@ -15,8 +15,8 @@ export default class Game {
 
     private eventSubscribers: Record<keyof GameEvents, ((event: Event) => any)[]>;
 
-    constructor(size: Size, private cellFactory: CellFactory) {
-        this.grid = new Grid(this, size, cellFactory);
+    constructor(size: Size, loop: LoopType, private cellFactory: CellFactory) {
+        this.grid = new Grid(this, size, loop, cellFactory);
 
         this.eventSubscribers = {
             preStep: [],

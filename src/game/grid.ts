@@ -6,12 +6,15 @@ import { DeleteCellEvent, InsertCellEvent } from "./game-events";
 import GridIterator from "./grid-iterator";
 import { Size } from "./size";
 
+export type LoopType = 'none' | 'full' | 'vertical' | 'horizontal';
+
 export default class Grid {
     private cells: {[key: `${number}:${number}`]: Cell} = {};
 
     constructor(
         private game: Game,
         private size: Size,
+        private loop: LoopType,
         private cellFactory: CellFactory
     ) {
         
@@ -71,6 +74,10 @@ export default class Grid {
 
         return result;
     }
+
+    public getLoopMode(): LoopType {
+        return this.loop;
+    } 
 
     private createSnapshot(): Cell[][] {
         const result = [];
