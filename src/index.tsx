@@ -1,12 +1,13 @@
 import * as React from "react";
 import { createRoot } from 'react-dom/client';
-import createGame from "./game/game-factory";
+import createGame, { GameOptions } from "./game/game-factory";
 import { App } from "./ui/app";
 import { StoreContext } from "./ui/context";
+import { loadOptions } from "./ui/options-storage";
 import { Store } from "./ui/store";
 import { GlobalStyle } from "./ui/styles";
 
-const store = new Store(createGame, {});
+const store = new Store(createGame, loadOptions());
 const root = createRoot(document.getElementById('root')!);
 
 root.render(

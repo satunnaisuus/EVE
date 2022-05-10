@@ -1,8 +1,49 @@
-import { makeObservable, observable, computed, action, runInAction } from "mobx";
+import { makeObservable, observable, action, runInAction } from "mobx";
 import Game from "../game/game";
 import { DeleteCellEvent } from "../game/game-events";
 import createGame, { GameOptions } from "../game/game-factory";
 import CanvasRenderer, { RenderStrategy } from "../render/canvas-renderer";
+import { saveOptions } from "./options-storage";
+
+class Options {
+    @observable
+    private width: number;
+
+    @observable
+    private height: number;
+
+    constructor(options: GameOptions) {
+        this.width = options.width || 200;
+        this.height = options.height || 100;
+
+        makeObservable(this);
+    }
+
+    getWidth(): number {
+        return this.width;
+    }
+    
+    @action
+    setWidth(width: number): void {
+        this.width = width;
+    }
+
+    getHeight(): number {
+        return this.height;
+    }
+
+    @action
+    setHeight(height: number): void {
+        this.height = height;
+    }
+
+    toGameOptions(): GameOptions {
+        return {
+            width: this.width,
+            height: this.height,
+        };
+    }
+}
 
 export class Store {
     private game: Game;
@@ -31,18 +72,24 @@ export class Store {
     @observable
     private organismCount: number = 0;
 
+    @observable
+    private options: Options;
+
     constructor(
         private gameFactory: typeof createGame,
-        private options: GameOptions,
+        options: GameOptions,
     ) {
         makeObservable(this);
 
-        this.newGame(options);
+        this.options = new Options(options);
+        this.newGame();
 
         setInterval(() => runInAction(() => {
             this.stepsPerSecond = (this.step - this.stepsPreviusPeriod);
             this.stepsPreviusPeriod = this.step;
         }), 1000);
+
+        
     }
 
     render(): void {
@@ -50,10 +97,10 @@ export class Store {
     }
 
     @action
-    newGame(options?: GameOptions): void {
+    newGame(): void {
         this.game && this.game.pause();
         this.paused = true;
-        this.game = this.gameFactory(options);
+        this.game = this.gameFactory(this.options.toGameOptions());
         this.game.setTimeoutDelay(this.stepDelay);
         this.newRenderer();
         this.step = 0;
@@ -67,6 +114,7 @@ export class Store {
         this.game.subscribe('insertCell', (event: DeleteCellEvent) => runInAction(() => {
             event.type === 'organism' && this.organismCount++;
         }));
+        saveOptions(this.options.toGameOptions());
     }
 
     setCanvas(canvas: HTMLCanvasElement): void {
@@ -127,6 +175,10 @@ export class Store {
 
     makeStep(): void {
         this.game && this.game.nextStep();
+    }
+
+    getOptions(): Options {
+        return this.options;
     }
 
     private newRenderer(): void {
