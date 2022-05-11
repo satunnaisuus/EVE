@@ -16,9 +16,13 @@ class Options {
     @observable
     private loop: LoopType;
 
+    @observable
+    private population: number;
+
     constructor(options: GameOptions) {
-        this.width = options.width || 200;
-        this.height = options.height || 100;
+        this.width = options.width || 100;
+        this.height = options.height || 50;
+        this.population = options.population || 1;
 
         makeObservable(this);
     }
@@ -50,11 +54,21 @@ class Options {
         this.loop = loop;
     }
 
+    getPopulation(): number {
+        return this.population;
+    }
+
+    @action
+    setPopulation(population: number): void {
+        this.population = population;
+    }
+
     toGameOptions(): GameOptions {
         return {
             width: this.width,
             height: this.height,
             loop: this.loop,
+            population: this.population,
         };
     }
 }

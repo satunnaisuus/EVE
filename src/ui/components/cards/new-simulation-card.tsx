@@ -12,6 +12,7 @@ import { FormRow } from "../form/form-row";
 import { NumberInput } from "../form/number-input";
 import { Select } from "../form/select";
 import { LoopType } from "../../../game/grid";
+import { RangeInput } from "../form/range-input";
 
 const LoopTypes = [
     {label: 'None', value: 'none'},
@@ -36,6 +37,9 @@ export const NewSimulationCard = observer(() => {
                 </FormRow>
                 <FormRow label="Loop">
                     <Select onSelect={(value) => options.setLoop(value as LoopType)} options={LoopTypes} value={options.getLoop()} />
+                </FormRow>
+                <FormRow label={`Population (${options.getPopulation()}%)`}>
+                    <RangeInput min={0} max={100} step={0.1} onChange={(value) => options.setPopulation(value)} value={options.getPopulation()} />
                 </FormRow>
             </>}
             <Row>
