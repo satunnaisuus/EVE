@@ -177,6 +177,11 @@ export class Store {
         this.stepsPreviusPeriod = 0;
         this.stepsPerSecond = 0;
         this.organismCount = 0;
+
+        for (const {cell} of this.game.getGrid()) {
+            cell.getType() === 'organism' && this.organismCount++;
+        }
+
         this.game.subscribe('postStep', (event) => runInAction(() => {this.step = this.game.getStep()}));
         this.game.subscribe('deleteCell', (event: DeleteCellEvent) => runInAction(() => {
             event.type === 'organism' && this.organismCount--;
