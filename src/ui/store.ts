@@ -1,5 +1,5 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
-import Game from "../game/game";
+import Game, { GameParams } from "../game/game";
 import { DeleteCellEvent } from "../game/game-events";
 import createGame, { GameOptions } from "../game/game-factory";
 import { LoopType } from "../game/grid";
@@ -19,10 +19,16 @@ class Options {
     @observable
     private population: number;
 
-    constructor(options: GameOptions) {
+    @observable
+    private params: Params;
+
+    constructor(options: GameOptions, private store: Store) {
         this.width = options.width || 100;
         this.height = options.height || 50;
         this.population = options.population || 1;
+        this.params = new Params(options.params || {
+            plantSpawnRate: 10
+        }, store);
 
         makeObservable(this);
     }
@@ -63,13 +69,45 @@ class Options {
         this.population = population;
     }
 
+    getParams(): Params {
+        return this.params;
+    }
+
     toGameOptions(): GameOptions {
         return {
             width: this.width,
             height: this.height,
             loop: this.loop,
             population: this.population,
+            params: this.params.toGameParams(),
         };
+    }
+}
+
+class Params {
+    @observable
+    plantSpawnRate: number;
+
+    constructor(params: GameParams, private store: Store) {
+        this.plantSpawnRate = params.plantSpawnRate || 10;
+
+        makeObservable(this);
+    }
+
+    getPlantSpawnRate(): number {
+        return this.plantSpawnRate;
+    }
+
+    @action
+    setPlantSpawnRate(value: number): void {
+        this.plantSpawnRate = value;
+        this.store.getGame().getParams().plantSpawnRate = value;
+    }
+
+    toGameParams(): GameParams {
+        return {
+            plantSpawnRate: this.plantSpawnRate,
+        }
     }
 }
 
@@ -112,7 +150,7 @@ export class Store {
     ) {
         makeObservable(this);
 
-        this.options = new Options(options);
+        this.options = new Options(options, this);
         this.newGame();
 
         setInterval(() => runInAction(() => {
@@ -147,6 +185,10 @@ export class Store {
             event.type === 'organism' && this.organismCount++;
         }));
         saveOptions(this.options.toGameOptions());
+    }
+
+    getGame(): Game {
+        return this.game;
     }
 
     setCanvas(canvas: HTMLCanvasElement): void {

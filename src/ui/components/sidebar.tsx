@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { ControlsCard } from "./cards/controls-card";
 import { StatisticsCard } from "./cards/statistics-card";
 import { NewSimulationCard } from "./cards/new-simulation-card";
+import { SimulationParamsCard } from "./cards/simulation-params-card";
 
 const StyledSidebar = styled.div`
     width: 300px;
@@ -30,6 +31,7 @@ export const SidebarComponent = observer(() => {
             <ControlsCard />
             <StatisticsCard />
             <NewSimulationCard />
+            <SimulationParamsCard />
         </StyledSidebar>
     );
 });

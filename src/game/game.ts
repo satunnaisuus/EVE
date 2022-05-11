@@ -1,8 +1,13 @@
+import { shuffle } from "../common/array-utils";
 import CellContext from "./cell-context";
 import CellFactory from "./cell-factory";
 import { GameEvents, Event } from "./game-events";
 import Grid, { LoopType } from "./grid";
 import { Size } from "./size";
+
+export type GameParams = {
+    plantSpawnRate: number,
+};
 
 export default class Game {
     private step: number = 0;
@@ -15,7 +20,7 @@ export default class Game {
 
     private eventSubscribers: Record<keyof GameEvents, ((event: Event) => any)[]>;
 
-    constructor(size: Size, loop: LoopType, private cellFactory: CellFactory) {
+    constructor(size: Size, loop: LoopType, private params: GameParams, private cellFactory: CellFactory) {
         this.grid = new Grid(this, size, loop, cellFactory);
 
         this.eventSubscribers = {
@@ -29,26 +34,30 @@ export default class Game {
         };
     }
 
-    generatePlants(): void {
-        const countEmpty = this.grid.countEmpty();
+    spawsnPlants(): void {
+        const coordinates: [number, number][] = [];
 
-        if (countEmpty === 0) {
+        for (const {x, y, cell} of this.grid) {
+            if (cell.isEmpty()) {
+                coordinates.push([x, y]);
+            }
+        }
+
+        const count = Math.ceil(coordinates.length * this.params.plantSpawnRate / 100);
+
+        if (count === 0) {
             return;
         }
 
-        const chance = this.grid.countEmpty() / this.grid.getSize().getCellCount() / 100;
-
-        for (const {x, y, cell} of this.grid) {
-            if (cell.isEmpty() && Math.random() < chance) {
-                this.grid.insert(x, y, this.cellFactory.createPlant());
-            }
+        for (const [x, y] of shuffle(coordinates).slice(0, count)) {
+            this.grid.insert(x, y, this.cellFactory.createPlant());
         }
     }
 
     nextStep(): void {
         this.fireEvent('preStep');
         
-        this.generatePlants();
+        this.spawsnPlants();
 
         for (const {x, y, cell} of this.grid) {
             if (! cell.isStatic()) {
@@ -111,5 +120,9 @@ export default class Game {
     fireEvent(type: keyof GameEvents, event?: Event): void {
         event = event || new Event();
         this.eventSubscribers[type].forEach(callback => callback(event));
+    }
+
+    getParams(): GameParams {
+        return this.params;
     }
 }
