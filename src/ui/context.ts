@@ -1,4 +1,10 @@
 import * as React from "react";
-import { Store } from "./store";
+import { GameStore } from "./stores/game-store";
+import { UIStore } from "./stores/ui-store";
 
-export const StoreContext = React.createContext<Store>(null);
+export type AppStore = {
+    gameStore: GameStore;
+    UIStore: UIStore
+}
+
+export const AppContext = React.createContext<AppStore>(null);

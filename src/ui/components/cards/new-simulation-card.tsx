@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { useContext, useState } from "react";
-import { StoreContext } from "../../context";
+import { useContext } from "react";
+import { AppContext } from "../../context";
 import { Button } from "../button";
 import { Card } from "../card";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,19 +16,18 @@ import { RangeInput } from "../form/range-input";
 
 const LoopTypes = [
     {label: 'None', value: 'none'},
-    {label: 'Full', value: 'full'},
+    {label: 'Torus', value: 'torus'},
     {label: 'Horizontal', value: 'horizontal'},
     {label: 'Vertical', value: 'vertical'},
 ]
 
 export const NewSimulationCard = observer(() => {
-    const store = useContext(StoreContext);
-    const [showOptions, setShowOptions] = useState(false);
-    const options = store.getOptions();
+    const {gameStore, UIStore} = useContext(AppContext);
+    const options = gameStore.getOptions();
 
     return (
         <Card>
-            {showOptions && <>
+            {UIStore.getOptionsFormOpened() && <>
                 <FormRow label="Grid width">
                     <NumberInput onChange={(value) => options.setWidth(value)} value={options.getWidth()} />
                 </FormRow>
@@ -44,10 +43,10 @@ export const NewSimulationCard = observer(() => {
             </>}
             <Row>
                 <Column>
-                    <Button width="100%" onClick={() => store.newGame()}>New simulation</Button>
+                    <Button width="100%" onClick={() => {gameStore.newGame(); UIStore.setOptionsFormOpened(false)}}>New simulation</Button>
                 </Column>
                 <Column width={60}>
-                    <Button width="100%" onClick={() => setShowOptions(! showOptions)}>
+                    <Button width="100%" onClick={() => UIStore.setOptionsFormOpened(! UIStore.getOptionsFormOpened())}>
                         <FontAwesomeIcon icon={faGear} />
                     </Button>
                 </Column>

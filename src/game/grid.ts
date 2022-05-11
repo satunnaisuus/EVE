@@ -6,7 +6,7 @@ import { DeleteCellEvent, InsertCellEvent } from "./game-events";
 import GridIterator from "./grid-iterator";
 import { Size } from "./size";
 
-export type LoopType = 'none' | 'full' | 'vertical' | 'horizontal';
+export type LoopType = 'none' | 'torus' | 'vertical' | 'horizontal';
 
 export default class Grid {
     private cells: {[key: `${number}:${number}`]: Cell} = {};

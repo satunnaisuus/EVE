@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useRef, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { useSize } from "../hooks/use-size";
-import { StoreContext } from "../context";
+import { AppContext } from "../context";
 import styled from "styled-components";
 
 const StyledGame = styled.div`
@@ -14,15 +14,15 @@ const StyledGame = styled.div`
 export const GameComponent = observer(() => {
     const canvasRef = useRef();
     const [width, height, containerRef] = useSize();
-    const store = useContext(StoreContext);
+    const {gameStore} = useContext(AppContext);
 
     useEffect(() => {
-        store.setCanvas(canvasRef.current);
+        gameStore.setCanvas(canvasRef.current);
         return () => {};
     }, [canvasRef.current]);
     
     useEffect(() => {
-        store.render();
+        gameStore.render();
         return () => {};
     }, [width, height]);
 

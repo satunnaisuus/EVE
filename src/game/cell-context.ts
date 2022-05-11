@@ -52,8 +52,8 @@ export default class CellContext {
     private getCoordinatesbyOffset(x: number, y: number): [number, number] {
         const loop = this.grid.getLoopMode();
 
-        const loopX = loop === 'full' || loop === 'horizontal';
-        const loopY = loop === 'full' || loop === 'vertical';
+        const loopX = loop === 'torus' || loop === 'horizontal';
+        const loopY = loop === 'torus' || loop === 'vertical';
 
         const size = this.grid.getSize();
 

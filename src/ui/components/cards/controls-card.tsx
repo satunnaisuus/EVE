@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { RenderStrategy } from "../../../render/canvas-renderer";
-import { StoreContext } from "../../context";
+import { AppContext } from "../../context";
 import { Button } from "../button";
 import { Card } from "../card";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,32 +21,32 @@ const renderThemes = [
 ];
 
 export const ControlsCard = observer(() => {
-    const store = useContext(StoreContext);
+    const {gameStore} = useContext(AppContext);
 
     return (
         <Card>
             <FormRow label="Map theme">
-                <Select onSelect={(value) => store.changeRenderTheme(value as RenderStrategy)} options={renderThemes} value={store.getRenderTheme()} />
+                <Select onSelect={(value) => gameStore.changeRenderTheme(value as RenderStrategy)} options={renderThemes} value={gameStore.getRenderTheme()} />
             </FormRow>
-            <Switch value={store.isRenderingDisabled()} label="Disable rendering" onChange={(value) => store.setRenderingDisabled(value)} />
+            <Switch value={gameStore.isRenderingDisabled()} label="Disable rendering" onChange={(value) => gameStore.setRenderingDisabled(value)} />
             <FormRow label="Step delay">
-                <RangeInput min={1} max={1000} step={1} onChange={(value) => store.changeStepDelay(value)} value={store.getStepDelay()} />
+                <RangeInput min={1} max={1000} step={1} onChange={(value) => gameStore.changeStepDelay(value)} value={gameStore.getStepDelay()} />
             </FormRow>
             <Row>
                 <Column>
-                    {store.isPaused() &&
-                        <Button apperance="success" width="100%" onClick={() => store.start()}>
+                    {gameStore.isPaused() &&
+                        <Button apperance="success" width="100%" onClick={() => gameStore.start()}>
                             <FontAwesomeIcon icon={faPlay} /> Start
                         </Button>
                     }
-                    {! store.isPaused() &&
-                        <Button width="100%" onClick={() => store.pause()}>
+                    {! gameStore.isPaused() &&
+                        <Button width="100%" onClick={() => gameStore.pause()}>
                             <FontAwesomeIcon icon={faPause} /> Pause
                         </Button>
                     }
                 </Column>
                 <Column width={70}>
-                    <Button width="100%" onClick={() => store.makeStep()}>
+                    <Button width="100%" onClick={() => gameStore.makeStep()}>
                         <FontAwesomeIcon icon={faForwardStep} />
                     </Button>
                 </Column>
