@@ -5,5 +5,6 @@ export enum OrganismAction {
     ATTACK,
     EAT,
     DIVIDE,
-    NOTHING
+    NOTHING,
+    PHOTOSYNTHHESIS,
 }

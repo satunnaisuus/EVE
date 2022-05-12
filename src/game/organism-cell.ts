@@ -13,6 +13,7 @@ const MAX_LIFETIME = 100;
 const INITIAL_ENERGY = 70;
 const ENERGY_MEAT = 20;
 const ENERGY_PLANT = 20;
+const ENERGY_PHOTOSYNTHHESIS = 20;
 
 export class OrganismCell extends Cell {
     private lifetime: number = 0;
@@ -103,6 +104,8 @@ export class OrganismCell extends Cell {
                     eat(ENERGY_PLANT);
                 }
             });
+        } else if (action === OrganismAction.PHOTOSYNTHHESIS) {
+            this.changeEnergy(ENERGY_PHOTOSYNTHHESIS);
         }
 
         this.lifetime++;
