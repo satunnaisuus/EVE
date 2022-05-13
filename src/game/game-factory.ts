@@ -1,20 +1,20 @@
 import { shuffle } from "../common/array-utils";
-import Color from "../common/color";
-import CellFactory from "./cell-factory";
-import Game, { GameParams } from "./game";
-import Genome from "./genome";
-import { LoopType } from "./grid";
-import { Size } from "./size";
+import { Color } from "../common/color";
+import { CellFactory } from "./cell/cell-factory";
+import { Game,  GameParams } from "./game";
+import { Genome } from "./cell/type/organism/genome";
+import { GridSize } from "./grid-size";
+import { GridLoopType } from "./grid-loop-type";
 
 export type GameOptions = {
     width?: number,
     height?: number,
-    loop?: LoopType,
+    loop?: GridLoopType,
     population?: number,
     params?: GameParams,
 }
 
-export default function createGame(options?: GameOptions): Game {
+export function createGame(options?: GameOptions): Game {
     options = Object.assign({
         width: 200,
         height: 100,
@@ -27,7 +27,7 @@ export default function createGame(options?: GameOptions): Game {
     }, options.params);
 
     const cellFactory = new CellFactory();
-    const size = new Size(options.width, options.height);
+    const size = new GridSize(options.width, options.height);
     const game = new Game(size, options.loop, options.params, cellFactory);
     const population = Math.floor(size.getCellCount() * options.population / 100);
 

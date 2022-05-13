@@ -1,6 +1,6 @@
-import Neuron from "./neuron";
+import { Neuron } from "./neuron";
 
-export default class Layer {
+export class Layer {
     constructor(
         private id: number,
         private neurons: Neuron[]
@@ -8,7 +8,7 @@ export default class Layer {
         
     }
 
-    public activate(data: number[] = null): number[] {
+    activate(data: number[] = null): number[] {
         if (data === null) {
             for(let neuron of this.neurons) {
                 neuron.activate();
@@ -22,11 +22,11 @@ export default class Layer {
         return this.neurons.map(n => n.getOutput());
     }
 
-    public getNeurons(): Neuron[] {
+    getNeurons(): Neuron[] {
         return this.neurons;
     }
 
-    public serialize(): any {
+    serialize(): any {
         return {
             id: this.id,
             neurons: this.neurons.map(n => n.serialize())

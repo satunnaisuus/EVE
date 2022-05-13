@@ -1,15 +1,16 @@
 import { shuffle } from "../common/array-utils";
-import CellContext from "./cell-context";
-import CellFactory from "./cell-factory";
+import { CellContext } from "./cell/cell-context";
+import { CellFactory } from "./cell/cell-factory";
 import { GameEvents, Event } from "./game-events";
-import Grid, { LoopType } from "./grid";
-import { Size } from "./size";
+import { Grid } from "./grid";
+import { GridLoopType } from "./grid-loop-type";
+import { GridSize } from "./grid-size";
 
 export type GameParams = {
     plantSpawnRate: number,
 };
 
-export default class Game {
+export class Game {
     private step: number = 0;
 
     private grid: Grid;
@@ -20,7 +21,7 @@ export default class Game {
 
     private eventSubscribers: Record<keyof GameEvents, ((event: Event) => any)[]>;
 
-    constructor(size: Size, loop: LoopType, private params: GameParams, private cellFactory: CellFactory) {
+    constructor(size: GridSize, loop: GridLoopType, private params: GameParams, private cellFactory: CellFactory) {
         this.grid = new Grid(this, size, loop, cellFactory);
 
         this.eventSubscribers = {

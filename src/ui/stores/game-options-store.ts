@@ -1,6 +1,6 @@
 import { makeObservable, observable, action } from "mobx";
 import { GameOptions } from "../../game/game-factory";
-import { LoopType } from "../../game/grid";
+import { GridLoopType } from "../../game/grid-loop-type";
 import { GameParamsStore } from "./game-params-store";
 import { GameStore } from "./game-store";
 
@@ -12,7 +12,7 @@ export class GameOptionsStore {
     private height: number;
 
     @observable
-    private loop: LoopType;
+    private loop: GridLoopType;
 
     @observable
     private population: number;
@@ -24,7 +24,7 @@ export class GameOptionsStore {
         this.width = options.width || 100;
         this.height = options.height || 50;
         this.population = options.population || 1;
-        this.loop = options.loop || 'none';
+        this.loop = options.loop || GridLoopType.NONE;
         this.params = new GameParamsStore(options.params || {
             plantSpawnRate: 10
         }, store);
@@ -50,12 +50,12 @@ export class GameOptionsStore {
         this.height = height;
     }
 
-    getLoop(): LoopType {
+    getLoop(): GridLoopType {
         return this.loop;
     }
 
     @action
-    setLoop(loop: LoopType): void {
+    setLoop(loop: GridLoopType): void {
         this.loop = loop;
     }
 

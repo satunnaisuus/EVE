@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createRoot } from 'react-dom/client';
-import createGame from "./game/game-factory";
+import { createGame } from "./game/game-factory";
 import { App } from "./ui/app";
 import { AppContext } from "./ui/context";
 import { loadOptions } from "./ui/options-storage";

@@ -1,5 +1,5 @@
-import CellVisitor from "../game/cell-visitor";
+import { CellVisitor } from "../game/cell/cell-visitor";
 
-export default interface StategyInterface {
+export interface StategyInterface {
     createVisitor(x: number, y: number, cellSize: number): CellVisitor;
 }

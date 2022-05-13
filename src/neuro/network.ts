@@ -1,5 +1,5 @@
-import Layer from "./layer";
-import Neuron from "./neuron";
+import { Layer } from "./layer";
+import { Neuron } from "./neuron";
 
 type SerializedConnection = [number, number]
 
@@ -19,7 +19,7 @@ type SerializedNetwork = {
     output: SerializedLayout
 }
 
-export default class Network {
+export class Network {
     constructor(
         private input: Layer,
         private hidden: Layer[],
@@ -28,7 +28,7 @@ export default class Network {
         
     }
 
-    public activate(data: number[]): number[] {
+    activate(data: number[]): number[] {
         this.input.activate(data);
 
         for (let layer of this.hidden) {
@@ -38,7 +38,7 @@ export default class Network {
         return this.output.activate();
     }
 
-    public serialize(): SerializedNetwork {
+    serialize(): SerializedNetwork {
         return {
             input: this.input.serialize(),
             hidden: this.hidden.map(l => l.serialize()),

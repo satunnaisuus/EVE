@@ -1,8 +1,8 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
-import Game from "../../game/game";
+import { Game } from "../../game/game";
 import { DeleteCellEvent } from "../../game/game-events";
-import createGame, { GameOptions } from "../../game/game-factory";
-import CanvasRenderer, { RenderStrategy } from "../../render/canvas-renderer";
+import { createGame, GameOptions } from "../../game/game-factory";
+import { CanvasRenderer, RenderStrategy } from "../../render/canvas-renderer";
 import { saveOptions } from "../options-storage";
 import { GameOptionsStore } from "./game-options-store";
 

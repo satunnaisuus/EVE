@@ -1,12 +1,12 @@
-import Game from "../game/game";
-import StategyInterface from "./strategy-interface";
-import DefaultStrategy from "./strategy/default-strategy";
-import EnergyStrategy from "./strategy/energy-strategy";
-import GenesisStrategy from "./strategy/genesis-strategy";
+import { Game } from "../game/game";
+import { StategyInterface } from "./strategy-interface";
+import { DefaultStrategy } from "./strategy/default-strategy";
+import { EnergyStrategy } from "./strategy/energy-strategy";
+import { GenesisStrategy } from "./strategy/genesis-strategy";
 
 export type RenderStrategy = 'default' | 'energy' | 'genesis';
 
-export default class CanvasRenderer {
+export class CanvasRenderer {
     private context: CanvasRenderingContext2D;
 
     private renderStrategy: StategyInterface;
@@ -19,14 +19,16 @@ export default class CanvasRenderer {
         renderStrategy: RenderStrategy
     ) {
         this.context = canvas.getContext('2d');
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.clear();
         this.setRenderStrategy(renderStrategy);
     }
 
-    public render() {
+    render() {
         if (! this.renderStrategy || this.disabled) {
             return;
         }
+
+        this.clear();
         
         let width, height;
 
@@ -72,5 +74,9 @@ export default class CanvasRenderer {
         } else if (strategy === 'genesis') {
             this.renderStrategy = new GenesisStrategy(this.context);
         }
+    }
+
+    clear() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }

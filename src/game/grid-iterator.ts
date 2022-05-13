@@ -1,18 +1,18 @@
-import { Cell } from "./cell";
-import { Size } from "./size";
+import { AbstractCell } from "./cell/abstract-cell";
+import { GridSize } from "./grid-size";
 
-export default class GridIterator {
+export class GridIterator {
     private x: number = 0;
     private y: number = 0;
 
     constructor(
-        private cells: Cell[][],
-        private size: Size
+        private cells: AbstractCell[][],
+        private size: GridSize
     ) {
 
     }
 
-    public next(): {cell: Cell, x: number, y: number} {
+    next(): {cell: AbstractCell, x: number, y: number} {
         const result = {
             cell: this.cells[this.x][this.y],
             x: this.x,
@@ -29,7 +29,7 @@ export default class GridIterator {
         return result;
     }
 
-    public hasNext(): boolean {
+    hasNext(): boolean {
         return this.y < this.size.getHeight();
     }
 }

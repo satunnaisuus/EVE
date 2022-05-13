@@ -15,7 +15,7 @@ export const GlobalStyle = createGlobalStyle`
 
     body {
         margin: 0;
-        font-family: DisketMono;
+        font-family: DisketMono, monospace;
         font-size: 14px;
     }
 

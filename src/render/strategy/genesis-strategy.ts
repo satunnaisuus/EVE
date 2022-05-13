@@ -1,8 +1,8 @@
-import CellVisitor from "../../game/cell-visitor";
-import { OrganismCell } from "../../game/organism-cell";
-import DefaultStrategy from "./default-strategy";
+import { CellVisitor } from "../../game/cell/cell-visitor";
+import { OrganismCell } from "../../game/cell/type/organism-cell";
+import { DefaultStrategy } from "./default-strategy";
 
-export default class GenesisStrategy extends DefaultStrategy {
+export class GenesisStrategy extends DefaultStrategy {
     createVisitor(x: number, y: number, cellSize: number): CellVisitor {
         const visitor = super.createVisitor(x, y, cellSize);
 

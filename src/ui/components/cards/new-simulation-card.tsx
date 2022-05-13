@@ -11,14 +11,14 @@ import { Column } from "../layout/column";
 import { FormRow } from "../form/form-row";
 import { NumberInput } from "../form/number-input";
 import { Select } from "../form/select";
-import { LoopType } from "../../../game/grid";
 import { RangeInput } from "../form/range-input";
+import { GridLoopType } from "../../../game/grid-loop-type";
 
 const LoopTypes = [
-    {label: 'None', value: 'none'},
-    {label: 'Torus', value: 'torus'},
-    {label: 'Horizontal', value: 'horizontal'},
-    {label: 'Vertical', value: 'vertical'},
+    {label: 'None', value: GridLoopType.NONE},
+    {label: 'Torus', value: GridLoopType.TORUS},
+    {label: 'Horizontal', value: GridLoopType.HORIZONTAL},
+    {label: 'Vertical', value: GridLoopType.VERTICAL},
 ]
 
 export const NewSimulationCard = observer(() => {
@@ -35,7 +35,7 @@ export const NewSimulationCard = observer(() => {
                     <NumberInput onChange={(value) => options.setHeight(value)} value={options.getHeight()} />
                 </FormRow>
                 <FormRow label="Loop">
-                    <Select onSelect={(value) => options.setLoop(value as LoopType)} options={LoopTypes} value={options.getLoop()} />
+                    <Select onSelect={(value) => options.setLoop(value as GridLoopType)} options={LoopTypes} value={options.getLoop()} />
                 </FormRow>
                 <FormRow label={`Population (${options.getPopulation()}%)`}>
                     <RangeInput min={0} max={100} step={0.1} onChange={(value) => options.setPopulation(value)} value={options.getPopulation()} />

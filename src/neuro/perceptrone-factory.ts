@@ -1,10 +1,9 @@
-import Connection from "./connection";
-import IdFactory from "./id-factory";
-import Layer from "./layer";
-import Network from "./network";
-import Neuron from "./neuron";
+import { IdFactory } from "./id-factory";
+import { Layer } from "./layer";
+import { Network } from "./network";
+import { Neuron } from "./neuron";
 
-export default class PerceptroneFactory {
+export class PerceptroneFactory {
     constructor() {
 
     }

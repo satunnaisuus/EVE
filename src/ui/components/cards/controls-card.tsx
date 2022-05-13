@@ -45,11 +45,13 @@ export const ControlsCard = observer(() => {
                         </Button>
                     }
                 </Column>
-                <Column width={70}>
-                    <Button width="100%" onClick={() => gameStore.makeStep()}>
-                        <FontAwesomeIcon icon={faForwardStep} />
-                    </Button>
-                </Column>
+                {gameStore.isPaused() &&
+                    <Column width={70}>
+                        <Button width="100%" onClick={() => gameStore.makeStep()}>
+                            <FontAwesomeIcon icon={faForwardStep} />
+                        </Button>
+                    </Column>
+                }
             </Row>
         </Card>
     );

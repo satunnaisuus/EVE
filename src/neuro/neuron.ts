@@ -1,6 +1,6 @@
-import Connection from "./connection";
+import { Connection } from "./connection";
 
-export default class Neuron {
+export class Neuron {
     private connections: Connection[] = [];
 
     private output: number = 0;
@@ -9,17 +9,17 @@ export default class Neuron {
 
     }
 
-    public getId(): number {
+    getId(): number {
         return this.id;
     }
 
-    public connect(neuron: Neuron, weight: number): void {
+    connect(neuron: Neuron, weight: number): void {
         this.connections.push(
             new Connection(neuron, this, weight)
         );
     }
 
-    public activate(data: number = null): number {
+    activate(data: number = null): number {
         if (data !== null) {
             this.output = data;
         } else {
@@ -35,11 +35,11 @@ export default class Neuron {
         return this.output;
     }
 
-    public getOutput(): number {
+    getOutput(): number {
         return this.output;
     }
 
-    public serialize(): any {
+    serialize(): any {
         return {
             id: this.id,
             connections: this.connections.map(c => [c.getFrom().getId(), c.getWeight()])

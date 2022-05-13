@@ -1,13 +1,13 @@
 import { assertGreaterOrEqualThan, assertLessOrEqualThan } from "./asserts";
 import { randomInt } from "./random";
 
-export default class Color {
-    private hex: string;
+export class Color {
+    private readonly hex: string;
 
     constructor(
-        private red: number,
-        private green: number,
-        private blue: number
+        private readonly red: number,
+        private readonly green: number,
+        private readonly blue: number
     ) {
         assertGreaterOrEqualThan(red, 0);
         assertGreaterOrEqualThan(green, 0);
@@ -16,6 +16,13 @@ export default class Color {
         assertLessOrEqualThan(red, 255);
         assertLessOrEqualThan(green, 255);
         assertLessOrEqualThan(blue, 255);
+
+        const segement = (v: string) => v.length === 1 ? '0' + v : v;
+
+        this.hex = '#'
+            + segement(this.red.toString(16))
+            + segement(this.green.toString(16))
+            + segement(this.blue.toString(16));
     }
 
     getRed(): number {
@@ -31,6 +38,9 @@ export default class Color {
     }
 
     mix(to: Color, percent: number): Color {
+        assertGreaterOrEqualThan(percent, 0);
+        assertLessOrEqualThan(percent, 1);
+
         return new Color(
             Math.round(this.red * percent + to.getRed() * (1 - percent)),
             Math.round(this.green * percent + to.getGreen() * (1 - percent)),
@@ -39,16 +49,13 @@ export default class Color {
     }
 
     toHexFormat(): string {
-        if (this.hex) {
-            return this.hex;
-        }
+        return this.hex;
+    }
 
-        const segement = (v: string) => v.length === 1 ? '0' + v : v;
-
-        return this.hex = '#'
-            + segement(this.red.toString(16))
-            + segement(this.green.toString(16))
-            + segement(this.blue.toString(16));
+    equals(color: Color): boolean {
+        return this.blue === color.getBlue()
+            && this.red === color.getRed()
+            && this.green === color.getGreen();
     }
 
     static random(): Color {
@@ -60,10 +67,10 @@ export default class Color {
             value = value.slice(1);
         }
 
-        const r = parseInt(value.slice(0, 2), 16);
-        const g = parseInt(value.slice(2, 4), 16);
-        const b = parseInt(value.slice(4, 6), 16);
-
-        return new Color(r, g, b);
+        return new Color(
+            parseInt(value.slice(0, 2), 16),
+            parseInt(value.slice(2, 4), 16),
+            parseInt(value.slice(4, 6), 16)
+        );
     }
 }

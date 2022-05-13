@@ -1,4 +1,4 @@
-export default class IdFactory {
+export class IdFactory {
     private id: number = 1;
 
     next() {

@@ -1,11 +1,11 @@
-import CellVisitor from "../../game/cell-visitor";
-import { Direction } from "../../game/direction";
-import { EmptyCell } from "../../game/empty-cell";
-import { MeatCell } from "../../game/meat-cell";
-import { OrganismCell } from "../../game/organism-cell";
-import { PlantCell } from "../../game/plant-cell";
-import { WallCell } from "../../game/wall";
-import StategyInterface from "../strategy-interface";
+import { CellVisitor } from "../../game/cell/cell-visitor";
+import { Direction } from "../../game/cell/type/organism/direction";
+import { EmptyCell } from "../../game/cell/type/empty-cell";
+import { MeatCell } from "../../game/cell/type/meat-cell";
+import { OrganismCell } from "../../game/cell/type/organism-cell";
+import { PlantCell } from "../../game/cell/type/plant-cell";
+import { WallCell } from "../../game/cell/type/wall-cell";
+import { StategyInterface } from "../strategy-interface";
 
 type Styles = {
     CELL_WALL_COLOR?: string,
@@ -16,7 +16,7 @@ type Styles = {
     CELL_MEAT_COLOR?: string,
 }
 
-export default class DefaultStrategy implements StategyInterface {
+export class DefaultStrategy implements StategyInterface {
     constructor(
         protected context: CanvasRenderingContext2D,
         protected styles?: Styles
@@ -34,8 +34,7 @@ export default class DefaultStrategy implements StategyInterface {
     createVisitor(x: number, y: number, cellSize: number): CellVisitor {
         return {
             visitEmpty: (cell: EmptyCell) => {
-                this.context.fillStyle = this.styles.CELL_EMPTY_COLOR;
-                this.context.fillRect(x, y, cellSize, cellSize);
+                
             },
             visitWall: (cell: WallCell) => {
                 this.context.fillStyle = this.styles.CELL_WALL_COLOR;

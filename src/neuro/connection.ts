@@ -1,6 +1,6 @@
-import Neuron from "./neuron";
+import { Neuron } from "./neuron";
 
-export default class Connection {
+export class Connection {
     constructor(
         private from: Neuron,
         private to: Neuron,
@@ -9,23 +9,23 @@ export default class Connection {
 
     }
 
-    public getFrom(): Neuron {
+    getFrom(): Neuron {
         return this.from;
     }
 
-    public getTo(): Neuron {
+    getTo(): Neuron {
         return this.to;
     }
 
-    public getWeight(): number {
+    getWeight(): number {
         return this.weight;
     }
 
-    public setWeight(weight: number): void {
+    setWeight(weight: number): void {
         this.weight = weight;
     }
 
-    public getOutput(): number {
+    getOutput(): number {
         return this.from.getOutput() * this.weight;
     }
 }

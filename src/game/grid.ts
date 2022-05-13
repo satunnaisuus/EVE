@@ -1,20 +1,20 @@
 import { assertGreaterOrEqualThan, assertLessThan } from "../common/asserts";
-import { Cell } from "./cell";
-import CellFactory from "./cell-factory";
-import Game from "./game";
+import { AbstractCell } from "./cell/abstract-cell";
+import { CellFactory } from "./cell/cell-factory";
+import { Game } from "./game";
 import { DeleteCellEvent, InsertCellEvent } from "./game-events";
-import GridIterator from "./grid-iterator";
-import { Size } from "./size";
+import { GridIterator } from "./grid-iterator";
+import { GridLoopType } from "./grid-loop-type";
+import { GridSize } from "./grid-size";
 
-export type LoopType = 'none' | 'torus' | 'vertical' | 'horizontal';
 
-export default class Grid {
-    private cells: {[key: `${number}:${number}`]: Cell} = {};
+export class Grid {
+    private cells: {[key: `${number}:${number}`]: AbstractCell} = {};
 
     constructor(
         private game: Game,
-        private size: Size,
-        private loop: LoopType,
+        private size: GridSize,
+        private loop: GridLoopType,
         private cellFactory: CellFactory
     ) {
         
@@ -28,11 +28,11 @@ export default class Grid {
         }
     }
     
-    public getSize(): Size {
+    getSize(): GridSize {
         return this.size;
     }
 
-    public insert(x: number, y: number, cell: Cell): void {
+    insert(x: number, y: number, cell: AbstractCell): void {
         assertLessThan(x, this.size.getWidth());
         assertLessThan(y, this.size.getHeight());
         assertGreaterOrEqualThan(x, 0);
@@ -45,7 +45,7 @@ export default class Grid {
         ));
     }
 
-    public delete(x: number, y: number): void {
+    delete(x: number, y: number): void {
         this.game.fireEvent('deleteCell', new DeleteCellEvent(
             this.getCell(x, y).getType()
         ));
@@ -53,7 +53,7 @@ export default class Grid {
         delete this.cells[`${x}:${y}`];
     }
 
-    public getCell(x: number, y: number): Cell {
+    getCell(x: number, y: number): AbstractCell {
         const cell = this.cells[`${x}:${y}`];
 
         if (cell) {
@@ -63,7 +63,7 @@ export default class Grid {
         return this.cellFactory.createEmpty();
     }
 
-    public countEmpty(): number {
+    countEmpty(): number {
         let result = this.size.getCellCount();
 
         for (const key in this.cells) {
@@ -75,11 +75,11 @@ export default class Grid {
         return result;
     }
 
-    public getLoopMode(): LoopType {
+    getLoopMode(): GridLoopType {
         return this.loop;
     } 
 
-    private createSnapshot(): Cell[][] {
+    private createSnapshot(): AbstractCell[][] {
         const result = [];
 
         for (let x = 0; x < this.size.getWidth(); x++) {
