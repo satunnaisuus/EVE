@@ -5,7 +5,7 @@ import { AppContext } from "../../context";
 import { Button } from "../button";
 import { Card } from "../card";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGear } from '@fortawesome/free-solid-svg-icons';
+import { faGear } from '@fortawesome/free-solid-svg-icons/faGear';
 import { Row } from "../layout/row";
 import { Column } from "../layout/column";
 import { FormRow } from "../form/form-row";
