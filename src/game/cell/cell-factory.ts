@@ -31,7 +31,7 @@ export class CellFactory {
         return this.empty = new EmptyCell();
     }
 
-    createOrganism(color: Color, genome: Genome, energy: number = undefined): OrganismCell {
+    createOrganism(color: Color, genome: Genome, energy: number): OrganismCell {
         return new OrganismCell(color, genome, energy);
     }
 

@@ -18,6 +18,9 @@ export class GameOptionsStore {
     private population: number;
 
     @observable
+    private initialEnergy: number;
+
+    @observable
     private params: GameParamsStore;
 
     constructor(options: GameOptions, private store: GameStore) {
@@ -25,6 +28,7 @@ export class GameOptionsStore {
         this.height = options.height || 50;
         this.population = options.population || 1;
         this.loop = options.loop || GridLoopType.NONE;
+        this.initialEnergy = options.initialEnergy || 70;
         this.params = new GameParamsStore(options.params || {
             plantSpawnRate: 10
         }, store);
@@ -72,12 +76,22 @@ export class GameOptionsStore {
         return this.params;
     }
 
+    getInitialEnergy(): number {
+        return this.initialEnergy;
+    }
+
+    @action
+    setInitialEnergy(initialEnergy: number): void {
+        this.initialEnergy = initialEnergy;
+    }
+
     toGameOptions(): GameOptions {
         return {
             width: this.width,
             height: this.height,
             loop: this.loop,
             population: this.population,
+            initialEnergy: this.initialEnergy,
             params: this.params.toGameParams(),
         };
     }

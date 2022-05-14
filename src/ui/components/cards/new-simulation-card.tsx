@@ -40,6 +40,9 @@ export const NewSimulationCard = observer(() => {
                 <FormRow label={`Population (${options.getPopulation()}%)`}>
                     <RangeInput min={0} max={100} step={0.1} onChange={(value) => options.setPopulation(value)} value={options.getPopulation()} />
                 </FormRow>
+                <FormRow label={`Initial energy (${options.getInitialEnergy()})`}>
+                    <RangeInput min={0} max={100} step={1} onChange={(value) => options.setInitialEnergy(value)} value={options.getInitialEnergy()} />
+                </FormRow>
             </>}
             <Row>
                 <Column>

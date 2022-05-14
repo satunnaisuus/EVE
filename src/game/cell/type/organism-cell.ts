@@ -10,7 +10,6 @@ import { OrganismAction } from "./organism/action";
 import { PlantCell } from "./plant-cell";
 
 const MAX_LIFETIME = 150;
-const INITIAL_ENERGY = 70;
 const ENERGY_MEAT = 20;
 const ENERGY_PLANT = 20;
 const ENERGY_PHOTOSYNTHHESIS = 2;
@@ -23,7 +22,7 @@ export class OrganismCell extends AbstractCell {
     constructor(
         private color: Color,
         private genome: Genome,
-        private energy: number = INITIAL_ENERGY
+        private energy: number
     ) {
         super();
         this.direction = randomDirection();
