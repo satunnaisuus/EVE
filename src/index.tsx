@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createGame } from "./game/game-factory";
 import { App } from "./ui/app";
 import { AppContext } from "./ui/context";
-import { loadOptions } from "./ui/options-storage";
+import { loadOptions } from "./ui/storage";
 import { GameStore } from "./ui/stores/game-store";
 import { UIStore } from "./ui/stores/ui-store";
 import { GlobalStyle } from "./ui/styles";

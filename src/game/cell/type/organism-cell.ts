@@ -5,14 +5,9 @@ import { CellFactory } from "../cell-factory";
 import { CellVisitor } from "../cell-visitor";
 import { Direction, getOffset, randomDirection, rotateLeft, rotateRight } from "./organism/direction";
 import { Genome } from "./organism/genome";
-import { MeatCell } from "./meat-cell";
+import { OrganicCell } from "./organic-cell";
 import { OrganismAction } from "./organism/action";
-import { PlantCell } from "./plant-cell";
-
-const MAX_LIFETIME = 150;
-const ENERGY_MEAT = 20;
-const ENERGY_PLANT = 20;
-const ENERGY_PHOTOSYNTHHESIS = 2;
+import { GameParams } from "../../game-params";
 
 export class OrganismCell extends AbstractCell {
     private lifetime: number = 0;
@@ -52,9 +47,9 @@ export class OrganismCell extends AbstractCell {
         visitor.visitOrganism(this);
     }
 
-    update(context: CellContext): void {
-        if (this.lifetime > MAX_LIFETIME || this.energy <= 0) {
-            context.replace((factory: CellFactory) => factory.createMeat());
+    update(context: CellContext, params: GameParams): void {
+        if (params.getOrganismMaxLifetime() !== 0 && this.lifetime > params.getOrganismMaxLifetime() || this.energy <= 0) {
+            context.replace((factory: CellFactory) => factory.createOrganic());
             return;
         }
 
@@ -73,9 +68,9 @@ export class OrganismCell extends AbstractCell {
         } else if (action === OrganismAction.ATTACK) {
             this.attact(context);
         } else if (action === OrganismAction.EAT) {
-            this.eat(context);
+            this.eat(context, params);
         } else if (action === OrganismAction.PHOTOSYNTHESIS) {
-            this.photosynthesis();
+            this.photosynthesis(params.getPhotosynthesisEnergy());
         }
 
         this.lifetime++;
@@ -124,29 +119,22 @@ export class OrganismCell extends AbstractCell {
         });
     }
 
-    eat(context: CellContext): void {
+    eat(context: CellContext, params: GameParams): void {
         const offset = getOffset(this.direction);
         const food = context.getByOffest(...offset);
-
-        const eat = (energy: number) => {
-            context.deleteByOffset(...offset);
-            context.moveByOffest(...offset);
-            this.changeEnergy(energy);
-        }
+        const self = this;
 
         food.visit(new class extends CellVisitor {
-            visitMeat(cell: MeatCell): void {
-                eat(ENERGY_MEAT);
-            }
-
-            visitPlant(cell: PlantCell): void {
-                eat(ENERGY_PLANT);
+            visitOrganic(cell: OrganicCell): void {
+                context.deleteByOffset(...offset);
+                context.moveByOffest(...offset);
+                self.changeEnergy(params.getOrganicEnergy());
             }
         });
     }
 
-    photosynthesis(): void {
-        this.changeEnergy(ENERGY_PHOTOSYNTHHESIS);
+    photosynthesis(energy: number): void {
+        this.changeEnergy(energy);
     }
 
     changeEnergy(value: number) {

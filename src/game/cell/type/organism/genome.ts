@@ -1,9 +1,8 @@
 import { AbstractCell } from "../../abstract-cell";
 import { EmptyCell } from "../empty-cell";
-import { MeatCell } from "../meat-cell";
+import { OrganicCell } from "../organic-cell";
 import { OrganismAction, randomAction } from "./action";
 import { OrganismCell } from "../organism-cell";
-import { PlantCell } from "../plant-cell";
 import { WallCell } from "../wall-cell";
 import { randomInt } from "../../../../common/random";
 
@@ -12,8 +11,7 @@ const MUTATION_POWER = 5;
 enum Target {
     EMPTY = 'EMPTY',
     WALL = 'WALL',
-    PLANT = 'PLANT',
-    MEAT = 'MEAT',
+    ORGANIC = 'ORGANIC',
     ORGANISM_SIMILAR = 'ORGANISM_SIMILAR',
     ORGANISM_OTHER = 'ORGANISM_OTHER',
 }
@@ -39,11 +37,8 @@ export class Genome {
             visitWall: (cell: WallCell) => {
                 tagretType = Target.WALL;
             },
-            visitPlant: (cell: PlantCell) => {
-                tagretType = Target.PLANT;
-            },
-            visitMeat: (cell: MeatCell) => {
-                tagretType = Target.MEAT;
+            visitOrganic: (cell: OrganicCell) => {
+                tagretType = Target.ORGANIC;
             },
             visitOrganism: (cell: OrganismCell) => {
                 tagretType = organism.isSimilar(cell) ? Target.ORGANISM_SIMILAR : Target.ORGANISM_OTHER;

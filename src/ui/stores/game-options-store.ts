@@ -2,7 +2,6 @@ import { makeObservable, observable, action } from "mobx";
 import { GameOptions } from "../../game/game-factory";
 import { GridLoopType } from "../../game/grid-loop-type";
 import { GameParamsStore } from "./game-params-store";
-import { GameStore } from "./game-store";
 
 export class GameOptionsStore {
     @observable
@@ -23,15 +22,12 @@ export class GameOptionsStore {
     @observable
     private params: GameParamsStore;
 
-    constructor(options: GameOptions, private store: GameStore) {
+    constructor(options: GameOptions) {
         this.width = options.width || 100;
         this.height = options.height || 50;
         this.population = options.population || 1;
         this.loop = options.loop || GridLoopType.NONE;
         this.initialEnergy = options.initialEnergy || 70;
-        this.params = new GameParamsStore(options.params || {
-            plantSpawnRate: 10
-        }, store);
 
         makeObservable(this);
     }
@@ -92,7 +88,6 @@ export class GameOptionsStore {
             loop: this.loop,
             population: this.population,
             initialEnergy: this.initialEnergy,
-            params: this.params.toGameParams(),
         };
     }
 }

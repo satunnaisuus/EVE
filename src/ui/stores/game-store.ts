@@ -3,8 +3,9 @@ import { Game } from "../../game/game";
 import { DeleteCellEvent } from "../../game/game-events";
 import { createGame, GameOptions } from "../../game/game-factory";
 import { CanvasRenderer, RenderStrategy } from "../../render/canvas-renderer";
-import { saveOptions } from "../options-storage";
+import { saveOptions } from "../storage";
 import { GameOptionsStore } from "./game-options-store";
+import { GameParamsStore } from "./game-params-store";
 
 export class GameStore {
     private game: Game;
@@ -39,13 +40,17 @@ export class GameStore {
     @observable
     private options: GameOptionsStore;
 
+    @observable
+    private params: GameParamsStore;
+
     constructor(
         private gameFactory: typeof createGame,
-        options: GameOptions,
+        options: GameOptions
     ) {
         makeObservable(this);
 
-        this.options = new GameOptionsStore(options, this);
+        this.options = new GameOptionsStore(options);
+        this.params = new GameParamsStore();
 
         this.newGame();
 
@@ -63,7 +68,7 @@ export class GameStore {
     newGame(): void {
         this.game && this.game.pause();
         this.paused = true;
-        this.game = this.gameFactory(this.options.toGameOptions());
+        this.game = this.gameFactory(this.options.toGameOptions(), this.params.getGameParams());
         this.game.setTimeoutDelay(this.stepDelay);
         this.newRenderer();
         this.setRenderingDisabled(false);
@@ -162,6 +167,10 @@ export class GameStore {
 
     getOptions(): GameOptionsStore {
         return this.options;
+    }
+
+    getParams(): GameParamsStore {
+        return this.params;
     }
 
     private newRenderer(): void {

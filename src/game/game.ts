@@ -1,14 +1,10 @@
-import { shuffle } from "../common/array-utils";
 import { CellContext } from "./cell/cell-context";
 import { CellFactory } from "./cell/cell-factory";
 import { GameEvents, Event } from "./game-events";
+import { GameParams } from "./game-params";
 import { Grid } from "./grid";
 import { GridLoopType } from "./grid-loop-type";
 import { GridSize } from "./grid-size";
-
-export type GameParams = {
-    plantSpawnRate: number,
-};
 
 export class Game {
     private step: number = 0;
@@ -21,8 +17,11 @@ export class Game {
 
     private eventSubscribers: Record<keyof GameEvents, ((event: Event) => any)[]>;
 
-    constructor(size: GridSize, loop: GridLoopType, private params: GameParams, private cellFactory: CellFactory) {
+    private params: GameParams;
+
+    constructor(size: GridSize, loop: GridLoopType, params: GameParams, private cellFactory: CellFactory) {
         this.grid = new Grid(this, size, loop, cellFactory);
+        this.params = params;
 
         this.eventSubscribers = {
             preStep: [],
@@ -35,35 +34,14 @@ export class Game {
         };
     }
 
-    spawsnPlants(): void {
-        const coordinates: [number, number][] = [];
-
-        for (const {x, y, cell} of this.grid) {
-            if (cell.isEmpty()) {
-                coordinates.push([x, y]);
-            }
-        }
-
-        const count = Math.ceil(coordinates.length * this.params.plantSpawnRate / 100);
-
-        if (count === 0) {
-            return;
-        }
-
-        for (const [x, y] of shuffle(coordinates).slice(0, count)) {
-            this.grid.insert(x, y, this.cellFactory.createPlant());
-        }
-    }
-
     nextStep(): void {
         this.fireEvent('preStep');
-        
-        this.spawsnPlants();
 
         for (const {x, y, cell} of this.grid) {
             if (! cell.isStatic()) {
                 cell.update(
-                    new CellContext(this.grid, x, y, this.cellFactory)
+                    new CellContext(this.grid, x, y, this.cellFactory),
+                    this.params
                 );
             }
         }

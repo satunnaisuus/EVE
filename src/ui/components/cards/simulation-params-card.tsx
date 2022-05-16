@@ -4,16 +4,25 @@ import { useContext } from "react";
 import { AppContext } from "../../context";
 import { Card } from "../card";
 import { FormRow } from "../form/form-row";
+import { NumberInput } from "../form/number-input";
 import { RangeInput } from "../form/range-input";
 
 export const SimulationParamsCard = observer(() => {
     const {gameStore} = useContext(AppContext);
-    const params = gameStore.getOptions().getParams();
+    const params = gameStore.getParams();
+
+    console.log(params);
 
     return (
         <Card>
-            <FormRow label={`Plant spawn rate (${params.getPlantSpawnRate()}%)`}>
-                <RangeInput min={0} max={100} step={1} onChange={(value) => params.setPlantSpawnRate(value)} value={params.getPlantSpawnRate()} />
+            <FormRow label="Life time limit">
+                <NumberInput onChange={(value) => params.setOrganismMaxLifetime(value)} value={params.getOrganismMaxLifetime()} />
+            </FormRow>
+            <FormRow label="Photosynthesis energy">
+                <NumberInput onChange={(value) => params.setPhotosynthesisEnergy(value)} value={params.getPhotosynthesisEnergy()} />
+            </FormRow>
+            <FormRow label="Organic energy">
+                <NumberInput onChange={(value) => params.setOrganicEnergy(value)} value={params.getOrganicEnergy()} />
             </FormRow>
         </Card>
     );
