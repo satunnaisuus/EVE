@@ -1,12 +1,6 @@
 import styled, {createGlobalStyle} from 'styled-components';
-import DisketMonoBold from '../../fonts/Disket-Mono-Bold.ttf';
 
 export const GlobalStyle = createGlobalStyle`
-    @font-face {
-        font-family: 'DisketMono';
-        src: url(${DisketMonoBold}) format('opentype');
-    }
-
     *,
     *::before,
     *::after {
@@ -15,8 +9,9 @@ export const GlobalStyle = createGlobalStyle`
 
     body {
         margin: 0;
-        font-family: DisketMono, monospace;
-        font-size: 14px;
+        font-family: monospace;
+        font-size: 16px;
+        text-transform: uppercase;
     }
 
     input,
@@ -28,5 +23,9 @@ export const GlobalStyle = createGlobalStyle`
         font-family: inherit;
         font-size: inherit;
         line-height: inherit;
+    }
+
+    button {
+        cursor: pointer;
     }
 `;

@@ -11,18 +11,16 @@ export const SimulationParamsCard = observer(() => {
     const {gameStore} = useContext(AppContext);
     const params = gameStore.getParams();
 
-    console.log(params);
-
     return (
         <Card>
             <FormRow label="Life time limit">
-                <NumberInput onChange={(value) => params.setOrganismMaxLifetime(value)} value={params.getOrganismMaxLifetime()} />
+                <NumberInput onChange={(value) => params.setOrganismMaxLifetime(value)} value={params.getOrganismMaxLifetime()} min={0} />
             </FormRow>
             <FormRow label="Photosynthesis energy">
-                <NumberInput onChange={(value) => params.setPhotosynthesisEnergy(value)} value={params.getPhotosynthesisEnergy()} />
+                <NumberInput onChange={(value) => params.setPhotosynthesisEnergy(value)} value={params.getPhotosynthesisEnergy()} min={0} />
             </FormRow>
             <FormRow label="Organic energy">
-                <NumberInput onChange={(value) => params.setOrganicEnergy(value)} value={params.getOrganicEnergy()} />
+                <NumberInput onChange={(value) => params.setOrganicEnergy(value)} value={params.getOrganicEnergy()} min={0} />
             </FormRow>
         </Card>
     );

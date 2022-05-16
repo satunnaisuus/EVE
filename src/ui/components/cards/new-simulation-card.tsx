@@ -29,10 +29,10 @@ export const NewSimulationCard = observer(() => {
         <Card>
             {UIStore.getOptionsFormOpened() && <>
                 <FormRow label="Grid width">
-                    <NumberInput onChange={(value) => options.setWidth(value)} value={options.getWidth()} />
+                    <NumberInput min={0} onChange={(value) => options.setWidth(value)} value={options.getWidth()} />
                 </FormRow>
                 <FormRow label="Grid height">
-                    <NumberInput onChange={(value) => options.setHeight(value)} value={options.getHeight()} />
+                    <NumberInput min={0} onChange={(value) => options.setHeight(value)} value={options.getHeight()} />
                 </FormRow>
                 <FormRow label="Loop">
                     <Select onSelect={(value) => options.setLoop(value as GridLoopType)} options={LoopTypes} value={options.getLoop()} />
