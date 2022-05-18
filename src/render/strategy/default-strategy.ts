@@ -45,6 +45,10 @@ export class DefaultStrategy implements StategyInterface {
                 this.context.fillStyle = this.styles.CELL_ORGANISM_COLOR;
                 this.context.fillRect(x, y, cellSize, cellSize);
 
+                if (cellSize < 9) {
+                    return;
+                } 
+
                 const eyeSize = cellSize / 3;
 
                 let eyeOffset;
