@@ -20,11 +20,6 @@ export const GameComponent = observer(() => {
         gameStore.setCanvas(canvasRef.current);
         return () => {};
     }, [canvasRef.current]);
-    
-    useEffect(() => {
-        gameStore.render();
-        return () => {};
-    }, [width, height]);
 
     return (
         <StyledGame ref={containerRef}>

@@ -60,10 +60,6 @@ export class GameStore {
         }), 1000);
     }
 
-    render(): void {
-        this.renderer && this.renderer.render();
-    }
-
     @action
     newGame(): void {
         this.game && this.game.pause();
@@ -96,8 +92,10 @@ export class GameStore {
     }
 
     setCanvas(canvas: HTMLCanvasElement): void {
-        this.canvas = canvas;
-        this.newRenderer();
+        if (! this.canvas) {
+            this.canvas = canvas;
+            this.newRenderer();
+        }
     }
 
     @action
@@ -105,7 +103,6 @@ export class GameStore {
         this.rendererTheme = theme;
         if (this.renderer) {
             this.renderer.setRenderStrategy(theme);
-            this.renderer.render();
         }
     }
 
@@ -136,7 +133,7 @@ export class GameStore {
     @action
     setRenderingDisabled(value: boolean): void {
         this.renderingDisabled = value;
-        this.renderer && (value ? this.renderer.disable() : this.renderer.enable())
+        this.renderer && (value ? this.renderer.disableHandlingStep() : this.renderer.enableHandlingStep())
     }
 
     @action
@@ -176,8 +173,6 @@ export class GameStore {
     private newRenderer(): void {
         if (this.game && this.canvas) {
             this.renderer = new CanvasRenderer(this.canvas, this.game, this.rendererTheme);
-            this.renderer.render();
-            this.game.subscribe('step', (game) => this.renderer.render());
         }
     }
 }
