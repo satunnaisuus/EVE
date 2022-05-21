@@ -1,9 +1,9 @@
 import * as React from "react";
-import { GameStore } from "./stores/game-store";
+import { SimulationStore } from "./stores/simulation-store";
 import { UIStore } from "./stores/ui-store";
 
 export type AppStore = {
-    gameStore: GameStore;
+    simulationStore: SimulationStore;
     UIStore: UIStore
 }
 

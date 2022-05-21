@@ -1,4 +1,4 @@
-export class GameParams {
+export class SimulationParams {
     private organismMaxLifetime: number = 100;
 
     private photosynthesisEnergy: number = 2;

@@ -1,15 +1,15 @@
 import * as React from "react";
 import { createRoot } from 'react-dom/client';
-import { createGame } from "./game/game-factory";
+import { createSimulation } from "./simulation/simulation-factory";
 import { App } from "./ui/app";
 import { AppContext } from "./ui/context";
 import { loadOptions } from "./ui/storage";
-import { GameStore } from "./ui/stores/game-store";
+import { SimulationStore } from "./ui/stores/simulation-store";
 import { UIStore } from "./ui/stores/ui-store";
 import { GlobalStyle } from "./ui/styles";
 
 const stores = {
-    gameStore: new GameStore(createGame, loadOptions()),
+    simulationStore: new SimulationStore(createSimulation, loadOptions()),
     UIStore: new UIStore(),
 };
 const root = createRoot(document.getElementById('root')!);

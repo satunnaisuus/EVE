@@ -8,8 +8,8 @@ import { NumberInput } from "../form/number-input";
 import { RangeInput } from "../form/range-input";
 
 export const SimulationParamsCard = observer(() => {
-    const {gameStore} = useContext(AppContext);
-    const params = gameStore.getParams();
+    const {simulationStore} = useContext(AppContext);
+    const params = simulationStore.getParams();
 
     return (
         <Card>

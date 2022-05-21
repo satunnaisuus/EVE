@@ -1,5 +1,5 @@
-import { CellVisitor } from "../../game/cell/cell-visitor";
-import { OrganismCell } from "../../game/cell/type/organism-cell";
+import { CellVisitor } from "../../simulation/cell/cell-visitor";
+import { OrganismCell } from "../../simulation/cell/type/organism-cell";
 import { DefaultStrategy } from "./default-strategy";
 
 export class GenesisStrategy extends DefaultStrategy {

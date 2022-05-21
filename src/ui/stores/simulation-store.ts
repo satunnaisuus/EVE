@@ -1,14 +1,14 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
-import { Game } from "../../game/game";
-import { DeleteCellEvent } from "../../game/game-events";
-import { createGame, GameOptions } from "../../game/game-factory";
+import { Simulation } from "../../simulation/simulation";
+import { DeleteCellEvent } from "../../simulation/simulation-events";
+import { createSimulation, SimulationOptions } from "../../simulation/simulation-factory";
 import { CanvasRenderer, RenderStrategy } from "../../render/canvas-renderer";
 import { saveOptions } from "../storage";
-import { GameOptionsStore } from "./game-options-store";
-import { GameParamsStore } from "./game-params-store";
+import { SimulationOptionsStore } from "./simulation-options-store";
+import { SimulationParamsStore } from "./simulation-params-store";
 
-export class GameStore {
-    private game: Game;
+export class SimulationStore {
+    private game: Simulation;
 
     private renderer: CanvasRenderer;
 
@@ -38,21 +38,21 @@ export class GameStore {
     private organismCount: number = 0;
 
     @observable
-    private options: GameOptionsStore;
+    private options: SimulationOptionsStore;
 
     @observable
-    private params: GameParamsStore;
+    private params: SimulationParamsStore;
 
     constructor(
-        private gameFactory: typeof createGame,
-        options: GameOptions
+        private gameFactory: typeof createSimulation,
+        options: SimulationOptions
     ) {
         makeObservable(this);
 
-        this.options = new GameOptionsStore(options);
-        this.params = new GameParamsStore();
+        this.options = new SimulationOptionsStore(options);
+        this.params = new SimulationParamsStore();
 
-        this.newGame();
+        this.newSimulation();
 
         setInterval(() => runInAction(() => {
             this.stepsPerSecond = (this.step - this.stepsPreviusPeriod);
@@ -61,7 +61,7 @@ export class GameStore {
     }
 
     @action
-    newGame(): void {
+    newSimulation(): void {
         this.game && this.game.end();
         this.paused = true;
         this.game = this.gameFactory(this.options.toGameOptions(), this.params.getGameParams());
@@ -87,7 +87,7 @@ export class GameStore {
         saveOptions(this.options.toGameOptions());
     }
 
-    getGame(): Game {
+    getGame(): Simulation {
         return this.game;
     }
 
@@ -162,11 +162,11 @@ export class GameStore {
         this.game && this.game.nextStep();
     }
 
-    getOptions(): GameOptionsStore {
+    getOptions(): SimulationOptionsStore {
         return this.options;
     }
 
-    getParams(): GameParamsStore {
+    getParams(): SimulationParamsStore {
         return this.params;
     }
 

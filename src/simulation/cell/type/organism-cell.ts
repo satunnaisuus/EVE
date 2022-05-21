@@ -7,7 +7,7 @@ import { Direction, getOffset, randomDirection, rotateLeft, rotateRight } from "
 import { Genome } from "./organism/genome";
 import { OrganicCell } from "./organic-cell";
 import { OrganismAction } from "./organism/action";
-import { GameParams } from "../../game-params";
+import { SimulationParams } from "../../simulation-params";
 
 export class OrganismCell extends AbstractCell {
     private lifetime: number = 0;
@@ -47,7 +47,7 @@ export class OrganismCell extends AbstractCell {
         visitor.visitOrganism(this);
     }
 
-    update(context: CellContext, params: GameParams): void {
+    update(context: CellContext, params: SimulationParams): void {
         if (params.getOrganismMaxLifetime() !== 0 && this.lifetime > params.getOrganismMaxLifetime() || this.energy <= 0) {
             context.replace((factory: CellFactory) => factory.createOrganic());
             return;
@@ -119,7 +119,7 @@ export class OrganismCell extends AbstractCell {
         });
     }
 
-    eat(context: CellContext, params: GameParams): void {
+    eat(context: CellContext, params: SimulationParams): void {
         const offset = getOffset(this.direction);
         const food = context.getByOffest(...offset);
         const self = this;

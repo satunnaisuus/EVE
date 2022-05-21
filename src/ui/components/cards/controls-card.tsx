@@ -23,33 +23,33 @@ const renderThemes = [
 ];
 
 export const ControlsCard = observer(() => {
-    const {gameStore} = useContext(AppContext);
+    const {simulationStore} = useContext(AppContext);
 
     return (
         <Card>
             <FormRow label="Map theme">
-                <Select onSelect={(value) => gameStore.changeRenderTheme(value as RenderStrategy)} options={renderThemes} value={gameStore.getRenderTheme()} />
+                <Select onSelect={(value) => simulationStore.changeRenderTheme(value as RenderStrategy)} options={renderThemes} value={simulationStore.getRenderTheme()} />
             </FormRow>
-            <Switch value={gameStore.isRenderingDisabled()} label="Disable rendering" onChange={(value) => gameStore.setRenderingDisabled(value)} />
+            <Switch value={simulationStore.isRenderingDisabled()} label="Disable rendering" onChange={(value) => simulationStore.setRenderingDisabled(value)} />
             <FormRow label="Step delay">
-                <RangeInput min={1} max={1000} step={1} onChange={(value) => gameStore.changeStepDelay(value)} value={gameStore.getStepDelay()} />
+                <RangeInput min={1} max={1000} step={1} onChange={(value) => simulationStore.changeStepDelay(value)} value={simulationStore.getStepDelay()} />
             </FormRow>
             <Row>
                 <Column>
-                    {gameStore.isPaused() &&
-                        <Button apperance="success" width="100%" onClick={() => gameStore.start()}>
+                    {simulationStore.isPaused() &&
+                        <Button apperance="success" width="100%" onClick={() => simulationStore.start()}>
                             <FontAwesomeIcon icon={faPlay} /> Start
                         </Button>
                     }
-                    {! gameStore.isPaused() &&
-                        <Button width="100%" onClick={() => gameStore.pause()}>
+                    {! simulationStore.isPaused() &&
+                        <Button width="100%" onClick={() => simulationStore.pause()}>
                             <FontAwesomeIcon icon={faPause} /> Pause
                         </Button>
                     }
                 </Column>
-                {gameStore.isPaused() &&
+                {simulationStore.isPaused() &&
                     <Column width={70}>
-                        <Button width="100%" onClick={() => gameStore.makeStep()}>
+                        <Button width="100%" onClick={() => simulationStore.makeStep()}>
                             <FontAwesomeIcon icon={faForwardStep} />
                         </Button>
                     </Column>

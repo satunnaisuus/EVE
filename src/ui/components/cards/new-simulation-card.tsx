@@ -12,7 +12,7 @@ import { FormRow } from "../form/form-row";
 import { NumberInput } from "../form/number-input";
 import { Select } from "../form/select";
 import { RangeInput } from "../form/range-input";
-import { GridLoopType } from "../../../game/grid-loop-type";
+import { GridLoopType } from "../../../simulation/grid-loop-type";
 
 const LoopTypes = [
     {label: 'None', value: GridLoopType.NONE},
@@ -22,8 +22,8 @@ const LoopTypes = [
 ]
 
 export const NewSimulationCard = observer(() => {
-    const {gameStore, UIStore} = useContext(AppContext);
-    const options = gameStore.getOptions();
+    const {simulationStore, UIStore} = useContext(AppContext);
+    const options = simulationStore.getOptions();
 
     return (
         <Card>
@@ -46,7 +46,7 @@ export const NewSimulationCard = observer(() => {
             </>}
             <Row>
                 <Column>
-                    <Button width="100%" onClick={() => {gameStore.newGame(); UIStore.setOptionsFormOpened(false)}}>New simulation</Button>
+                    <Button width="100%" onClick={() => {simulationStore.newSimulation(); UIStore.setOptionsFormOpened(false)}}>New simulation</Button>
                 </Column>
                 <Column width={60}>
                     <Button width="100%" onClick={() => UIStore.setOptionsFormOpened(! UIStore.getOptionsFormOpened())}>

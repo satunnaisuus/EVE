@@ -1,12 +1,12 @@
-import { GameOptions } from "../game/game-factory";
+import { SimulationOptions } from "../simulation/simulation-factory";
 
-const optionsKey = 'evo_game_options';
+const optionsKey = 'evo_simulation_options';
 
-export function loadOptions(): GameOptions {
+export function loadOptions(): SimulationOptions {
     return loadObject(optionsKey);
 }
 
-export function saveOptions(options: GameOptions): void {
+export function saveOptions(options: SimulationOptions): void {
     saveObject(optionsKey, options);
 }
 

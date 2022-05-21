@@ -5,13 +5,13 @@ import { AppContext } from "../../context";
 import { Card } from "../card";
 
 export const StatisticsCard = observer(() => {
-    const {gameStore} = useContext(AppContext);
+    const {simulationStore} = useContext(AppContext);
 
     return (
         <Card>
-            <div>Step: {gameStore.getStep()}</div>
-            <div>Steps per second: {gameStore.getStepsPerSecond()}</div>
-            <div>Organisms: {gameStore.getOrganismCount()}</div>
+            <div>Step: {simulationStore.getStep()}</div>
+            <div>Steps per second: {simulationStore.getStepsPerSecond()}</div>
+            <div>Organisms: {simulationStore.getOrganismCount()}</div>
         </Card>
     );
 });

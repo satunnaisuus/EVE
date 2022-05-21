@@ -22,7 +22,7 @@ export class EndEvent extends Event {
     }
 }
 
-export class GameEvents {
+export class SimulationEvents {
     preStep: typeof Event = Event;
     postStep: typeof Event = Event;
     step: typeof Event = Event;

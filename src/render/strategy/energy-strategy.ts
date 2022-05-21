@@ -1,9 +1,9 @@
 import { Color } from "../../common/color";
-import { CellVisitor } from "../../game/cell/cell-visitor";
-import { EmptyCell } from "../../game/cell/type/empty-cell";
-import { OrganicCell } from "../../game/cell/type/organic-cell";
-import { OrganismCell } from "../../game/cell/type/organism-cell";
-import { WallCell } from "../../game/cell/type/wall-cell";
+import { CellVisitor } from "../../simulation/cell/cell-visitor";
+import { EmptyCell } from "../../simulation/cell/type/empty-cell";
+import { OrganicCell } from "../../simulation/cell/type/organic-cell";
+import { OrganismCell } from "../../simulation/cell/type/organism-cell";
+import { WallCell } from "../../simulation/cell/type/wall-cell";
 import { DefaultStrategy } from "./default-strategy";
 
 export class EnergyStrategy extends DefaultStrategy {

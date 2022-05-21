@@ -1,8 +1,8 @@
 import { assertGreaterOrEqualThan, assertLessThan } from "../common/asserts";
 import { AbstractCell } from "./cell/abstract-cell";
 import { CellFactory } from "./cell/cell-factory";
-import { Game } from "./game";
-import { DeleteCellEvent, InsertCellEvent } from "./game-events";
+import { Simulation } from "./simulation";
+import { DeleteCellEvent, InsertCellEvent } from "./simulation-events";
 import { GridIterator } from "./grid-iterator";
 import { GridLoopType } from "./grid-loop-type";
 import { GridSize } from "./grid-size";
@@ -12,7 +12,7 @@ export class Grid {
     private cells: {[key: `${number}:${number}`]: AbstractCell} = {};
 
     constructor(
-        private game: Game,
+        private simulation: Simulation,
         private size: GridSize,
         private loop: GridLoopType,
         private cellFactory: CellFactory
@@ -40,13 +40,13 @@ export class Grid {
 
         this.cells[`${x}:${y}`] = cell;
 
-        this.game.fireEvent('insertCell', new InsertCellEvent(
+        this.simulation.fireEvent('insertCell', new InsertCellEvent(
             cell.getType()
         ));
     }
 
     delete(x: number, y: number): void {
-        this.game.fireEvent('deleteCell', new DeleteCellEvent(
+        this.simulation.fireEvent('deleteCell', new DeleteCellEvent(
             this.getCell(x, y).getType()
         ));
 

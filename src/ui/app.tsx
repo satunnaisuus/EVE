@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import * as React from "react";
 import styled from "styled-components";
 import { Flex } from "./components/flex";
-import { GameComponent } from "./components/game";
+import { SimulationComponent } from "./components/simulation";
 import { SidebarComponent } from "./components/sidebar";
 
 const StyledApp = styled.div`
@@ -15,7 +15,7 @@ const StyledApp = styled.div`
 export const App = observer(() => (
     <StyledApp>
         <Flex>
-            <GameComponent />
+            <SimulationComponent />
             <SidebarComponent />
         </Flex>
     </StyledApp>

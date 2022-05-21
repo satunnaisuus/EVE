@@ -1,8 +1,8 @@
 import { makeObservable, observable, action } from "mobx";
-import { GameParams } from "../../game/game-params";
+import { SimulationParams } from "../../simulation/simulation-params";
 
-export class GameParamsStore {
-    private params: GameParams;
+export class SimulationParamsStore {
+    private params: SimulationParams;
 
     @observable
     private organismMaxLifetime: number;
@@ -14,7 +14,7 @@ export class GameParamsStore {
     private organicsEnergy: number;
 
     constructor() {
-        this.params = new GameParams();
+        this.params = new SimulationParams();
         this.organismMaxLifetime = this.params.getOrganismMaxLifetime();
         this.photosynthesisEnergy = this.params.getPhotosynthesisEnergy();
         this.organicsEnergy = this.params.getOrganicEnergy();
@@ -52,7 +52,7 @@ export class GameParamsStore {
         this.params.setOrganicEnergy(value);
     }
 
-    getGameParams(): GameParams {
+    getGameParams(): SimulationParams {
         return this.params;
     }
 }

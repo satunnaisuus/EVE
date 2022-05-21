@@ -1,5 +1,5 @@
-import { AbstractCell } from "../game/cell/abstract-cell";
-import { Game } from "../game/game";
+import { AbstractCell } from "../simulation/cell/abstract-cell";
+import { Simulation } from "../simulation/simulation";
 import { initMouseInteractions } from "./interactions/mouse";
 import { initTouchInteractions } from "./interactions/touch";
 import { StategyInterface } from "./strategy-interface";
@@ -35,7 +35,7 @@ export class CanvasRenderer {
 
     constructor(
         private canvas: HTMLCanvasElement,
-        private game: Game,
+        private simulation: Simulation,
         renderStrategy: RenderStrategy
     ) {
         this.width = this.canvas.width;
@@ -44,12 +44,12 @@ export class CanvasRenderer {
         this.saveGridState();
         this.setRenderStrategy(renderStrategy);
         this.fitCenter();
-        this.initHandlingGameStep();
+        this.initHandlingSimulationStep();
         this.initHandlingCanvasResize();
         const clearMouseInteractions = initMouseInteractions(canvas, this);
         const clearTouchInteractions = initTouchInteractions(canvas, this);
 
-        game.subscribe('end', () => {
+        simulation.subscribe('end', () => {
             clearMouseInteractions();
             clearTouchInteractions();
         });
@@ -114,7 +114,7 @@ export class CanvasRenderer {
     }
 
     fitCenter(): void {
-        const size = this.game.getGrid().getSize();
+        const size = this.simulation.getGrid().getSize();
         const gameRatio = size.getRatio();
         const canvasRatio = this.width / this.height;
         const canvasSize = gameRatio >= canvasRatio ? this.width : this.height;
@@ -169,11 +169,11 @@ export class CanvasRenderer {
     }
 
     private saveGridState(): void {
-        this.cells = Array.from(this.game.getGrid());
+        this.cells = Array.from(this.simulation.getGrid());
     }
 
-    private initHandlingGameStep(): void {
-        this.game.subscribe('step', (e) => {
+    private initHandlingSimulationStep(): void {
+        this.simulation.subscribe('step', (e) => {
             if (this.handlingStep) {
                 this.saveGridState();
                 this.requestRedraw();

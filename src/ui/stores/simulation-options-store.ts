@@ -1,9 +1,9 @@
 import { makeObservable, observable, action } from "mobx";
-import { GameOptions } from "../../game/game-factory";
-import { GridLoopType } from "../../game/grid-loop-type";
-import { GameParamsStore } from "./game-params-store";
+import { SimulationOptions } from "../../simulation/simulation-factory";
+import { GridLoopType } from "../../simulation/grid-loop-type";
+import { SimulationParamsStore } from "./simulation-params-store";
 
-export class GameOptionsStore {
+export class SimulationOptionsStore {
     @observable
     private width: number;
 
@@ -20,9 +20,9 @@ export class GameOptionsStore {
     private initialEnergy: number;
 
     @observable
-    private params: GameParamsStore;
+    private params: SimulationParamsStore;
 
-    constructor(options: GameOptions) {
+    constructor(options: SimulationOptions) {
         this.width = options.width || 100;
         this.height = options.height || 50;
         this.population = options.population || 1;
@@ -68,7 +68,7 @@ export class GameOptionsStore {
         this.population = population;
     }
 
-    getParams(): GameParamsStore {
+    getParams(): SimulationParamsStore {
         return this.params;
     }
 
@@ -81,7 +81,7 @@ export class GameOptionsStore {
         this.initialEnergy = initialEnergy;
     }
 
-    toGameOptions(): GameOptions {
+    toGameOptions(): SimulationOptions {
         return {
             width: this.width,
             height: this.height,

@@ -1,12 +1,12 @@
 import { CellContext } from "./cell/cell-context";
 import { CellFactory } from "./cell/cell-factory";
-import { GameEvents, Event, EndEvent } from "./game-events";
-import { GameParams } from "./game-params";
+import { SimulationEvents, Event, EndEvent } from "./simulation-events";
+import { SimulationParams } from "./simulation-params";
 import { Grid } from "./grid";
 import { GridLoopType } from "./grid-loop-type";
 import { GridSize } from "./grid-size";
 
-export class Game {
+export class Simulation {
     private step: number = 0;
 
     private grid: Grid;
@@ -15,11 +15,11 @@ export class Game {
 
     private timeoutId: ReturnType<typeof setTimeout>;
 
-    private eventSubscribers: Record<keyof GameEvents, ((event: Event) => any)[]>;
+    private eventSubscribers: Record<keyof SimulationEvents, ((event: Event) => any)[]>;
 
-    private params: GameParams;
+    private params: SimulationParams;
 
-    constructor(size: GridSize, loop: GridLoopType, params: GameParams, private cellFactory: CellFactory) {
+    constructor(size: GridSize, loop: GridLoopType, params: SimulationParams, private cellFactory: CellFactory) {
         this.grid = new Grid(this, size, loop, cellFactory);
         this.params = params;
 
@@ -59,11 +59,11 @@ export class Game {
             return;
         }
 
-        const game = this;
+        const simulation = this;
 
         this.timeoutId = setTimeout(function tick() {
-            game.nextStep();
-            game.timeoutId = setTimeout(tick, game.timeoutDelay);
+            simulation.nextStep();
+            simulation.timeoutId = setTimeout(tick, simulation.timeoutDelay);
         }, this.timeoutDelay);
 
         this.fireEvent('start');
@@ -93,16 +93,16 @@ export class Game {
         this.timeoutDelay = value;
     }
 
-    subscribe<T extends keyof GameEvents>(type: T, callback: (event: Event) => any): void {
+    subscribe<T extends keyof SimulationEvents>(type: T, callback: (event: Event) => any): void {
         this.eventSubscribers[type].push(callback);
     }
 
-    fireEvent(type: keyof GameEvents, event?: Event): void {
+    fireEvent(type: keyof SimulationEvents, event?: Event): void {
         event = event || new Event();
         this.eventSubscribers[type].forEach(callback => callback(event));
     }
 
-    getParams(): GameParams {
+    getParams(): SimulationParams {
         return this.params;
     }
 
