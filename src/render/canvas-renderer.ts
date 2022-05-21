@@ -1,4 +1,7 @@
+import { AbstractCell } from "../game/cell/abstract-cell";
 import { Game } from "../game/game";
+import { initMouseInteractions } from "./interactions/mouse";
+import { initTouchInteractions } from "./interactions/touch";
 import { StategyInterface } from "./strategy-interface";
 import { DefaultStrategy } from "./strategy/default-strategy";
 import { EnergyStrategy } from "./strategy/energy-strategy";
@@ -22,13 +25,9 @@ export class CanvasRenderer {
 
     private scale: number = 1;
 
-    private offset = [0, 0];
+    private offset: [number, number] = [0, 0];
 
-    private moving = false;
-
-    private movingStart = [0, 0];
-
-    private lastStepGrid: any;
+    private cells: {x: number, y: number, cell: AbstractCell}[];
 
     private redrawId: number;
 
@@ -47,8 +46,13 @@ export class CanvasRenderer {
         this.fitCenter();
         this.initHandlingGameStep();
         this.initHandlingCanvasResize();
-        this.initHandlingScale();
-        this.initHandlingMove();
+        const clearMouseInteractions = initMouseInteractions(canvas, this);
+        const clearTouchInteractions = initTouchInteractions(canvas, this);
+
+        game.subscribe('end', () => {
+            clearMouseInteractions();
+            clearTouchInteractions();
+        });
     }
 
     enableHandlingStep(): void {
@@ -75,6 +79,10 @@ export class CanvasRenderer {
         this.context.clearRect(0, 0, this.width, this.height);
     }
 
+    getScale(): number {
+        return this.scale;
+    }
+
     setScale(scale: number): void {
         if (scale < 1) {
             this.scale = 1;
@@ -83,6 +91,26 @@ export class CanvasRenderer {
         } else {
             this.scale = Math.round(scale);
         }
+
+        this.requestRedraw();
+    }
+
+    scaleUp(): void {
+        this.setScale(this.getScale() * SCALE_FACTOR);
+    }
+
+    scaleDown(): void {
+        this.setScale(this.getScale() / SCALE_FACTOR);
+    }
+
+    getOffset(): [number, number] {
+        return this.offset;
+    }
+
+    setOffset(x: number, y: number): void {
+        this.offset = [Math.round(x), Math.round(y)];
+
+        this.requestRedraw();
     }
 
     fitCenter(): void {
@@ -99,8 +127,10 @@ export class CanvasRenderer {
             }
         }
 
-        this.offset[0] = Math.ceil((this.width - this.scale * size.getWidth()) / 2);
-        this.offset[1] = Math.ceil((this.height - this.scale * size.getHeight()) / 2);
+        this.setOffset(
+            Math.ceil((this.width - this.scale * size.getWidth()) / 2),
+            Math.ceil((this.height - this.scale * size.getHeight()) / 2)
+        );
     }
 
     requestRedraw() {
@@ -121,7 +151,7 @@ export class CanvasRenderer {
 
         this.clear();
         
-        for (const {x, y, cell} of this.lastStepGrid) {
+        for (const {x, y, cell} of this.cells) {
             const cursorX = this.offset[0] + x * this.scale;
             if (cursorX + this.scale < 0 || cursorX >= this.width) {
                 continue;
@@ -139,7 +169,7 @@ export class CanvasRenderer {
     }
 
     private saveGridState(): void {
-        this.lastStepGrid = Array.from(this.game.getGrid());
+        this.cells = Array.from(this.game.getGrid());
     }
 
     private initHandlingGameStep(): void {
@@ -164,60 +194,5 @@ export class CanvasRenderer {
         });
 
         this.resizeObserver.observe(this.canvas);
-    }
-
-    private initHandlingScale(): void {
-        this.canvas.addEventListener('wheel', (e) => {
-            const decrease = e.deltaY > 0;
-
-            if (decrease && this.scale === 1) {
-                return;
-            }
-
-            if (! decrease && this.scale === MAX_SCALE) {
-                return;
-            }
-
-            const xs = Math.round((e.clientX - this.offset[0]) / this.scale);
-            const ys = Math.round((e.clientY - this.offset[1]) / this.scale);
-
-            if (e.deltaY < 0) {
-                this.setScale(this.scale * SCALE_FACTOR);
-            } else if (this.scale > 1) {
-                this.setScale(this.scale / SCALE_FACTOR);
-            }
-
-            this.offset[0] = e.clientX - xs * this.scale;
-            this.offset[1] = e.clientY - ys * this.scale;
-
-            this.requestRedraw();
-        });
-    }
-
-    private initHandlingMove(): void {
-        this.canvas.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            this.moving = true;
-            this.movingStart = [e.clientX - this.offset[0], e.clientY - this.offset[1]];
-        });
-
-        this.canvas.addEventListener('mouseup', (e) => {
-            this.moving = false;
-        });
-
-        this.canvas.addEventListener('mousemove', (e) => {
-            e.preventDefault();
-
-            if (! this.moving) {
-                return;
-            }
-
-            this.offset = [
-                e.clientX - this.movingStart[0],
-                e.clientY - this.movingStart[1],
-            ];
-
-            this.requestRedraw();
-        });
     }
 }

@@ -16,6 +16,12 @@ export class DeleteCellEvent extends Event {
     }
 }
 
+export class EndEvent extends Event {
+    constructor(public type: string) {
+        super();
+    }
+}
+
 export class GameEvents {
     preStep: typeof Event = Event;
     postStep: typeof Event = Event;
@@ -24,4 +30,5 @@ export class GameEvents {
     pause: typeof Event = Event;
     deleteCell: typeof DeleteCellEvent = DeleteCellEvent;
     insertCell: typeof InsertCellEvent = InsertCellEvent;
+    end: typeof InsertCellEvent = InsertCellEvent;
 }

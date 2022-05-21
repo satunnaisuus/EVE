@@ -1,6 +1,6 @@
 import { CellContext } from "./cell/cell-context";
 import { CellFactory } from "./cell/cell-factory";
-import { GameEvents, Event } from "./game-events";
+import { GameEvents, Event, EndEvent } from "./game-events";
 import { GameParams } from "./game-params";
 import { Grid } from "./grid";
 import { GridLoopType } from "./grid-loop-type";
@@ -31,6 +31,7 @@ export class Game {
             pause: [],
             deleteCell: [],
             insertCell: [],
+            end: [],
         };
     }
 
@@ -103,5 +104,10 @@ export class Game {
 
     getParams(): GameParams {
         return this.params;
+    }
+
+    end(): void {
+        this.pause();
+        this.fireEvent('end');
     }
 }

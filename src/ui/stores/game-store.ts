@@ -62,7 +62,7 @@ export class GameStore {
 
     @action
     newGame(): void {
-        this.game && this.game.pause();
+        this.game && this.game.end();
         this.paused = true;
         this.game = this.gameFactory(this.options.toGameOptions(), this.params.getGameParams());
         this.game.setTimeoutDelay(this.stepDelay);
