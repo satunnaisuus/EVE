@@ -1,178 +1,83 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
-import { Simulation } from "../../simulation/simulation";
-import { DeleteCellEvent } from "../../simulation/simulation-events";
-import { createSimulation, SimulationOptions } from "../../simulation/simulation-factory";
-import { CanvasRenderer, RenderStrategy } from "../../render/canvas-renderer";
+import { createSimulation } from "../../simulation/factory";
+import { Simulation, StateEvent } from "../../simulation/simulation";
+import { SimulationOptions } from "../../simulation/types/simulation-options";
+import { WorkerSimulation } from "../../simulation/worker-simulation";
 import { saveOptions } from "../storage";
+import { CanvasRenderer } from "./canvas-renderer";
 import { SimulationOptionsStore } from "./simulation-options-store";
-import { SimulationParamsStore } from "./simulation-params-store";
 
 export class SimulationStore {
-    private game: Simulation;
-
-    private renderer: CanvasRenderer;
-
-    private canvas: HTMLCanvasElement;
-
-    @observable
-    private rendererTheme: RenderStrategy = 'default';
-
-    @observable
-    private renderingDisabled: boolean = false;
-
     @observable
     private paused: boolean = true;
 
     @observable
-    private stepDelay: number = 50;
-
-    @observable
-    private step: number = 0;
-
-    @observable
-    private stepsPerSecond: number = 0;
-
-    private stepsPreviusPeriod: number = 0;
-
-    @observable
-    private organismCount: number = 0;
-
-    @observable
     private options: SimulationOptionsStore;
 
-    @observable
-    private params: SimulationParamsStore;
+    private state: StateEvent;
+
+    private simulation: Simulation;
+
+    private renderer: CanvasRenderer;
 
     constructor(
-        private gameFactory: typeof createSimulation,
         options: SimulationOptions
     ) {
         makeObservable(this);
 
         this.options = new SimulationOptionsStore(options);
-        this.params = new SimulationParamsStore();
+        this.renderer = new CanvasRenderer(this);
 
         this.newSimulation();
-
-        setInterval(() => runInAction(() => {
-            this.stepsPerSecond = (this.step - this.stepsPreviusPeriod);
-            this.stepsPreviusPeriod = this.step;
-        }), 1000);
     }
 
     @action
     newSimulation(): void {
-        this.game && this.game.end();
+        this.simulation && this.simulation.terminate();
         this.paused = true;
-        this.game = this.gameFactory(this.options.toGameOptions(), this.params.getGameParams());
-        this.game.setTimeoutDelay(this.stepDelay);
-        this.newRenderer();
-        this.setRenderingDisabled(false);
-        this.step = 0;
-        this.stepsPreviusPeriod = 0;
-        this.stepsPerSecond = 0;
-        this.organismCount = 0;
 
-        for (const {cell} of this.game.getGrid()) {
-            cell.getType() === 'organism' && this.organismCount++;
-        }
+        createSimulation(this.options.toGameOptions()).then((simulation) => {
+            this.simulation = simulation;
 
-        this.game.subscribe('postStep', (event) => runInAction(() => {this.step = this.game.getStep()}));
-        this.game.subscribe('deleteCell', (event: DeleteCellEvent) => runInAction(() => {
-            event.type === 'organism' && this.organismCount--;
-        }));
-        this.game.subscribe('insertCell', (event: DeleteCellEvent) => runInAction(() => {
-            event.type === 'organism' && this.organismCount++;
-        }));
+            simulation.addEventListener('state', (ev) => {
+                this.renderer.setState(ev);
+            });
+            
+            simulation.addEventListener('step', () => {
+                this.simulation.requestState(['energy']);
+            });
+
+            simulation.requestState(['energy']);
+        });
+        
         saveOptions(this.options.toGameOptions());
-    }
-
-    getGame(): Simulation {
-        return this.game;
-    }
-
-    setCanvas(canvas: HTMLCanvasElement): void {
-        if (! this.canvas) {
-            this.canvas = canvas;
-            this.newRenderer();
-        }
-    }
-
-    @action
-    changeRenderTheme(theme: RenderStrategy): void {
-        this.rendererTheme = theme;
-        if (this.renderer) {
-            this.renderer.setRenderStrategy(theme);
-        }
-    }
-
-    getRenderTheme(): RenderStrategy {
-        return this.rendererTheme;
     }
 
     @action
     pause(): void {
         this.paused = true;
-        this.game && this.game.pause();
+        this.simulation.pause();
     }
 
     @action
     start(): void {
         this.paused = false;
-        this.game && this.game.start();
+        this.simulation.start();
     }
 
     isPaused(): boolean {
         return this.paused;
     }
 
-    isRenderingDisabled(): boolean {
-        return this.renderingDisabled;
-    }
-
-    @action
-    setRenderingDisabled(value: boolean): void {
-        this.renderingDisabled = value;
-        this.renderer && (value ? this.renderer.disableHandlingStep() : this.renderer.enableHandlingStep())
-    }
-
-    @action
-    changeStepDelay(delay: number): void {
-        this.stepDelay = delay;
-        this.game && this.game.setTimeoutDelay(delay);
-    }
-
-    getStepDelay(): number {
-        return this.stepDelay;
-    }
-
-    getStep(): number {
-        return this.step;
-    }
-
-    getStepsPerSecond(): number {
-        return this.stepsPerSecond;
-    }
-
-    getOrganismCount(): number {
-        return this.organismCount;
-    }
-
     makeStep(): void {
-        this.game && this.game.nextStep();
+        this.simulation.step();
     }
 
     getOptions(): SimulationOptionsStore {
         return this.options;
     }
 
-    getParams(): SimulationParamsStore {
-        return this.params;
-    }
-
-    private newRenderer(): void {
-        if (this.game && this.canvas) {
-            this.renderer = new CanvasRenderer(this.canvas, this.game, this.rendererTheme);
-        }
+    getRenderer(): CanvasRenderer {
+        return this.renderer;
     }
 }

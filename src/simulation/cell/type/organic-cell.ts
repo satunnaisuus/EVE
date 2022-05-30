@@ -9,4 +9,10 @@ export class OrganicCell extends AbstractCell {
     visit(visitor: CellVisitor): void {
         visitor.visitOrganic(this);
     }
+    
+    serialize() {
+        return {
+            type: 'organic',
+        }
+    }
 }

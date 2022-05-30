@@ -17,7 +17,7 @@ export const SimulationComponent = observer(() => {
     const {simulationStore} = useContext(AppContext);
 
     useEffect(() => {
-        simulationStore.setCanvas(canvasRef.current);
+        simulationStore.getRenderer().setCanvas(canvasRef.current);
         return () => {};
     }, [canvasRef.current]);
 

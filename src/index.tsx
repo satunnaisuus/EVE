@@ -1,6 +1,5 @@
 import * as React from "react";
 import { createRoot } from 'react-dom/client';
-import { createSimulation } from "./simulation/simulation-factory";
 import { App } from "./ui/app";
 import { AppContext } from "./ui/context";
 import { loadOptions } from "./ui/storage";
@@ -9,7 +8,7 @@ import { UIStore } from "./ui/stores/ui-store";
 import { GlobalStyle } from "./ui/styles";
 
 const stores = {
-    simulationStore: new SimulationStore(createSimulation, loadOptions()),
+    simulationStore: new SimulationStore(loadOptions()),
     UIStore: new UIStore(),
 };
 const root = createRoot(document.getElementById('root')!);

@@ -18,4 +18,6 @@ export abstract class AbstractCell {
     }
 
     abstract getType(): string;
+
+    abstract serialize(): any;
 }

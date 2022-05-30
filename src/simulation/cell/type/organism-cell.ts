@@ -54,7 +54,7 @@ export class OrganismCell extends AbstractCell {
         }
 
         const offsetByDirection = getOffset(this.direction);
-        const cell = context.getByOffest(...offsetByDirection);
+        const cell = context.getByOffest(offsetByDirection[0], offsetByDirection[1]);
         const action = this.genome.getAction(this, cell);
 
         if (action === OrganismAction.STEP) {
@@ -87,7 +87,8 @@ export class OrganismCell extends AbstractCell {
     }
 
     makeStep(context: CellContext): void {
-        context.moveByOffest(...getOffset(this.direction));
+        const offset = getOffset(this.direction);
+        context.moveByOffest(offset[0], offset[1]);
         this.changeEnergy(-1);
     }
 
@@ -95,7 +96,7 @@ export class OrganismCell extends AbstractCell {
         for (const direction in Direction) {
             const offset = getOffset(Direction[direction as keyof typeof Direction]);
             if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
-                context.moveByOffest(...offset);
+                context.moveByOffest(offset[0], offset[1]);
                 this.changeEnergy(Math.floor(this.energy / -2));
                 context.replace((factory: CellFactory) => factory.createOrganism(this.color, this.genome.clone(), this.energy));
                 return;
@@ -105,7 +106,7 @@ export class OrganismCell extends AbstractCell {
 
     attact(context: CellContext): void {
         const offset = getOffset(this.direction);
-        const victim = context.getByOffest(...offset);
+        const victim = context.getByOffest(offset[0], offset[1]);
         const self = this;
 
         victim.visit(new class extends CellVisitor {
@@ -121,13 +122,13 @@ export class OrganismCell extends AbstractCell {
 
     eat(context: CellContext, params: SimulationParams): void {
         const offset = getOffset(this.direction);
-        const food = context.getByOffest(...offset);
+        const food = context.getByOffest(offset[0], offset[1]);
         const self = this;
 
         food.visit(new class extends CellVisitor {
             visitOrganic(cell: OrganicCell): void {
-                context.deleteByOffset(...offset);
-                context.moveByOffest(...offset);
+                context.deleteByOffset(offset[0], offset[1]);
+                context.moveByOffest(offset[0], offset[1]);
                 self.changeEnergy(params.getOrganicEnergy());
             }
         });
@@ -162,5 +163,15 @@ export class OrganismCell extends AbstractCell {
 
     getColor(): Color {
         return this.color;
+    }
+    
+    serialize() {
+        return {
+            type: 'organism',
+            lifetime: this.lifetime,
+            energy: this.energy,
+            color: this.color.toHexFormat(),
+            direction: this.direction.toString(),
+        }
     }
 }

@@ -1,7 +1,6 @@
 import { makeObservable, observable, action } from "mobx";
-import { SimulationOptions } from "../../simulation/simulation-factory";
-import { GridLoopType } from "../../simulation/grid-loop-type";
-import { SimulationParamsStore } from "./simulation-params-store";
+import { GridLoopType } from "../../simulation/types/grid-loop-type";
+import { SimulationOptions } from "../../simulation/types/simulation-options";
 
 export class SimulationOptionsStore {
     @observable
@@ -18,9 +17,6 @@ export class SimulationOptionsStore {
 
     @observable
     private initialEnergy: number;
-
-    @observable
-    private params: SimulationParamsStore;
 
     constructor(options: SimulationOptions) {
         this.width = options.width || 100;
@@ -66,10 +62,6 @@ export class SimulationOptionsStore {
     @action
     setPopulation(population: number): void {
         this.population = population;
-    }
-
-    getParams(): SimulationParamsStore {
-        return this.params;
     }
 
     getInitialEnergy(): number {

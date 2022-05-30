@@ -1,113 +1,108 @@
-import { CellContext } from "./cell/cell-context";
-import { CellFactory } from "./cell/cell-factory";
-import { SimulationEvents, Event, EndEvent } from "./simulation-events";
-import { SimulationParams } from "./simulation-params";
-import { Grid } from "./grid";
-import { GridLoopType } from "./grid-loop-type";
-import { GridSize } from "./grid-size";
+import { CellType } from "./types/cells";
+import { GridLoopType } from "./types/grid-loop-type";
+import { SimulationOptions } from "./types/simulation-options";
 
-export class Simulation {
-    private step: number = 0;
+export interface SimulationState {
+    step: number;
+    id: string;
+    grid: CellType[][];
+}
 
-    private grid: Grid;
+export class SimulationEvent {
+    constructor() {
+        
+    }
+}
 
-    private timeoutDelay: number = 40;
+export class StepEvent extends SimulationEvent {
+    constructor(
+        public readonly step: number
+    ) {
+        super();
+    }
+}
 
-    private timeoutId: ReturnType<typeof setTimeout>;
+export class StateEvent extends SimulationEvent {
+    constructor(
+        public readonly step: number,
+        public readonly buffer: ArrayBufferLike,
+        public readonly payload: CellPayload[],
+    ) {
+        super();
+    }
+}
 
-    private eventSubscribers: Record<keyof SimulationEvents, ((event: Event) => any)[]>;
+export interface SimulationEventMap {
+    init: SimulationEvent,
+    pause: SimulationEvent,
+    terminate: SimulationEvent,
+    start: SimulationEvent,
+    step: StepEvent,
+    state: StateEvent
+};
 
-    private params: SimulationParams;
+export type CellPayload = 'energy' | 'lifetime' | 'direction';
 
-    constructor(size: GridSize, loop: GridLoopType, params: SimulationParams, private cellFactory: CellFactory) {
-        this.grid = new Grid(this, size, loop, cellFactory);
-        this.params = params;
+export abstract class Simulation {
+    protected options: SimulationOptions;
 
-        this.eventSubscribers = {
-            preStep: [],
-            postStep: [],
-            step: [],
-            start: [],
-            pause: [],
-            deleteCell: [],
-            insertCell: [],
-            end: [],
-        };
+    private eventListeners: {[key: string]: ((ev: SimulationEvent) => any)[]} = {};
+
+    abstract start(): void;
+
+    abstract pause(): void;
+
+    abstract terminate(): void;
+
+    abstract requestState(payload: CellPayload[]): void;
+
+    abstract step(): void;
+
+    constructor(options: SimulationOptions) {
+        this.options = Object.assign({
+            width: 200,
+            height: 100,
+            loop: GridLoopType.NONE,
+            population: 5,
+            initialEnergy: 70,
+        }, options);
     }
 
-    nextStep(): void {
-        this.fireEvent('preStep');
+    getOptions(): SimulationOptions {
+        return this.options;
+    }
 
-        for (const {x, y, cell} of this.grid) {
-            if (! cell.isStatic()) {
-                cell.update(
-                    new CellContext(this.grid, x, y, this.cellFactory),
-                    this.params
-                );
-            }
+    addEventListener<K extends keyof SimulationEventMap>(type: K, listener: (ev: SimulationEventMap[K]) => any): () => void {
+        if (! this.eventListeners[type]) {
+            this.eventListeners[type] = [];
         }
 
-        this.fireEvent('step');
+        this.eventListeners[type].push(listener);
 
-        this.step++;
-
-        this.fireEvent('postStep');
+        return () => this.removeEventListener(type, listener);
     }
 
-    start(): void {
-        if (this.timeoutId) {
+    removeEventListener<K extends keyof SimulationEventMap>(type: K, listener: (ev: SimulationEventMap[K]) => any): void {
+        if (! this.eventListeners[type]) {
             return;
         }
 
-        const simulation = this;
+        const index = this.eventListeners[type].findIndex((value) => value === listener);
 
-        this.timeoutId = setTimeout(function tick() {
-            simulation.nextStep();
-            simulation.timeoutId = setTimeout(tick, simulation.timeoutDelay);
-        }, this.timeoutDelay);
-
-        this.fireEvent('start');
-    }
-
-    pause(): void {
-        if (this.timeoutId) {
-            clearTimeout(this.timeoutId);
-            this.timeoutId = null;
-            this.fireEvent('pause');
+        if (index === -1) {
+            return;
         }
+
+        this.eventListeners[type] = this.eventListeners[type].splice(index, 1);
     }
 
-    getGrid(): Grid {
-        return this.grid;
-    }
-
-    getStep(): number {
-        return this.step;
-    }
-
-    getCellFactory(): CellFactory {
-        return this.cellFactory;
-    }
-
-    setTimeoutDelay(value: number): void {
-        this.timeoutDelay = value;
-    }
-
-    subscribe<T extends keyof SimulationEvents>(type: T, callback: (event: Event) => any): void {
-        this.eventSubscribers[type].push(callback);
-    }
-
-    fireEvent(type: keyof SimulationEvents, event?: Event): void {
-        event = event || new Event();
-        this.eventSubscribers[type].forEach(callback => callback(event));
-    }
-
-    getParams(): SimulationParams {
-        return this.params;
-    }
-
-    end(): void {
-        this.pause();
-        this.fireEvent('end');
+    protected emit<K extends keyof SimulationEventMap>(type: K, event: SimulationEventMap[K]) {
+        const listeners = this.eventListeners[type];
+        
+        if (listeners) {
+            for (const listener of listeners) {
+                listener(event);
+            }
+        }
     }
 }

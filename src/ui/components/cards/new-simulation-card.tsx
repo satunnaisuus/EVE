@@ -12,7 +12,7 @@ import { FormRow } from "../form/form-row";
 import { NumberInput } from "../form/number-input";
 import { Select } from "../form/select";
 import { RangeInput } from "../form/range-input";
-import { GridLoopType } from "../../../simulation/grid-loop-type";
+import { GridLoopType } from "../../../simulation/types/grid-loop-type";
 
 const LoopTypes = [
     {label: 'None', value: GridLoopType.NONE},

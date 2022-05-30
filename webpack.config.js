@@ -5,6 +5,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.worker\.ts$/,
+        loader: 'worker-loader'
+      },
+      {
         test: /\.tsx?$/,
         use: ['ts-loader'],
         exclude: /node_modules/,
@@ -20,7 +24,7 @@ module.exports = {
             }
           }
         ]
-      }
+      },
     ]
   },
   resolve: {
@@ -40,5 +44,12 @@ module.exports = {
         },
       },
     },
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    compress: true,
+    port: 9000,
   },
 };

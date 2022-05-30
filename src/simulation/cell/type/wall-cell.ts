@@ -9,4 +9,10 @@ export class WallCell extends AbstractCell {
     visit(visitor: CellVisitor): void {
         visitor.visitWall(this);
     }
+    
+    serialize() {
+        return {
+            type: 'wall',
+        }
+    }
 }

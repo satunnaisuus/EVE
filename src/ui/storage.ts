@@ -1,4 +1,4 @@
-import { SimulationOptions } from "../simulation/simulation-factory";
+import { SimulationOptions } from "../simulation/types/simulation-options";
 
 const optionsKey = 'evo_simulation_options';
 

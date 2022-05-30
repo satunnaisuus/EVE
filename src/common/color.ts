@@ -38,8 +38,8 @@ export class Color {
     }
 
     mix(to: Color, percent: number): Color {
-        assertGreaterOrEqualThan(percent, 0);
-        assertLessOrEqualThan(percent, 1);
+        //assertGreaterOrEqualThan(percent, 0);
+        //assertLessOrEqualThan(percent, 1);
 
         return new Color(
             Math.round(this.red * percent + to.getRed() * (1 - percent)),
@@ -56,6 +56,10 @@ export class Color {
         return this.blue === color.getBlue()
             && this.red === color.getRed()
             && this.green === color.getGreen();
+    }
+
+    toArray(): [number, number, number] {
+        return [this.red, this.green, this.blue];
     }
 
     static random(): Color {

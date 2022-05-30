@@ -13,4 +13,10 @@ export class EmptyCell extends AbstractCell {
     isEmpty(): boolean {
         return true;
     }
+
+    serialize() {
+        return {
+            type: 'empty',
+        }
+    }
 }

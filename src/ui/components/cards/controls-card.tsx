@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { useContext } from "react";
-import { RenderStrategy } from "../../../render/canvas-renderer";
 import { AppContext } from "../../context";
 import { Button } from "../button";
 import { Card } from "../card";
@@ -13,7 +12,6 @@ import { Row } from "../layout/row";
 import { Column } from "../layout/column";
 import { FormRow } from "../form/form-row";
 import { Select } from "../form/select";
-import { RangeInput } from "../form/range-input";
 import { Switch } from "../form/switch";
 
 const renderThemes = [
@@ -27,13 +25,6 @@ export const ControlsCard = observer(() => {
 
     return (
         <Card>
-            <FormRow label="Map theme">
-                <Select onSelect={(value) => simulationStore.changeRenderTheme(value as RenderStrategy)} options={renderThemes} value={simulationStore.getRenderTheme()} />
-            </FormRow>
-            <Switch value={simulationStore.isRenderingDisabled()} label="Disable rendering" onChange={(value) => simulationStore.setRenderingDisabled(value)} />
-            <FormRow label="Step delay">
-                <RangeInput min={1} max={1000} step={1} onChange={(value) => simulationStore.changeStepDelay(value)} value={simulationStore.getStepDelay()} />
-            </FormRow>
             <Row>
                 <Column>
                     {simulationStore.isPaused() &&

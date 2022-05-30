@@ -1,4 +1,4 @@
-import { CanvasRenderer } from "../canvas-renderer";
+import { CanvasRenderer } from "../stores/canvas-renderer";
 
 export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
     let moving = false;

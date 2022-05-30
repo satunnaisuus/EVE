@@ -1,4 +1,4 @@
-import { CanvasRenderer } from "../canvas-renderer";
+import { CanvasRenderer } from "../stores/canvas-renderer";
 
 const TOUCH_SCALE_BUFFER_LIMIT = 20;
 
