@@ -1,6 +1,6 @@
 import { CommonSimulation } from "./common-simulation";
 import { Simulation } from "./simulation";
-import { CommandInit, CommandPause, CommandRequestState, CommandStart, CommandStep, WorkerCommand, WorkerResponse } from "./types/worker-commands";
+import { CommandInit, CommandRequestState, CommandStep, WorkerCommand } from "./types/worker-commands";
 
 const ctx: Worker = self as any;
 
@@ -14,29 +14,25 @@ const handlers = {
 
         simulation = new CommonSimulation(request.options);
 
-        simulation.addEventListener('start', (ev) => ctx.postMessage({type: 'start'}));
-        simulation.addEventListener('pause', (ev) => ctx.postMessage({type: 'pause'}));
-        simulation.addEventListener('step', (ev) => ctx.postMessage({type: 'step', step: ev.step}));
-        simulation.addEventListener('state', (ev) => ctx.postMessage({
-            type: 'state',
-            step: ev.step,
-            buffer: ev.buffer,
-            payload: ev.payload,
-        }, [ev.buffer]));
-
         ctx.postMessage({type: 'init'});
     },
-    start: (request: CommandStart) => {
-        simulation.start();
-    },
-    pause: (request: CommandPause) => {
-        simulation.pause();
-    },
+
     step: (request: CommandStep) => {
-        simulation.step();
+        simulation.step().then((step) => {
+            ctx.postMessage({type: 'step', step: step, id: request.id})
+        });
     },
+
     requestState: (request: CommandRequestState) => {
-        simulation.requestState(request.payload);
+        simulation.getState(request.payload).then((data) => {
+            ctx.postMessage({
+                id: request.id,
+                type: 'state',
+                step: data.step,
+                buffer: data.buffer,
+                payload: data.payload,
+            }, [data.buffer]);
+        });
     }
 }
 
@@ -44,10 +40,6 @@ ctx.addEventListener("message", (event: MessageEvent<WorkerCommand>) => {
     switch (event.data.type) {
         case 'init':
             return handlers.init(event.data);
-        case 'start':
-            return handlers.start(event.data);
-        case 'pause':
-            return handlers.pause(event.data);
         case 'step':
             return handlers.step(event.data);
         case 'requestState':

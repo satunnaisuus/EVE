@@ -1,11 +1,12 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
 import { createSimulation } from "../../simulation/factory";
-import { Simulation, StateEvent } from "../../simulation/simulation";
+import { Simulation, StepData } from "../../simulation/simulation";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
-import { WorkerSimulation } from "../../simulation/worker-simulation";
 import { saveOptions } from "../storage";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SimulationOptionsStore } from "./simulation-options-store";
+
+const TIMEOUT_DELAY = 4;
 
 export class SimulationStore {
     @observable
@@ -14,11 +15,11 @@ export class SimulationStore {
     @observable
     private options: SimulationOptionsStore;
 
-    private state: StateEvent;
-
     private simulation: Simulation;
 
     private renderer: CanvasRenderer;
+
+    private timeoutId: ReturnType<typeof setTimeout>;
 
     constructor(
         options: SimulationOptions
@@ -33,21 +34,15 @@ export class SimulationStore {
 
     @action
     newSimulation(): void {
+        this.pause();
         this.simulation && this.simulation.terminate();
-        this.paused = true;
 
         createSimulation(this.options.toGameOptions()).then((simulation) => {
             this.simulation = simulation;
 
-            simulation.addEventListener('state', (ev) => {
-                this.renderer.setState(ev);
+            simulation.getState(['energy']).then((data) => {
+                this.renderer.setState(data);
             });
-            
-            simulation.addEventListener('step', () => {
-                this.simulation.requestState(['energy']);
-            });
-
-            simulation.requestState(['energy']);
         });
         
         saveOptions(this.options.toGameOptions());
@@ -56,13 +51,31 @@ export class SimulationStore {
     @action
     pause(): void {
         this.paused = true;
-        this.simulation.pause();
+        clearTimeout(this.timeoutId);
+        this.timeoutId = null;
     }
 
     @action
     start(): void {
+        if (this.timeoutId) {
+            return;
+        }
+
         this.paused = false;
-        this.simulation.start();
+        
+        const tick = () => {
+            this.simulation.step().then((step) => {
+                this.simulation.getState(['energy']).then((data: StepData) => {
+                    this.renderer.setState(data);
+                    if (! this.paused) {
+                        this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
+                    }
+                });
+            });
+            
+        }
+
+        this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
     }
 
     isPaused(): boolean {
@@ -70,7 +83,11 @@ export class SimulationStore {
     }
 
     makeStep(): void {
-        this.simulation.step();
+        this.simulation.step().then((step) => {
+            this.simulation.getState(['energy']).then((data: StepData) => {
+                this.renderer.setState(data);
+            });
+        });
     }
 
     getOptions(): SimulationOptionsStore {

@@ -1,60 +1,69 @@
-import { CellPayload, Simulation, SimulationEvent, StateEvent, StepEvent } from "./simulation";
+import { CellPayload, Simulation, StepData } from "./simulation";
 import { SimulationOptions } from "./types/simulation-options";
 import { WorkerResponse } from "./types/worker-commands";
 import SimulationWorker from './simulation.worker.ts';
 
 export class WorkerSimulation extends Simulation {
     private worker: SimulationWorker;
-    
-    private constructor(options: SimulationOptions) {
+
+    private lastRequestId = 0;
+
+    private messageListeners: {
+        step: {[key: number]: (step: number) => void},
+        state: {[key: number]: (data: StepData) => void},
+    } = {
+        step: {},
+        state: {},
+    };
+
+    private constructor(options: SimulationOptions, onInit: (simulation: WorkerSimulation) => any) {
         super(options);
+
         this.worker = new SimulationWorker();
-
         this.worker.postMessage({type: 'init', options: options});
-
         this.worker.addEventListener('message', (ev: MessageEvent<WorkerResponse>) => {
             switch (ev.data.type) {
                 case 'init':
-                    return this.emit('init', new SimulationEvent());
-                case 'start':
-                    return this.emit('start', new SimulationEvent());
-                case 'pause':
-                    return this.emit('pause', new SimulationEvent());
+                    return onInit(this);
+
                 case 'step':
-                    return this.emit('step', new StepEvent(ev.data.step));
+                    this.messageListeners.step[ev.data.id](ev.data.step);
+                    delete this.messageListeners.step[ev.data.id];
+                    return;
+
                 case 'state':
-                    return this.emit('state', new StateEvent(ev.data.step, ev.data.buffer, ev.data.payload));
+                    this.messageListeners.state[ev.data.id](
+                        new StepData(ev.data.step, ev.data.buffer, ev.data.payload)
+                    );
+                    delete this.messageListeners.state[ev.data.id];
+                    return;
             }
         });
     }
 
-    static async create(options: SimulationOptions): Promise<WorkerSimulation> {
+    static create(options: SimulationOptions): Promise<WorkerSimulation> {
         return new Promise((resolve) => {
-            const simulation = new WorkerSimulation(options);
-            simulation.addEventListener('init', () => resolve(simulation));
+            new WorkerSimulation(options, (simulation) => resolve(simulation));
         });
-    }
-
-    start(): void {
-        this.worker.postMessage({type: 'start'});
-        this.emit('start', new SimulationEvent());
-    }
-
-    pause(): void {
-        this.worker.postMessage({type: 'pause'});
-        this.emit('pause', new SimulationEvent());
     }
 
     terminate(): void {
         this.worker.terminate();
-        this.emit('terminate', new SimulationEvent());
     }
 
-    step(): void {
-        this.worker.postMessage({type: 'step'});
+    step(): Promise<number> {
+        return new Promise((resolve) => {
+            const id = this.lastRequestId++;
+            this.messageListeners.step[id] = resolve;
+            this.worker.postMessage({id: id, type: 'step'});
+        });
     }
 
-    requestState(payload: CellPayload[]): void {
-        this.worker.postMessage({type: 'requestState', payload: payload});
+    getState(payload: CellPayload[]): Promise<StepData> {
+        return new Promise((resolve) => {
+            const id = this.lastRequestId++;
+            this.messageListeners.state[id] = resolve;
+            this.worker.postMessage({id: id, type: 'requestState', payload: payload});
+        });
     }
 }

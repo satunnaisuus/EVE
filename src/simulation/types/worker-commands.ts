@@ -6,57 +6,41 @@ export interface CommandInit {
     options: SimulationOptions;
 }
 
-export interface CommandStart {
-    type: 'start';
-}
-
-export interface CommandPause {
-    type: 'pause';
-}
-
 export interface CommandStep {
+    id: number;
     type: 'step';
 }
 
 export interface CommandRequestState {
+    id: number;
     type: 'requestState';
     payload: CellPayload[];
 }
 
 export type WorkerCommand =
     | CommandInit
-    | CommandStart
-    | CommandPause
     | CommandStep
     | CommandRequestState;
-
-export interface ResponseStart {
-    type: 'start';
-}
 
 export interface ResponseInit {
     type: 'init';
 }
 
-export interface ResponsePause {
-    type: 'pause';
-}
-
 export interface ResponseStep {
+    id: number;
     type: 'step';
-    step: number,
+    step: number;
 }
 
 export interface ResponseState {
+    id: number;
     type: 'state';
-    step: number,
-    payload: CellPayload[],
-    buffer: ArrayBufferLike,
+    step: number;
+    payload: CellPayload[];
+    buffer: ArrayBufferLike;
 }
 
 export type WorkerResponse =
-    | ResponseStart
-    | ResponsePause
     | ResponseStep
     | ResponseState
     | ResponseInit;

@@ -1,7 +1,7 @@
 import { Renderer } from "../../renderer/renderer";
 import { WorkerRenderer } from "../../renderer/worker-renderer";
 import { Data } from "../../simulation/data";
-import { StateEvent } from "../../simulation/simulation";
+import { StepData } from "../../simulation/simulation";
 import { initMouseInteractions } from "../interactions/mouse";
 import { initTouchInteractions } from "../interactions/touch";
 import { SimulationStore } from "./simulation-store";
@@ -18,7 +18,7 @@ export class CanvasRenderer {
 
     private offset: [number, number] = [0, 0];
 
-    private state: StateEvent;
+    private state: StepData;
 
     private redrawId: number;
 
@@ -124,12 +124,12 @@ export class CanvasRenderer {
         this.requestRedraw();
     }
 
-    setState(state: StateEvent): void {
+    setState(state: StepData): void {
         this.state = state;
         this.requestRedraw();
     }
 
-    private async render(): Promise<ImageData> {
+    private render(): Promise<ImageData> {
         return new Promise((resolve, reject) => {
             if (! this.canvas) {
                 return reject('canvas is null');
