@@ -13,6 +13,11 @@ const Apperance = {
         boderColor: '#30b47b',
         textColor: '#fff',
     },
+    secondary: {
+        backgroundColor: '#3e3e3e',
+        boderColor: '#3e3e3e',
+        textColor: '#fff',
+    },
 };
 
 type Props = {
@@ -28,7 +33,7 @@ const StyledButton = styled.button<Props>`
     color: #fff;
     border-radius: 10px;
     cursor: pointer;
-    padding: 10px;
+    padding: 10px 15px;
     ${({width}) => width && `width: ${width};`}
     ${({apperance}) => {
         const styles = Apperance[apperance || 'default'];

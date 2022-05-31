@@ -1,4 +1,3 @@
-import { GridLoopType } from "./types/grid-loop-type";
 import { SimulationOptions } from "./types/simulation-options";
 
 export class StepData {
@@ -13,16 +12,8 @@ export class StepData {
 export type CellPayload = 'energy' | 'lifetime' | 'direction';
 
 export abstract class Simulation {
-    protected options: SimulationOptions;
-
-    constructor(options: SimulationOptions) {
-        this.options = Object.assign({
-            width: 200,
-            height: 100,
-            loop: GridLoopType.NONE,
-            population: 5,
-            initialEnergy: 70,
-        }, options);
+    constructor(protected options: SimulationOptions) {
+        
     }
 
     abstract getState(payload: CellPayload[]): Promise<StepData>;

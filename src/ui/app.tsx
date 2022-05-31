@@ -1,9 +1,12 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
+import { useContext } from "react";
 import styled from "styled-components";
-import { Flex } from "./components/flex";
 import { SimulationComponent } from "./components/simulation";
-import { SidebarComponent } from "./components/sidebar";
+import { AppContext } from "./context";
+import { CreateSimulationForm } from "./components/create-simulation-form";
+import { loadOptions } from "./storage";
+import { SimulationStore } from "./stores/simulation-store";
 
 const StyledApp = styled.div`
     height: 100vh;
@@ -12,11 +15,21 @@ const StyledApp = styled.div`
     color: #fff;
 `;
 
-export const App = observer(() => (
-    <StyledApp>
-        <Flex>
-            <SimulationComponent />
-            <SidebarComponent />
-        </Flex>
-    </StyledApp>
-));
+const View = observer(() => {
+    const store = useContext(AppContext);
+    const simulation = store.getSimulation();
+
+    if (simulation) {
+        return <SimulationComponent simulation={simulation} />;
+    }
+
+    return <CreateSimulationForm options={loadOptions()} onCreate={(options) => store.newSimulation(options)} />;
+});
+
+export const App = observer(() => {
+    return (
+        <StyledApp>
+            <View />
+        </StyledApp>
+    );
+});

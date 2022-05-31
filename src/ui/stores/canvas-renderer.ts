@@ -22,7 +22,7 @@ export class CanvasRenderer {
 
     private redrawId: number;
 
-    private renderer: Renderer;
+    private renderer: WorkerRenderer;
 
     private canvasDestroyListeners: (() => any)[] = [];
 
@@ -102,8 +102,8 @@ export class CanvasRenderer {
 
         const canvasWidth = this.canvas.width;
         const canvasHeight = this.canvas.height;
-        const simulationWidth = this.simulation.getOptions().getWidth();
-        const simulationHeight = this.simulation.getOptions().getHeight();
+        const simulationWidth = this.simulation.getOptions().width;
+        const simulationHeight = this.simulation.getOptions().height;
         const gameRatio = canvasWidth / simulationHeight;
         const canvasRatio = canvasWidth / canvasHeight;
         const canvasSize = gameRatio >= canvasRatio ? canvasWidth : canvasHeight;
@@ -111,7 +111,7 @@ export class CanvasRenderer {
 
         for (let i = 1; i <= MAX_SCALE; i++) {
             if (canvasSize < i * gameSize) {
-                this.setScale(i - 1);
+                this.scale = i - 1;
                 break;
             }
         }
@@ -120,13 +120,15 @@ export class CanvasRenderer {
             Math.ceil((canvasWidth - this.scale * simulationWidth) / 2),
             Math.ceil((canvasHeight - this.scale * simulationHeight) / 2)
         );
-
-        this.requestRedraw();
     }
 
     setState(state: StepData): void {
         this.state = state;
         this.requestRedraw();
+    }
+
+    terminate(): void {
+        this.renderer.terminate();
     }
 
     private render(): Promise<ImageData> {
@@ -152,8 +154,8 @@ export class CanvasRenderer {
                 new Data(
                     new Uint8Array(this.state.buffer.slice(0)),
                     this.state.payload,
-                    this.simulation.getOptions().getWidth(),
-                    this.simulation.getOptions().getHeight()
+                    this.simulation.getOptions().width,
+                    this.simulation.getOptions().height
                 )
             )
             .then(resolve)

@@ -1,9 +1,16 @@
+import { GridLoopType } from "../simulation/types/grid-loop-type";
 import { SimulationOptions } from "../simulation/types/simulation-options";
 
 const optionsKey = 'evo_simulation_options';
 
 export function loadOptions(): SimulationOptions {
-    return loadObject(optionsKey);
+    return Object.assign({
+        width: 200,
+        height: 100,
+        loop: GridLoopType.NONE,
+        population: 5,
+        initialEnergy: 70,
+    }, loadObject(optionsKey));
 }
 
 export function saveOptions(options: SimulationOptions): void {
