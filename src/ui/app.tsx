@@ -1,11 +1,12 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { useContext } from "react";
-import styled from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { Simulation } from "./components/simulation";
 import { AppContext } from "./context";
 import { CreateSimulationForm } from "./components/create-simulation-form";
 import { loadOptions } from "./storage";
+import { THEME } from "./theme";
 
 const StyledApp = styled.div`
     height: 100vh;
@@ -27,8 +28,11 @@ const View = observer(() => {
 
 export const App = observer(() => {
     return (
-        <StyledApp>
-            <View />
-        </StyledApp>
+        <ThemeProvider theme={THEME}>
+            <StyledApp>
+                <View />
+            </StyledApp>
+        </ThemeProvider>
+        
     );
 });

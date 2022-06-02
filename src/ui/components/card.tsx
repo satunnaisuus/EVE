@@ -7,7 +7,7 @@ type Props = {
 
 const StyledCard = styled.div<Props>`
     border-radius: 10px;
-    background: #222831;
+    background: ${props => props.theme.background};
     padding: 15px;
 
     & + & {

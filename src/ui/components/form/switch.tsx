@@ -22,7 +22,7 @@ const StyledInput = styled.input`
     height: 0;
 
     &:checked + div {
-        background-color: #30b47b;
+        background-color: ${props => props.theme.primary};
     }
 
     &:checked + div:before {
@@ -34,7 +34,7 @@ const StyledControl = styled.div`
     cursor: pointer;
     width: 60px;
     height: 34px;
-    background-color: #000;
+    background-color: ${props => props.theme.secondary};
     border-radius: 34px;
     position: relative;
     margin-right: 10px;

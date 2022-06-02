@@ -1,27 +1,23 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import styled from "styled-components";
+import { THEME } from "../theme";
 
 const Apperance = {
-    default: {
-        backgroundColor: 'transparent',
-        boderColor: 'transparent',
-        textColor: '#fff',
-    },
     primary: {
-        backgroundColor: '#0E49B5',
-        boderColor: '#0E49B5',
-        textColor: '#fff',
+        backgroundColor: THEME.primary,
+        boderColor: THEME.primary,
+        textColor: THEME.color,
     },
     success: {
-        backgroundColor: '#069A8E',
-        boderColor: '#069A8E',
-        textColor: '#fff',
+        backgroundColor: THEME.success,
+        boderColor: THEME.success,
+        textColor: THEME.color,
     },
     secondary: {
-        backgroundColor: '#393E46',
-        boderColor: '#393E46',
-        textColor: '#fff',
+        backgroundColor: THEME.secondary,
+        boderColor: THEME.secondary,
+        textColor: THEME.color,
     },
 };
 
@@ -33,15 +29,13 @@ type Props = {
 }
 
 const StyledButton = styled.button<Props>`
-    border: 1px solid black;
-    background: black;
-    color: #fff;
+    border: 1px solid;
     border-radius: 10px;
     cursor: pointer;
     padding: 10px 16px;
     ${({width}) => width && `width: ${width};`}
     ${({apperance}) => {
-        const styles = Apperance[apperance || 'default'];
+        const styles = Apperance[apperance || 'secondary'];
         return (
             `border-color: ${styles.boderColor};` +
             `background-color: ${styles.backgroundColor};` +

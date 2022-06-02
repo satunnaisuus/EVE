@@ -17,7 +17,7 @@ const StyledLabel = styled.label`
     margin-bottom: 5px;
     display: block;
     width: 100%;
-    color: #f8f2ec;
+    color: ${props => props.theme.color};
 `;
 
 export const FormRow = (props: Props) => (

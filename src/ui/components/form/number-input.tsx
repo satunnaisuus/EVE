@@ -14,20 +14,20 @@ type Props = {
 
 const StyledNumberInput = styled.input`
     width: 100%;
-    background: #393E46;
-    border: 2px solid #393E46;
+    background: ${props => props.theme.secondary};
+    border: 2px solid ${props => props.theme.secondary};
     padding: 10px 60px 10px 10px;
     border-radius: 10px;
-    color: #f8f2ec;
+    color: ${props => props.theme.color};
 `;
 
 const StyledButton = styled.button`
     width: 20px;
     height: 20px;
-    background: #222831;
-    border: 2px solid #222831;
+    background: ${props => props.theme.secondary};
+    border: 2px solid ${props => props.theme.secondary};
     border-radius: 100%;
-    color: #f8f2ec;
+    color: ${props => props.theme.color};
     padding: 0;
     font-size: 14px;
     line-height: 1;

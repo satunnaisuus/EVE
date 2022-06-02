@@ -17,9 +17,8 @@ const StyledControls = styled.div`
     width: 100%;
     overflow-y: auto;
     padding: 0 10px;
-    background: #222831;
+    background: ${props => props.theme.background};
     height: 70px;
-    
 `;
 
 interface Props {
