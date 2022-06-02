@@ -1,7 +1,8 @@
-import { Renderer } from "../../renderer/renderer";
+import { action, makeObservable, observable, runInAction } from "mobx";
+import { RenderMode } from "../../renderer/renderer";
 import { WorkerRenderer } from "../../renderer/worker-renderer";
 import { Data } from "../../simulation/data";
-import { StepData } from "../../simulation/simulation";
+import { CellPayload, StepData } from "../../simulation/simulation";
 import { initMouseInteractions } from "../interactions/mouse";
 import { initTouchInteractions } from "../interactions/touch";
 import { SimulationStore } from "./simulation-store";
@@ -10,6 +11,9 @@ const SCALE_FACTOR = 1.5;
 const MAX_SCALE = 40;
 
 export class CanvasRenderer {
+    @observable
+    private mode: RenderMode = 'default';
+
     private canvas: HTMLCanvasElement;
 
     private context: CanvasRenderingContext2D;
@@ -30,6 +34,8 @@ export class CanvasRenderer {
         private simulation: SimulationStore
     ) {
         this.renderer = new WorkerRenderer();
+
+        makeObservable(this);
     }
 
     setCanvas(canvas: HTMLCanvasElement): void {
@@ -47,7 +53,7 @@ export class CanvasRenderer {
     }
 
     requestRedraw(): void {
-        this.render()
+        this.render(this.mode, this.state)
             .then((imageData) => {
                 if (this.redrawId) {
                     cancelAnimationFrame(this.redrawId);
@@ -61,11 +67,34 @@ export class CanvasRenderer {
         ;
     }
 
+    @action
+    setMode(mode: RenderMode): void {
+        this.mode = mode;
+        this.update(mode).then(() => {});
+    }
+
+    async update(mode = this.mode): Promise<void> {
+        let payload: CellPayload[] = [];
+
+        if (mode === 'energy') {
+            payload = ['energy'];
+        } else if (mode === 'lifetime') {
+            payload = ['lifetime'];
+        }
+
+        this.setState(await this.simulation.getState(payload));
+        this.requestRedraw();
+    }
+
+    getMode(): RenderMode {
+        return this.mode;
+    }
+
     getScale(): number {
         return this.scale;
     }
 
-    setScale(scale: number): void {
+    setScale(scale: number, redraw = true): void {
         if (scale < 1) {
             this.scale = 1;
         } else if (scale > MAX_SCALE) {
@@ -74,15 +103,17 @@ export class CanvasRenderer {
             this.scale = Math.round(scale);
         }
 
-        this.requestRedraw();
+        if (redraw) {
+            this.requestRedraw();
+        }
     }
 
-    scaleUp(): void {
-        this.setScale(this.getScale() * SCALE_FACTOR);
+    scaleUp(redraw = true): void {
+        this.setScale(this.getScale() * SCALE_FACTOR, redraw);
     }
 
-    scaleDown(): void {
-        this.setScale(this.getScale() / SCALE_FACTOR);
+    scaleDown(redraw = true): void {
+        this.setScale(this.getScale() / SCALE_FACTOR, redraw);
     }
 
     getOffset(): [number, number] {
@@ -104,14 +135,14 @@ export class CanvasRenderer {
         const canvasHeight = this.canvas.height;
         const simulationWidth = this.simulation.getOptions().width;
         const simulationHeight = this.simulation.getOptions().height;
-        const gameRatio = canvasWidth / simulationHeight;
+        const gameRatio = simulationWidth / simulationHeight;
         const canvasRatio = canvasWidth / canvasHeight;
         const canvasSize = gameRatio >= canvasRatio ? canvasWidth : canvasHeight;
         const gameSize = gameRatio >= canvasRatio ? simulationWidth : simulationHeight;
 
         for (let i = 1; i <= MAX_SCALE; i++) {
             if (canvasSize < i * gameSize) {
-                this.scale = i - 1;
+                this.scale = i === 1 ? 1 : i - 1;
                 break;
             }
         }
@@ -124,14 +155,13 @@ export class CanvasRenderer {
 
     setState(state: StepData): void {
         this.state = state;
-        this.requestRedraw();
     }
 
     terminate(): void {
         this.renderer.terminate();
     }
 
-    private render(): Promise<ImageData> {
+    private render(mode: RenderMode, state: StepData): Promise<ImageData> {
         return new Promise((resolve, reject) => {
             if (! this.canvas) {
                 return reject('canvas is null');
@@ -151,9 +181,10 @@ export class CanvasRenderer {
                 this.offset[0],
                 this.offset[1],
                 this.scale,
+                mode,
                 new Data(
-                    new Uint8Array(this.state.buffer.slice(0)),
-                    this.state.payload,
+                    new Uint8Array(state.buffer.slice(0)),
+                    state.payload,
                     this.simulation.getOptions().width,
                     this.simulation.getOptions().height
                 )

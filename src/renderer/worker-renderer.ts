@@ -1,5 +1,5 @@
 import { Data } from '../simulation/data';
-import { Renderer } from './renderer';
+import { Renderer, RenderMode } from './renderer';
 import RendererWorker from './renderer.worker.ts';
 
 export class WorkerRenderer implements Renderer {
@@ -18,7 +18,7 @@ export class WorkerRenderer implements Renderer {
         });
     }
 
-    render(width: number, height: number, offsetX: number, offsetY: number, scale: number, data: Data): Promise<ImageData> {
+    render(width: number, height: number, offsetX: number, offsetY: number, scale: number, mode: RenderMode, data: Data): Promise<ImageData> {
         const id = this.lastId++;
 
         this.worker.postMessage({
@@ -28,6 +28,7 @@ export class WorkerRenderer implements Renderer {
             offsetX: offsetX,
             offsetY: offsetY,
             scale: scale,
+            mode: mode,
             data: {
                 width: data.getWidth(),
                 height: data.getHeight(),

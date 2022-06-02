@@ -9,12 +9,11 @@ type Props = {
 }
 
 const StyledSelect = styled.select`
-    width: 100%;
-    background: #000;
-    border: 2px solid #000;
+    background: #393E46;
+    border: 2px solid #393E46;
     padding: 10px 10px;
     border-radius: 10px;
-    color: #fff;
+    color: #f8f2ec;
 `;
 
 export const Select = (props: Props) => (

@@ -57,7 +57,7 @@ export const CreateSimulationForm = ({options, onCreate}: Props) => {
                 <FormRow label={`Initial energy (${initialEnergy})`}>
                     <RangeInput min={0} max={100} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
                 </FormRow>
-                <Button width="100%" onClick={create}>Create</Button>
+                <Button apperance="primary" width="100%" onClick={create}>Create</Button>
             </Card>
         </Flex>
     );

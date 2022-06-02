@@ -14,20 +14,20 @@ type Props = {
 
 const StyledNumberInput = styled.input`
     width: 100%;
-    background: #000;
-    border: 2px solid #000;
+    background: #393E46;
+    border: 2px solid #393E46;
     padding: 10px 60px 10px 10px;
     border-radius: 10px;
-    color: #fff;
+    color: #f8f2ec;
 `;
 
 const StyledButton = styled.button`
     width: 20px;
     height: 20px;
-    background: #30b47b;
-    border: 2px solid #30b47b;
+    background: #222831;
+    border: 2px solid #222831;
     border-radius: 100%;
-    color: #fff;
+    color: #f8f2ec;
     padding: 0;
     font-size: 14px;
     line-height: 1;

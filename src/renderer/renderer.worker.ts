@@ -1,5 +1,6 @@
 import { Data, PayloadData } from "../simulation/data";
 import { CommonRenderer } from "./common-renderer";
+import { RenderMode } from "./renderer";
 
 interface RenderCommand {
     id: number,
@@ -8,6 +9,7 @@ interface RenderCommand {
     offsetX: number,
     offsetY: number,
     scale: number,
+    mode: RenderMode,
     data: {
         width: number,
         height: number,
@@ -31,6 +33,7 @@ setTimeout(function run () {
             commandData.offsetX,
             commandData.offsetY,
             commandData.scale,
+            commandData.mode,
             simulationData
         ).then(function (data) {
             ctx.postMessage({id: commandData.id, data: data}, [data.data.buffer])

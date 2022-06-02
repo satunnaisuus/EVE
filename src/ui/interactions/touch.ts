@@ -34,7 +34,6 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
         scaleBuffer = 0;
     };
 
-
     const touchmove = (e: TouchEvent) => {
         e.preventDefault();
         
@@ -88,7 +87,7 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
             const xs = Math.round((cx - offsetX) / renderer.getScale());
             const ys = Math.round((cy - offsetY) / renderer.getScale());
 
-            renderer.setScale(renderer.getScale() + Math.trunc(scaleBuffer / TOUCH_SCALE_BUFFER_LIMIT));
+            renderer.setScale(renderer.getScale() + Math.trunc(scaleBuffer / TOUCH_SCALE_BUFFER_LIMIT), false);
 
             renderer.setOffset(
                 cx - xs * renderer.getScale(),
@@ -104,12 +103,12 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
     canvas.addEventListener("touchstart", touchstart, {passive: false});
     canvas.addEventListener("touchend", touchend);
     canvas.addEventListener("touchcancel", touchcancel);
-    canvas.addEventListener("touchmove", touchcancel, {passive: false});
+    canvas.addEventListener("touchmove", touchmove, {passive: false});
 
     return () => {
         canvas.removeEventListener("touchstart", touchstart);
         canvas.removeEventListener("touchend", touchend);
         canvas.removeEventListener("touchcancel", touchcancel);
-        canvas.removeEventListener("touchmove", touchcancel);
+        canvas.removeEventListener("touchmove", touchmove);
     };
 }

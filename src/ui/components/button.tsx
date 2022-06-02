@@ -4,18 +4,23 @@ import styled from "styled-components";
 
 const Apperance = {
     default: {
-        backgroundColor: '#000',
-        boderColor: '#000',
+        backgroundColor: 'transparent',
+        boderColor: 'transparent',
+        textColor: '#fff',
+    },
+    primary: {
+        backgroundColor: '#0E49B5',
+        boderColor: '#0E49B5',
         textColor: '#fff',
     },
     success: {
-        backgroundColor: '#30b47b',
-        boderColor: '#30b47b',
+        backgroundColor: '#069A8E',
+        boderColor: '#069A8E',
         textColor: '#fff',
     },
     secondary: {
-        backgroundColor: '#3e3e3e',
-        boderColor: '#3e3e3e',
+        backgroundColor: '#393E46',
+        boderColor: '#393E46',
         textColor: '#fff',
     },
 };
@@ -33,7 +38,7 @@ const StyledButton = styled.button<Props>`
     color: #fff;
     border-radius: 10px;
     cursor: pointer;
-    padding: 10px 15px;
+    padding: 10px 16px;
     ${({width}) => width && `width: ${width};`}
     ${({apperance}) => {
         const styles = Apperance[apperance || 'default'];

@@ -1,6 +1,6 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
 import { createSimulation } from "../../simulation/factory";
-import { Simulation, StepData } from "../../simulation/simulation";
+import { CellPayload, Simulation, StepData } from "../../simulation/simulation";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
 
@@ -9,6 +9,9 @@ const TIMEOUT_DELAY = 4;
 export class SimulationStore {
     @observable
     private paused: boolean = true;
+
+    @observable
+    private ready: boolean = false;
 
     private simulation: Simulation;
 
@@ -25,12 +28,11 @@ export class SimulationStore {
         createSimulation(options).then((simulation) => {
             this.simulation = simulation;
 
-            simulation.getState(['energy']).then((data) => {
-                this.renderer.setState(data);
+            this.renderer.update().then(() => {
+                runInAction(() => this.ready = true);
             });
         });
     }
-
 
     @action
     pause(): void {
@@ -45,18 +47,21 @@ export class SimulationStore {
             return;
         }
 
+        let lastTime = Date.now();
+
         this.paused = false;
-        
+
         const tick = () => {
             this.simulation.step().then((step) => {
-                this.simulation.getState(['energy']).then((data: StepData) => {
-                    this.renderer.setState(data);
+                this.renderer.update().then(() => {
+                    console.log(Math.round(1000 / (Date.now() - lastTime)));
+                    lastTime = Date.now();
+
                     if (! this.paused) {
                         this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
                     }
                 });
             });
-            
         }
 
         this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
@@ -66,12 +71,18 @@ export class SimulationStore {
         return this.paused;
     }
 
+    isReady(): boolean {
+        return this.ready;
+    }
+
     makeStep(): void {
         this.simulation.step().then((step) => {
-            this.simulation.getState(['energy']).then((data: StepData) => {
-                this.renderer.setState(data);
-            });
+            this.renderer.update().then(() => {});
         });
+    }
+
+    getState(payload: CellPayload[]): Promise<StepData> {
+        return this.simulation.getState(payload);
     }
 
     getOptions(): SimulationOptions {

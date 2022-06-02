@@ -1,25 +1,36 @@
 import { Color } from "../common/color";
 import { Data } from "../simulation/data";
-import { Renderer } from "./renderer";
+import { Renderer, RenderMode } from "./renderer";
+
+const blackColor = Color.fromHex('#000000');
+const lifetimeColor = Color.fromHex('#ffffff');
+const energyColor = Color.fromHex('#F8CB2E');
+const organismColor = Color.fromHex('#2155CD');
+const organicColor = Color.fromHex('#F0E9D2');
+
+const PayloadByModeMap = {
+    default: null as any,
+    lifetime: 'lifetime',
+    energy: 'energy',
+};
 
 export class CommonRenderer implements Renderer {
     constructor() {
 
     }
 
-    render(width: number, height: number, offsetX: number, offsetY: number, scale: number, data: Data): Promise<ImageData> {
+    render(width: number, height: number, offsetX: number, offsetY: number, scale: number, mode: RenderMode, data: Data): Promise<ImageData> {
         return new Promise(function (resolve, reject) {
             const array = data.getArray();
             const payload = data.getPayload();
+            
+            const payloadDataIndex = payload.indexOf(PayloadByModeMap[mode]) + 1;
             
             const empty = (new Uint8ClampedArray(width * height * 4)).map(function (e, i) {
                 return i % 4 === 3 ? 255 : 0;
             });
 
             const imageData = new ImageData(empty, width, height);
-
-            // const imageData = new ImageData(width, height);
-            
 
             const renderCell = (x: number, y: number, color: [number, number, number]) => {
                 const line = [];
@@ -57,9 +68,6 @@ export class CommonRenderer implements Renderer {
                 }
             }
 
-            const yellow = Color.fromHex('#ffff00');
-            const black = Color.fromHex('#000000');
-
             let i = 0;
 
             for (let x = 0; x < data.getWidth(); x++) {
@@ -80,10 +88,20 @@ export class CommonRenderer implements Renderer {
                         case 0: //empty
                             break;
                         case 1: //organism
-                            renderCell(cursorX, cursorY, yellow.mix(black, array[i + 1] / 100).toArray());
+                            let color: Color; 
+
+                            if (mode === 'energy') {
+                                color = energyColor.mix(blackColor, array[i + payloadDataIndex] / 100);
+                            } else if (mode === 'lifetime') {
+                                color = blackColor.mix(lifetimeColor, array[i + payloadDataIndex] / 100);
+                            } else {
+                                color = organismColor;
+                            }
+
+                            renderCell(cursorX, cursorY, color.toArray());
                             break;
                         case 2: //organic
-                            renderCell(cursorX, cursorY, [255, 0, 0]);
+                            renderCell(cursorX, cursorY, organicColor.toArray());
                             break;
                         case 3: //wall
                             break;

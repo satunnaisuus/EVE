@@ -10,7 +10,7 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
         const xs = Math.round((e.clientX - offsetX) / renderer.getScale());
         const ys = Math.round((e.clientY - offsetY) / renderer.getScale());
 
-        e.deltaY < 0 ? renderer.scaleUp() : renderer.scaleDown();
+        e.deltaY < 0 ? renderer.scaleUp(false) : renderer.scaleDown(false);
 
         renderer.setOffset(
             e.clientX - xs * renderer.getScale(),

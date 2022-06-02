@@ -8,12 +8,16 @@ type Props = {
 
 const StyledFormRow = styled.div`
     margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
 `;
 
 const StyledLabel = styled.label`
     margin-bottom: 5px;
     display: block;
     width: 100%;
+    color: #f8f2ec;
 `;
 
 export const FormRow = (props: Props) => (
