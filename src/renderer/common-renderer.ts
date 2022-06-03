@@ -15,22 +15,32 @@ const PayloadByModeMap = {
 };
 
 export class CommonRenderer implements Renderer {
+    private empty: ImageData;
+
     constructor() {
 
     }
 
     render(width: number, height: number, offsetX: number, offsetY: number, scale: number, mode: RenderMode, data: Data): Promise<ImageData> {
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve) => {
             const array = data.getArray();
             const payload = data.getPayload();
             
             const payloadDataIndex = payload.indexOf(PayloadByModeMap[mode]) + 1;
-            
-            const empty = (new Uint8ClampedArray(width * height * 4)).map(function (e, i) {
-                return i % 4 === 3 ? 255 : 0;
-            });
 
-            const imageData = new ImageData(empty, width, height);
+            if (! this.empty || this.empty.width !== width || this.empty.height !== height) {
+                this.empty = new ImageData(
+                    (new Uint8ClampedArray(width * height * 4)).map((_, i) => i % 4 === 3 ? 255 : 0),
+                    width,
+                    height,
+                );
+            }
+            
+            const imageData = new ImageData(
+                new Uint8ClampedArray(this.empty.data),
+                width,
+                height
+            );
 
             const renderCell = (x: number, y: number, color: [number, number, number]) => {
                 const line = [];

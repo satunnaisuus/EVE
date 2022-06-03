@@ -47,16 +47,11 @@ export class SimulationStore {
             return;
         }
 
-        let lastTime = Date.now();
-
         this.paused = false;
 
         const tick = () => {
             this.simulation.step().then((step) => {
                 this.renderer.update().then(() => {
-                    console.log(Math.round(1000 / (Date.now() - lastTime)));
-                    lastTime = Date.now();
-
                     if (! this.paused) {
                         this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
                     }
@@ -76,8 +71,16 @@ export class SimulationStore {
     }
 
     makeStep(): void {
+        let lastTime = Date.now();
+
         this.simulation.step().then((step) => {
-            this.renderer.update().then(() => {});
+            console.log('step time:', (Date.now() - lastTime));
+            lastTime = Date.now();
+
+            const renderStartTime = +Date.now();
+            this.renderer.update().then(() => {
+                console.log('render time:', Date.now() - renderStartTime);
+            });
         });
     }
 
