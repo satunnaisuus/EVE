@@ -1,6 +1,6 @@
 import { CanvasRenderer } from "../stores/canvas-renderer";
 
-const TOUCH_SCALE_BUFFER_LIMIT = 3;
+const TOUCH_SCALE_BUFFER_LIMIT = 20;
 
 export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
     let activeTouches: {[key: string]: [number, number]} = {};
@@ -96,7 +96,11 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
             const xs = Math.round((cx - offsetX) / renderer.getScale());
             const ys = Math.round((cy - offsetY) / renderer.getScale());
 
-            renderer.setScale(renderer.getScale() + Math.trunc(scaleBuffer / TOUCH_SCALE_BUFFER_LIMIT), false);
+            if (scaleBuffer > 0) {
+                renderer.setScale(Math.ceil(renderer.getScale() * 1.5), false);
+            } else {
+                renderer.setScale(Math.floor(renderer.getScale() / 1.5), false);
+            }
 
             renderer.setOffset(
                 cx - xs * renderer.getScale(),
