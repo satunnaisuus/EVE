@@ -1,52 +1,67 @@
 import { CanvasRenderer } from "../stores/canvas-renderer";
 
+const SCALE_BUFFER_SIZE = 40;
+
 export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
-    let moving = false;
-    let movingStart = [0, 0];
-
-    const wheelListener = (e: WheelEvent) => {
-        const [offsetX, offsetY] = renderer.getOffset();
-
-        const xs = Math.round((e.clientX - offsetX) / renderer.getScale());
-        const ys = Math.round((e.clientY - offsetY) / renderer.getScale());
-
-        e.deltaY < 0 ? renderer.scaleUp(false) : renderer.scaleDown(false);
-
-        renderer.setOffset(
-            e.clientX - xs * renderer.getScale(),
-            e.clientY - ys * renderer.getScale()
-        );
-    }
+    let dragging = false;
 
     const mousedownListener = (e: MouseEvent) => {
         e.preventDefault();
-        moving = true;
-        movingStart = [e.clientX, e.clientY];
-    }
-
-    const mouseupListener = (e: MouseEvent) => {
-        moving = false;
+        dragging = true;
     }
 
     const mousemoveListener = (e: MouseEvent) => {
         e.preventDefault();
 
-        if (! moving) {
+        if (! dragging) {
             return;
         }
 
         const [offsetX, offsetY] = renderer.getOffset();
 
         renderer.setOffset(
-            offsetX + e.clientX - movingStart[0],
-            offsetY + e.clientY - movingStart[1]
+            offsetX + e.movementX,
+            offsetY + e.movementY
         );
-
-        movingStart = [e.clientX, e.clientY];
     }
 
-    const mouseleaveListener = (e: MouseEvent) => {
-        moving = false;
+    const mouseupListener = () => {
+        dragging = false;
+    }
+
+    const mouseleaveListener = () => {
+        dragging = false;
+    }
+
+    let scaleBuffer = 0;
+
+    const wheelListener = (e: WheelEvent) => {
+        e.preventDefault();
+
+        scaleBuffer += e.deltaY;
+
+        if (Math.abs(scaleBuffer) < SCALE_BUFFER_SIZE) {
+            return;
+        }
+
+        scaleBuffer = 0;
+        
+        const [offsetX, offsetY] = renderer.getOffset();
+
+        const canvasBoundingClientRect = canvas.getBoundingClientRect();
+
+        const relativeMousePositionX = e.clientX - Math.trunc(canvasBoundingClientRect.left);
+        const relativeMousePositionY = e.clientY - Math.trunc(canvasBoundingClientRect.top);
+
+        const xs = (relativeMousePositionX - offsetX) / renderer.getScale();
+        const ys = (relativeMousePositionY - offsetY) / renderer.getScale();
+
+        e.deltaY < 0 ? renderer.scaleUp(false) : renderer.scaleDown(false);
+
+        renderer.setOffset(
+            relativeMousePositionX - xs * renderer.getScale(),
+            relativeMousePositionY - ys * renderer.getScale()
+        );
     }
     
     canvas.addEventListener('wheel', wheelListener);

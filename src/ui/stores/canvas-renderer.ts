@@ -7,8 +7,8 @@ import { initMouseInteractions } from "../interactions/mouse";
 import { initTouchInteractions } from "../interactions/touch";
 import { SimulationStore } from "./simulation-store";
 
-const SCALE_FACTOR = 1.5;
-const MAX_SCALE = 40;
+const SCALE_FACTOR = 2;
+const MAX_SCALE = 64;
 
 export class CanvasRenderer {
     @observable
@@ -176,8 +176,8 @@ export class CanvasRenderer {
             }
 
             this.renderer.render(
-                this.canvas.width,
-                this.canvas.height,
+                Math.trunc(this.canvas.width),
+                Math.trunc(this.canvas.height),
                 this.offset[0],
                 this.offset[1],
                 this.scale,

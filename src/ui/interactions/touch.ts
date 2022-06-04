@@ -1,18 +1,27 @@
 import { CanvasRenderer } from "../stores/canvas-renderer";
 
-const TOUCH_SCALE_BUFFER_LIMIT = 20;
+const TOUCH_SCALE_BUFFER_LIMIT = 3;
 
 export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
-    let activeTouches: {[key: string]: Touch} = {};
+    let activeTouches: {[key: string]: [number, number]} = {};
     let scaleBuffer = 0;
     const scaling = () => Object.keys(activeTouches).length === 2;
+
+    const getTouchPosition = (touch: Touch): [number, number] => {
+        const canvasBoundingClientRect = canvas.getBoundingClientRect();
+
+        return [
+            Math.trunc(touch.clientX) - Math.trunc(canvasBoundingClientRect.left),
+            Math.trunc(touch.clientY) - Math.trunc(canvasBoundingClientRect.top)
+        ];
+    };
 
     const touchstart = (e: TouchEvent) => {
         e.preventDefault();
         
         for (const touch of e.changedTouches) {
             if (! scaling()) {
-                activeTouches[touch.identifier] = touch;
+                activeTouches[touch.identifier] = getTouchPosition(touch);
             }
         }
     };
@@ -45,11 +54,11 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
                 continue;
             }
 
-            currentActiveTouches[touch.identifier] = touch;
+            currentActiveTouches[touch.identifier] = getTouchPosition(touch);
 
             renderer.setOffset(
-                offsetX + Math.ceil(touch.clientX - activeTouches[touch.identifier].clientX),
-                offsetY + Math.ceil(touch.clientY - activeTouches[touch.identifier].clientY)
+                offsetX + (currentActiveTouches[touch.identifier][0] - activeTouches[touch.identifier][0]),
+                offsetY + (currentActiveTouches[touch.identifier][1] - activeTouches[touch.identifier][1])
             );
         }
 
@@ -58,15 +67,15 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
       
             const previousLength = Math.abs(
                 Math.hypot(
-                    activeTouches[k1].clientX - activeTouches[k2].clientX,
-                    activeTouches[k1].clientY - activeTouches[k2].clientY
+                    activeTouches[k1][0] - activeTouches[k2][0],
+                    activeTouches[k1][1] - activeTouches[k2][1]
                 )
             );
 
             const currentLength = Math.abs(
                 Math.hypot(
-                    currentActiveTouches[k1].clientX - currentActiveTouches[k2].clientX,
-                    currentActiveTouches[k1].clientY - currentActiveTouches[k2].clientY
+                    currentActiveTouches[k1][0] - currentActiveTouches[k2][0],
+                    currentActiveTouches[k1][1] - currentActiveTouches[k2][1]
                 )
             );
       
@@ -81,8 +90,8 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
             const [offsetX, offsetY] = renderer.getOffset();
             const [k1, k2] = Object.keys(activeTouches);
 
-            let cx = (activeTouches[k1].clientX + activeTouches[k2].clientX) / 2;
-            let cy = (activeTouches[k1].clientY + activeTouches[k2].clientY) / 2;
+            let cx = (activeTouches[k1][0] + activeTouches[k2][0]) / 2;
+            let cy = (activeTouches[k1][1] + activeTouches[k2][1]) / 2;
 
             const xs = Math.round((cx - offsetX) / renderer.getScale());
             const ys = Math.round((cy - offsetY) / renderer.getScale());
