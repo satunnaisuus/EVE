@@ -15,7 +15,7 @@ const StyledControls = styled.div`
     align-items: center;
     gap: 10px;
     width: 100%;
-    overflow-y: auto;
+    overflow-x: auto;
     padding: 0 10px;
     background: ${props => props.theme.background};
     height: 70px;

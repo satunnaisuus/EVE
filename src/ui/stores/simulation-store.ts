@@ -3,6 +3,7 @@ import { createSimulation } from "../../simulation/factory";
 import { CellPayload, Simulation, StepData } from "../../simulation/simulation";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
+import { SimulationParameters } from "./simulation-parameters";
 
 const TIMEOUT_DELAY = 4;
 
@@ -19,11 +20,15 @@ export class SimulationStore {
 
     private timeoutId: ReturnType<typeof setTimeout>;
 
+    private parameters: SimulationParameters;
+
     constructor(
         private options: SimulationOptions
     ) {
         makeObservable(this);
+
         this.renderer = new CanvasRenderer(this);
+        this.parameters = new SimulationParameters(this);
 
         createSimulation(options).then((simulation) => {
             this.simulation = simulation;
@@ -99,5 +104,13 @@ export class SimulationStore {
     terminate(): void {
         this.simulation && this.simulation.terminate();
         this.renderer && this.renderer.terminate();
+    }
+
+    getParameters(): SimulationParameters {
+        return this.parameters;
+    }
+
+    getSimulation(): Simulation {
+        return this.simulation;
     }
 }

@@ -1,6 +1,6 @@
 import { CommonSimulation } from "./common-simulation";
 import { Simulation } from "./simulation";
-import { CommandInit, CommandRequestState, CommandStep, WorkerCommand } from "./types/worker-commands";
+import { CommandInit, CommandRequestState, CommandSetParameter, CommandStep, WorkerCommand } from "./types/worker-commands";
 
 const ctx: Worker = self as any;
 
@@ -33,6 +33,16 @@ const handlers = {
                 payload: data.payload,
             }, [data.buffer]);
         });
+    },
+
+    setPatameter: (request: CommandSetParameter) => {
+        simulation.setParameter(request.parameter, request.value).then((value) => {
+            ctx.postMessage({
+                id: request.id,
+                type: 'setParameter',
+                value: value,
+            });
+        });
     }
 }
 
@@ -44,5 +54,7 @@ ctx.addEventListener("message", (event: MessageEvent<WorkerCommand>) => {
             return handlers.step(event.data);
         case 'requestState':
             return handlers.requestState(event.data);
+        case 'setParameter':
+            return handlers.setPatameter(event.data);
     }
 });

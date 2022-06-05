@@ -6,9 +6,9 @@ import styled from "styled-components";
 import { SimulationStore } from "../stores/simulation-store";
 
 const StyledViewport = styled.div`
-    height: 100%;
-    width: 100%;
+    
     overflow: hidden;
+    flex-grow: 1;
 `;
 
 interface Props {

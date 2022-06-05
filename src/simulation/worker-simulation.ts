@@ -1,4 +1,4 @@
-import { CellPayload, Simulation, StepData } from "./simulation";
+import { CellPayload, Parameters, Simulation, StepData } from "./simulation";
 import { SimulationOptions } from "./types/simulation-options";
 import { WorkerResponse } from "./types/worker-commands";
 import SimulationWorker from './simulation.worker.ts';
@@ -11,9 +11,11 @@ export class WorkerSimulation extends Simulation {
     private messageListeners: {
         step: {[key: number]: (step: number) => void},
         state: {[key: number]: (data: StepData) => void},
+        setParameter: {[key: number]: (value: any) => void},
     } = {
         step: {},
         state: {},
+        setParameter: {},
     };
 
     private constructor(options: SimulationOptions, onInit: (simulation: WorkerSimulation) => any) {
@@ -37,6 +39,11 @@ export class WorkerSimulation extends Simulation {
                     );
                     delete this.messageListeners.state[ev.data.id];
                     return;
+
+                case 'setParameter':
+                    this.messageListeners.setParameter[ev.data.id](ev.data.value);
+                    delete this.messageListeners.setParameter[ev.data.id];
+                    return;
             }
         });
     }
@@ -53,7 +60,7 @@ export class WorkerSimulation extends Simulation {
 
     step(): Promise<number> {
         return new Promise((resolve) => {
-            const id = this.lastRequestId++;
+            const id = this.nextId();
             this.messageListeners.step[id] = resolve;
             this.worker.postMessage({id: id, type: 'step'});
         });
@@ -61,9 +68,21 @@ export class WorkerSimulation extends Simulation {
 
     getState(payload: CellPayload[]): Promise<StepData> {
         return new Promise((resolve) => {
-            const id = this.lastRequestId++;
+            const id = this.nextId();
             this.messageListeners.state[id] = resolve;
             this.worker.postMessage({id: id, type: 'requestState', payload: payload});
         });
+    }
+
+    setParameter<T>(parameter: Parameters, value: T): Promise<T> {
+        return new Promise((resolve) => {
+            const id = this.nextId();
+            this.messageListeners.setParameter[id] = resolve;
+            this.worker.postMessage({id: id, type: 'setParameter', parameter: parameter, value: value});
+        });
+    }
+
+    private nextId(): number {
+        return this.lastRequestId++;
     }
 }

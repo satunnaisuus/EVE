@@ -11,7 +11,6 @@ export const GlobalStyle = createGlobalStyle`
         margin: 0;
         font-family: monospace;
         font-size: 16px;
-        text-transform: uppercase;
     }
 
     input,
@@ -27,5 +26,9 @@ export const GlobalStyle = createGlobalStyle`
 
     button {
         cursor: pointer;
+    }
+
+    canvas {
+        display: block;
     }
 `;

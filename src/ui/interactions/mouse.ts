@@ -12,25 +12,6 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
 
     const mousemoveListener = (e: MouseEvent) => {
         e.preventDefault();
-
-        if (! dragging) {
-            return;
-        }
-
-        const [offsetX, offsetY] = renderer.getOffset();
-
-        renderer.setOffset(
-            offsetX + e.movementX,
-            offsetY + e.movementY
-        );
-    }
-
-    const mouseupListener = () => {
-        dragging = false;
-    }
-
-    const mouseleaveListener = () => {
-        dragging = false;
     }
 
     let scaleBuffer = 0;
@@ -63,18 +44,37 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
             relativeMousePositionY - ys * renderer.getScale()
         );
     }
+
+    const bodyMousemoveListener = (e: MouseEvent) => {
+        if (! dragging) {
+            return;
+        }
+
+        const [offsetX, offsetY] = renderer.getOffset();
+
+        renderer.setOffset(
+            offsetX + e.movementX,
+            offsetY + e.movementY
+        );
+    }
+
+    const bodyMouseupListener = () => {
+        dragging = false;
+    }
     
     canvas.addEventListener('wheel', wheelListener);
     canvas.addEventListener('mousedown', mousedownListener);
-    canvas.addEventListener('mouseup', mouseupListener);
     canvas.addEventListener('mousemove', mousemoveListener);
-    canvas.addEventListener('mouseleave', mouseleaveListener);
+
+    document.body.addEventListener('mousemove', bodyMousemoveListener);
+    document.body.addEventListener('mouseup', bodyMouseupListener);
 
     return () => {
         canvas.removeEventListener('wheel', wheelListener);
         canvas.removeEventListener('mousedown', mousedownListener);
-        canvas.removeEventListener('mouseup', mouseupListener);
         canvas.removeEventListener('mousemove', mousemoveListener);
-        canvas.removeEventListener('mouseleave', mouseleaveListener);
+        
+        document.body.removeEventListener('mousemove', bodyMousemoveListener);
+        document.body.removeEventListener('mouseup', bodyMouseupListener);
     }
 }

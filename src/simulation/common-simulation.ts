@@ -3,8 +3,8 @@ import { Color } from "../common/color";
 import { CellFactory } from "./cell/cell-factory";
 import { Genome } from "./cell/type/organism/genome";
 import { Data } from "./data";
-import { CellPayload, Simulation, StepData } from "./simulation";
-import { SimulationParams } from "./simulation-params";
+import { CellPayload, Parameters, Simulation, StepData } from "./simulation";
+import { SimulationParameters } from "./simulation-parameters";
 import { State } from "./state";
 import { SimulationOptions } from "./types/simulation-options";
 
@@ -18,7 +18,7 @@ export class CommonSimulation extends Simulation {
         options = this.options;
         
         this.cellFactory = new CellFactory();
-        this.state = new State(options.width, options.height, options.loop, new SimulationParams(), this.cellFactory);
+        this.state = new State(options.width, options.height, options.loop, new SimulationParameters(), this.cellFactory);
         const population = Math.ceil(options.width * options.height * options.population / 100);
     
         this.spawnOrganisms(population, options.initialEnergy);
@@ -41,6 +41,11 @@ export class CommonSimulation extends Simulation {
                 payload: payload,
             });
         });
+    }
+
+    async setParameter<T>(parameter: Parameters, value: T): Promise<T> {
+        this.state.getParameters()[parameter] = value as any;
+        return this.state.getParameters()[parameter] as any;
     }
 
     private spawnOrganisms(count: number, initialEnergy: number): void {

@@ -7,7 +7,7 @@ import { Direction, getOffset, randomDirection, rotateLeft, rotateRight } from "
 import { Genome } from "./organism/genome";
 import { OrganicCell } from "./organic-cell";
 import { OrganismAction } from "./organism/action";
-import { SimulationParams } from "../../simulation-params";
+import { SimulationParameters } from "../../simulation-parameters";
 
 export class OrganismCell extends AbstractCell {
     private lifetime: number = 0;
@@ -47,8 +47,8 @@ export class OrganismCell extends AbstractCell {
         visitor.visitOrganism(this);
     }
 
-    update(context: CellContext, params: SimulationParams): void {
-        if (params.getOrganismMaxLifetime() !== 0 && this.lifetime > params.getOrganismMaxLifetime() || this.energy <= 0) {
+    update(context: CellContext, parameters: SimulationParameters): void {
+        if (parameters.organismMaxLifetime !== 0 && this.lifetime > parameters.organismMaxLifetime || this.energy <= 0) {
             context.replace((factory: CellFactory) => factory.createOrganic());
             return;
         }
@@ -68,9 +68,9 @@ export class OrganismCell extends AbstractCell {
         } else if (action === OrganismAction.ATTACK) {
             this.attact(context);
         } else if (action === OrganismAction.EAT) {
-            this.eat(context, params);
+            this.eat(context, parameters);
         } else if (action === OrganismAction.PHOTOSYNTHESIS) {
-            this.photosynthesis(params.getPhotosynthesisEnergy());
+            this.photosynthesis(parameters.photosynthesisEnergy);
         }
 
         this.lifetime++;
@@ -120,7 +120,7 @@ export class OrganismCell extends AbstractCell {
         });
     }
 
-    eat(context: CellContext, params: SimulationParams): void {
+    eat(context: CellContext, parameters: SimulationParameters): void {
         const offset = getOffset(this.direction);
         const food = context.getByOffest(offset[0], offset[1]);
         const self = this;
@@ -129,7 +129,7 @@ export class OrganismCell extends AbstractCell {
             visitOrganic(cell: OrganicCell): void {
                 context.deleteByOffset(offset[0], offset[1]);
                 context.moveByOffest(offset[0], offset[1]);
-                self.changeEnergy(params.getOrganicEnergy());
+                self.changeEnergy(parameters.organicEnergy);
             }
         });
     }

@@ -1,4 +1,4 @@
-import { CellPayload } from "../simulation";
+import { CellPayload, Parameters } from "../simulation";
 import { SimulationOptions } from "./simulation-options";
 
 export interface CommandInit {
@@ -17,10 +17,18 @@ export interface CommandRequestState {
     payload: CellPayload[];
 }
 
+export interface CommandSetParameter {
+    id: number;
+    type: 'setParameter';
+    parameter: Parameters,
+    value: any;
+}
+
 export type WorkerCommand =
     | CommandInit
     | CommandStep
-    | CommandRequestState;
+    | CommandRequestState
+    | CommandSetParameter;
 
 export interface ResponseInit {
     type: 'init';
@@ -40,7 +48,14 @@ export interface ResponseState {
     buffer: ArrayBufferLike;
 }
 
+export interface ResponseSetParameter {
+    id: number;
+    type: 'setParameter';
+    value: any;
+}
+
 export type WorkerResponse =
     | ResponseStep
     | ResponseState
-    | ResponseInit;
+    | ResponseInit
+    | ResponseSetParameter;

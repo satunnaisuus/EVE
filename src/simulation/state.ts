@@ -1,6 +1,6 @@
 import { CellContext } from "./cell/cell-context";
 import { CellFactory } from "./cell/cell-factory";
-import { SimulationParams } from "./simulation-params";
+import { SimulationParameters } from "./simulation-parameters";
 import { Grid } from "./grid";
 import { GridLoopType } from "./types/grid-loop-type";
 
@@ -13,7 +13,7 @@ export class State {
         width: number,
         height: number,
         loop: GridLoopType,
-        private params: SimulationParams,
+        private parameters: SimulationParameters,
         private cellFactory: CellFactory
     ) {
         this.grid = new Grid(width, height, loop, cellFactory);
@@ -32,7 +32,7 @@ export class State {
 
                 cell.update(
                     new CellContext(this.grid, x, y, this.cellFactory),
-                    this.params
+                    this.parameters
                 );
             }
         }
@@ -48,11 +48,7 @@ export class State {
         return this.step;
     }
 
-    getParams(): SimulationParams {
-        return this.params;
-    }
-
-    setParams(params: SimulationParams): void {
-        this.params = params;
+    getParameters(): SimulationParameters {
+        return this.parameters;
     }
 }

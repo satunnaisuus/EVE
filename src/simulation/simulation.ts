@@ -11,6 +11,8 @@ export class StepData {
 
 export type CellPayload = 'energy' | 'lifetime' | 'direction';
 
+export type Parameters = 'organismMaxLifetime' | 'organicEnergy' | 'photosynthesisEnergy';
+
 export abstract class Simulation {
     constructor(protected options: SimulationOptions) {
         
@@ -19,6 +21,8 @@ export abstract class Simulation {
     abstract getState(payload: CellPayload[]): Promise<StepData>;
 
     abstract step(): Promise<number>;
+
+    abstract setParameter<T>(parameter: Parameters, value: T): Promise<T>;
 
     terminate(): void {
 
