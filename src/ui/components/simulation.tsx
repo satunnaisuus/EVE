@@ -1,11 +1,11 @@
 import * as React from "react";
-import { observer } from "mobx-react-lite";
 import styled from "styled-components";
+import { observer } from "mobx-react-lite";
 import { SimulationStore } from "../stores/simulation-store";
 import { Viewport } from "./viewport";
-import { Controls } from "./controls";
-import { Flex } from "./flex";
 import { Sidebar } from "./sidebar";
+import { Toolbar } from "./toolbar";
+import { SimulationContext } from "../context";
 
 const StyledSimulation = styled.div`
     height: 100%;
@@ -21,10 +21,12 @@ interface Props {
 
 export const Simulation = observer(({simulation}: Props) => {
     return (
-        <StyledSimulation>
-            <Controls simulation={simulation} />
-            <Sidebar simulation={simulation} />
-            <Viewport simulation={simulation} />
-        </StyledSimulation>
+        <SimulationContext.Provider value={simulation}>
+            <StyledSimulation>
+                <Toolbar />
+                <Sidebar />
+                <Viewport />
+            </StyledSimulation>
+        </SimulationContext.Provider>
     );
 });

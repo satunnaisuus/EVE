@@ -3,6 +3,8 @@ import { observer } from "mobx-react-lite";
 import styled from "styled-components";
 import { SimulationStore } from "../stores/simulation-store";
 import { ParametersCard } from "./parameters-card";
+import { useContext } from "react";
+import { SimulationContext } from "../context";
 
 const StyledSidebar = styled.div`
     width: 300px;
@@ -15,15 +17,13 @@ const StyledSidebar = styled.div`
 `;
 
 interface Props {
-    simulation: SimulationStore;
+    
 }
 
-export const Sidebar = observer(({simulation}: Props) => {
+export const Sidebar = observer(({}: Props) => {
     return (
         <StyledSidebar>
-            {simulation.isReady() && <>
-                <ParametersCard simulation={simulation} />
-            </>}
+            <ParametersCard />
         </StyledSidebar>
     );
 });
