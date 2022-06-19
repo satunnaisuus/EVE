@@ -18,6 +18,11 @@ export class Store {
         saveOptions(options);
     }
 
+    @action
+    closeSimulation(): void {
+        this.simulation = null;
+    }
+
     getSimulation(): SimulationStore {
         return this.simulation;
     }

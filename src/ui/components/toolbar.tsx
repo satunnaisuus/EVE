@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { StartPauseItem } from "./toolbar/start-pause-item";
 import { StepItem } from "./toolbar/step-item";
 import { RenderModeItem } from "./toolbar/render-mode-item";
+import { NewSimulationItem } from "./toolbar/new-simulation-item";
 
 const StyledToolbar = styled.div`
     display: flex;
@@ -27,6 +28,7 @@ export const Toolbar = observer(({}: Props) => {
             <StartPauseItem />
             <StepItem />
             <RenderModeItem />
+            <NewSimulationItem />
         </StyledToolbar>
     );
 });

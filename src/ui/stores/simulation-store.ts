@@ -133,8 +133,10 @@ export class SimulationStore {
             const stepStartTime = Date.now();
 
             this.simulation.step().then((step) => {
-                this.stepTime = Date.now() - stepStartTime;
-                this.currentStep = step;
+                runInAction(() => {
+                    this.stepTime = Date.now() - stepStartTime;
+                    this.currentStep = step;
+                });
 
                 resolve(step);
             });
