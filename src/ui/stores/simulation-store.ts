@@ -15,6 +15,12 @@ export class SimulationStore {
     @observable
     private ready: boolean = false;
 
+    @observable
+    private currentStep: number = 0;
+
+    @observable
+    private stepTime: number = 0;
+
     private simulation: Simulation;
 
     private renderer: CanvasRenderer;
@@ -59,7 +65,7 @@ export class SimulationStore {
         this.paused = false;
 
         const tick = () => {
-            this.simulation.step().then((step) => {
+            this.step().then((step) => {
                 this.renderer.update().then(() => {
                     if (! this.paused) {
                         this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
@@ -80,17 +86,9 @@ export class SimulationStore {
     }
 
     makeStep(): void {
-        let lastTime = Date.now();
-
-        this.simulation.step().then((step) => {
-            console.log('step time:', (Date.now() - lastTime));
-            lastTime = Date.now();
-
-            const renderStartTime = +Date.now();
-            this.renderer.update().then(() => {
-                console.log('render time:', Date.now() - renderStartTime);
-            });
-        });
+        this.step().then((step) => {
+            this.renderer.update();
+        })
     }
 
     getState(payload: CellPayload[]): Promise<StepData> {
@@ -120,5 +118,26 @@ export class SimulationStore {
 
     getUI(): SimulationUI {
         return this.ui;
+    }
+
+    getCurrentStep(): number {
+        return this.currentStep;
+    }
+
+    getStepTime(): number {
+        return this.stepTime;
+    }
+
+    private step(): Promise<number> {
+        return new Promise((resolve) => {
+            const stepStartTime = Date.now();
+
+            this.simulation.step().then((step) => {
+                this.stepTime = Date.now() - stepStartTime;
+                this.currentStep = step;
+
+                resolve(step);
+            });
+        });
     }
 }

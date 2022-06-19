@@ -1,13 +1,13 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
-import { SimulationStore } from "../stores/simulation-store";
 import { Parameters } from "./parameters";
 import { useContext } from "react";
 import { SimulationContext } from "../context";
 import { SidebarTabs } from "./sidebar/sidebar-tabs";
 import { TabPane } from "./sidebar/tab-pane";
 import { SimulationTabType } from "../stores/simulation-ui";
+import { Info } from "./info";
 
 const StyledSidebar = styled.div`
     position: absolute;
@@ -25,11 +25,15 @@ export const Sidebar = observer(({}: Props) => {
     const simulation = useContext(SimulationContext);
     const ui = simulation.getUI();
     const openedTab = ui.getOpenedTab();
+
     return (
         <StyledSidebar>
             <SidebarTabs />
             <TabPane active={openedTab === SimulationTabType.PARAMETERS}>
                 <Parameters />
+            </TabPane>
+            <TabPane active={openedTab === SimulationTabType.INFO}>
+                <Info />
             </TabPane>
         </StyledSidebar>
     );
