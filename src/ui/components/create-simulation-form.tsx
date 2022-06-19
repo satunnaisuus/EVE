@@ -8,6 +8,7 @@ import { Flex } from "./flex";
 import { FormRow } from "./form/form-row";
 import { NumberInput } from "./form/number-input";
 import { RangeInput } from "./form/range-input";
+import { RangeRow } from "./form/range-row";
 import { Select } from "./form/select";
 
 interface Props {
@@ -51,12 +52,8 @@ export const CreateSimulationForm = ({options, onCreate}: Props) => {
                 <FormRow label="Loop">
                     <Select onSelect={(value) => setLoop(value as GridLoopType)} options={LoopTypes} value={loop} />
                 </FormRow>
-                <FormRow label={`Population (${population}%)`}>
-                    <RangeInput min={0} max={100} step={0.1} onChange={(value) => setPopulation(value)} value={population} />
-                </FormRow>
-                <FormRow label={`Initial energy (${initialEnergy})`}>
-                    <RangeInput min={0} max={100} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
-                </FormRow>
+                <RangeRow label={`Population`} postfix='%' min={0} max={100} step={0.1} onChange={(value) => setPopulation(value)} value={population} />
+                <RangeRow label={`Initial energy`} min={0} max={100} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
                 <Button apperance="primary" width="100%" onClick={create}>Create</Button>
             </Card>
         </Flex>

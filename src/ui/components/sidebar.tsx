@@ -10,10 +10,10 @@ import { TabPane } from "./sidebar/tab-pane";
 import { SimulationTabType } from "../stores/simulation-ui";
 
 const StyledSidebar = styled.div`
-    height: 100%;
     position: absolute;
     top: 50px;
     left: 0;
+    bottom: 0;
     display: flex;
 `;
 

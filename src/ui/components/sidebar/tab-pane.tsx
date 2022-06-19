@@ -8,6 +8,7 @@ const TabPaneStyled = styled.div`
     height: 100%;
     padding: 20px;
     background: rgba(16, 22, 30, .75);
+    overflow-y: auto;
 `;
 
 interface Props {
@@ -16,9 +17,9 @@ interface Props {
 }
 
 export const TabPane = observer(({children, active}: Props) => {
-    return active && (
+    return active &&
         <TabPaneStyled>
             {children}
         </TabPaneStyled>
-    );
+    ;
 });

@@ -1,8 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react-lite";
-import { useContext } from "react";
-import { SimulationContext } from "../context";
 import { StartPauseItem } from "./toolbar/start-pause-item";
 import { StepItem } from "./toolbar/step-item";
 import { RenderModeItem } from "./toolbar/render-mode-item";
@@ -24,11 +22,11 @@ interface Props {
 }
 
 export const Toolbar = observer(({}: Props) => {
-    const simulation = useContext(SimulationContext);
-
-    return simulation.isReady() && <StyledToolbar>
-        <StartPauseItem />
-        <StepItem />
-        <RenderModeItem />
-    </StyledToolbar>;
+    return (
+        <StyledToolbar>
+            <StartPauseItem />
+            <StepItem />
+            <RenderModeItem />
+        </StyledToolbar>
+    );
 });

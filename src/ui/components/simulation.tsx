@@ -22,11 +22,13 @@ interface Props {
 export const Simulation = observer(({simulation}: Props) => {
     return (
         <SimulationContext.Provider value={simulation}>
-            <StyledSimulation>
-                <Toolbar />
-                <Sidebar />
-                <Viewport />
-            </StyledSimulation>
+            {simulation.isReady() && 
+                <StyledSimulation>
+                    <Toolbar />
+                    <Sidebar />
+                    <Viewport />
+                </StyledSimulation>
+            }
         </SimulationContext.Provider>
     );
 });
