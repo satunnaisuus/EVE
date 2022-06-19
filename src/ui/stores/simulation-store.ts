@@ -4,6 +4,7 @@ import { CellPayload, Simulation, StepData } from "../../simulation/simulation";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SimulationParameters } from "./simulation-parameters";
+import { SimulationUI } from "./simulation-ui";
 
 const TIMEOUT_DELAY = 4;
 
@@ -22,6 +23,8 @@ export class SimulationStore {
 
     private parameters: SimulationParameters;
 
+    private ui: SimulationUI;
+
     constructor(
         private options: SimulationOptions
     ) {
@@ -29,6 +32,7 @@ export class SimulationStore {
 
         this.renderer = new CanvasRenderer(this);
         this.parameters = new SimulationParameters(this);
+        this.ui = new SimulationUI();
 
         createSimulation(options).then((simulation) => {
             this.simulation = simulation;
@@ -112,5 +116,9 @@ export class SimulationStore {
 
     getSimulation(): Simulation {
         return this.simulation;
+    }
+
+    getUI(): SimulationUI {
+        return this.ui;
     }
 }
