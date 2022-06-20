@@ -20,6 +20,7 @@ export class Store {
 
     @action
     closeSimulation(): void {
+        this.simulation && this.simulation.terminate();
         this.simulation = null;
     }
 

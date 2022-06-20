@@ -20,6 +20,10 @@ export const Info = observer(({}: Props) => {
     return (
         <>
             <Row>
+                <span>Size</span>
+                <span>{simulation.getWidth()}×{simulation.getHeight()}</span>
+            </Row>
+            <Row>
                 <span>Step</span>
                 <span>{simulation.getCurrentStep()}</span>
             </Row>

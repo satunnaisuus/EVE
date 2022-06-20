@@ -141,6 +141,14 @@ export class SimulationStore {
         return this.organismsCount;
     }
 
+    getWidth(): number {
+        return this.simulation.getOptions().width;
+    }
+
+    getHeight(): number {
+        return this.simulation.getOptions().height;
+    }
+
     private step(): Promise<number> {
         return new Promise((resolve) => {
             const stepStartTime = Date.now();

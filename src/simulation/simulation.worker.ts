@@ -35,7 +35,7 @@ const handlers = {
         });
     },
 
-    setPatameter: (request: CommandSetParameter) => {
+    setParameter: (request: CommandSetParameter) => {
         simulation.setParameter(request.parameter, request.value).then((value) => {
             ctx.postMessage({
                 id: request.id,
