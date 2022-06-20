@@ -73,7 +73,7 @@ export class WorkerSimulation extends Simulation {
         });
     }
 
-    getState(payload: CellPayload[]): Promise<StepData> {
+    getState(payload: CellPayload): Promise<StepData> {
         return new Promise((resolve) => {
             const id = this.nextId();
             this.messageListeners.state[id] = resolve;

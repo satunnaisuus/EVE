@@ -30,26 +30,21 @@ export class Genome {
 
         let tagretType;
 
-        tagretCell.visit({
-            visitEmpty: (cell: EmptyCell) => {
-                tagretType = Target.EMPTY;
-            },
-            visitWall: (cell: WallCell) => {
-                tagretType = Target.WALL;
-            },
-            visitOrganic: (cell: OrganicCell) => {
-                tagretType = Target.ORGANIC;
-            },
-            visitOrganism: (cell: OrganismCell) => {
-                tagretType = organism.isSimilar(cell) ? Target.ORGANISM_SIMILAR : Target.ORGANISM_OTHER;
-            }
-        });
+        if (tagretCell instanceof WallCell) {
+            tagretType = Target.WALL;
+        } else if (tagretCell instanceof OrganicCell) {
+            tagretType = Target.ORGANIC;
+        } else if (tagretCell instanceof OrganismCell) {
+            tagretType = organism.isSimilar(tagretCell) ? Target.ORGANISM_SIMILAR : Target.ORGANISM_OTHER;
+        } else {
+            tagretType = Target.EMPTY;
+        }
 
         if (divisionPossible && tagretType === Target.EMPTY) {
             return OrganismAction.DIVIDE;
         }
 
-        const action = this.reflexes[`${tagretType as number}`];
+        const action = this.reflexes[`${tagretType}`];
 
         if (action === undefined || action === OrganismAction.DIVIDE && ! divisionPossible) {
             return OrganismAction.NOTHING;

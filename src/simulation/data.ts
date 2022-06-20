@@ -1,3 +1,4 @@
+import { OrganismCell } from "./cell/type/organism-cell";
 import { State } from "./state";
 
 export type PayloadData = 'direction' | 'energy' | 'lifetime';
@@ -23,56 +24,43 @@ const DIRECTION_MAP: any = {
 export class Data {
     constructor(
         private array: Uint8Array,
-        private payload: PayloadData[],
+        private payload: PayloadData,
         private width: number,
         private height: number
     ) {
 
     }
 
-    static create(state: State, payload: PayloadData[]): Data {
+    static create(state: State, payload: PayloadData): Data {
         const grid = state.getGrid();
         const width = grid.getWidth();
         const height = grid.getHeight();
-        const array = new Uint8Array(width * height * (payload.length + 1));
+        const array = new Uint8Array(width * height * 2);
 
         let i = 0;
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
                 const cell = grid.getCell(x, y);
 
-                array[i] = CELL_TYPE_MAP[cell.getType()];
+                array[i++] = CELL_TYPE_MAP[cell.getType()];
 
-                cell.visit({
-                    visitEmpty: () => {
-                        i += payload.length + 1;
-                    },
-                    visitOrganic: () => {
-                        i += payload.length + 1;
-                    },
-                    visitWall: () => {
-                        i += payload.length + 1;
-                    },
-                    visitOrganism: (cell) => {
-                        for (const item of payload) {
-                            switch (item) {
-                                case 'direction':
-                                    array[++i] = DIRECTION_MAP[cell.getDirection()];
-                                    break;
-                                case 'energy':
-                                    array[++i] = cell.getEnergy();
-                                    break;
-                                case 'lifetime':
-                                    array[++i] = cell.getLifetime();
-                                    break;
-                                default:
-                                    throw new Error();
-                            }
-                        }
-
-                        i++;
+                if (cell instanceof OrganismCell) {
+                    switch (payload) {
+                        case 'direction':
+                            array[i] = DIRECTION_MAP[cell.getDirection()];
+                            break;
+                        case 'energy':
+                            array[i] = cell.getEnergy();
+                            break;
+                        case 'lifetime':
+                            array[i] = cell.getLifetime();
+                            break;
+                        default:
+                            throw new Error();
                     }
-                });
+                }
+
+                i++;
             }
         }
 
@@ -83,7 +71,7 @@ export class Data {
         return this.array;
     }
 
-    getPayload(): PayloadData[] {
+    getPayload(): PayloadData {
         return this.payload;
     }
 

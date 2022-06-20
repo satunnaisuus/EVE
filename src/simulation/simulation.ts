@@ -4,7 +4,7 @@ export class StepData {
     constructor(
         public readonly step: number,
         public readonly buffer: ArrayBufferLike,
-        public readonly payload: CellPayload[],
+        public readonly payload: CellPayload,
     ) {
     }
 }
@@ -18,7 +18,7 @@ export abstract class Simulation {
         
     }
 
-    abstract getState(payload: CellPayload[]): Promise<StepData>;
+    abstract getState(payload: CellPayload): Promise<StepData>;
 
     abstract step(): Promise<number>;
 

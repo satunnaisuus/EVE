@@ -74,12 +74,14 @@ export class CanvasRenderer {
     }
 
     async update(mode = this.mode): Promise<void> {
-        let payload: CellPayload[] = [];
+        let payload: CellPayload;
 
         if (mode === 'energy') {
-            payload = ['energy'];
+            payload = 'energy';
         } else if (mode === 'lifetime') {
-            payload = ['lifetime'];
+            payload = 'lifetime';
+        } else {
+            payload = 'direction';
         }
 
         this.setState(await this.simulation.getState(payload));

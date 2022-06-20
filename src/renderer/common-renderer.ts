@@ -8,11 +8,17 @@ const energyColor = Color.fromHex('#F8CB2E');
 const organismColor = Color.fromHex('#2155CD');
 const organicColor = Color.fromHex('#F0E9D2');
 
-const PayloadByModeMap = {
-    default: null as any,
-    lifetime: 'lifetime',
-    energy: 'energy',
-};
+const OrganismColor = {
+    default: () => organismColor,
+
+    lifetime: (lifeTime: number, lifitimeLimit: number) => (
+        blackColor.mix(lifetimeColor, lifeTime / lifitimeLimit)
+    ),
+
+    energy: (energy: number) => (
+        energyColor.mix(blackColor, energy / 255)
+    ),
+}
 
 export class CommonRenderer implements Renderer {
     private empty: ImageData;
@@ -24,9 +30,6 @@ export class CommonRenderer implements Renderer {
     render(width: number, height: number, offsetX: number, offsetY: number, scale: number, mode: RenderMode, data: Data): Promise<ImageData> {
         return new Promise((resolve) => {
             const array = data.getArray();
-            const payload = data.getPayload();
-            
-            const payloadDataIndex = payload.indexOf(PayloadByModeMap[mode]) + 1;
 
             if (! this.empty || this.empty.width !== width || this.empty.height !== height) {
                 this.empty = new ImageData(
@@ -84,13 +87,13 @@ export class CommonRenderer implements Renderer {
                 for (let y = 0; y < data.getHeight(); y++) {
                     const cursorX = offsetX + x * scale;
                     if (cursorX + scale < 0 || cursorX >= imageData.width) {
-                        i += payload.length + 1;
+                        i += 2;
                         continue;
                     }
 
                     const cursorY = offsetY + y * scale;
                     if (cursorY + scale < 0 || cursorY >= imageData.height) {
-                        i += payload.length + 1;
+                        i += 2;
                         continue;
                     }
 
@@ -98,14 +101,14 @@ export class CommonRenderer implements Renderer {
                         case 0: //empty
                             break;
                         case 1: //organism
-                            let color: Color; 
+                            let color: Color;
 
                             if (mode === 'energy') {
-                                color = energyColor.mix(blackColor, array[i + payloadDataIndex] / 100);
+                                color = OrganismColor.energy(array[i + 1]);
                             } else if (mode === 'lifetime') {
-                                color = blackColor.mix(lifetimeColor, array[i + payloadDataIndex] / 100);
+                                color = OrganismColor.lifetime(array[i + 1], 255);
                             } else {
-                                color = organismColor;
+                                color = OrganismColor.default();
                             }
 
                             renderCell(cursorX, cursorY, color.toArray());
@@ -116,7 +119,8 @@ export class CommonRenderer implements Renderer {
                         case 3: //wall
                             break;
                     }
-                    i += payload.length + 1;
+
+                    i += 2;
                 }
             }
 

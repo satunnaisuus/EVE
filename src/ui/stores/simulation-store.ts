@@ -100,7 +100,7 @@ export class SimulationStore {
         })
     }
 
-    getState(payload: CellPayload[]): Promise<StepData> {
+    getState(payload: CellPayload): Promise<StepData> {
         return this.simulation.getState(payload);
     }
 

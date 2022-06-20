@@ -13,7 +13,7 @@ interface RenderCommand {
     data: {
         width: number,
         height: number,
-        payload: PayloadData[],
+        payload: PayloadData,
         array: Uint8Array,
     }
 }

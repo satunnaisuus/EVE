@@ -2,12 +2,13 @@ import { Color } from "../../../common/color";
 import { AbstractCell } from "../abstract-cell";
 import { CellContext } from "../cell-context";
 import { CellFactory } from "../cell-factory";
-import { CellVisitor } from "../cell-visitor";
 import { Direction, getOffset, randomDirection, rotateLeft, rotateRight } from "./organism/direction";
 import { Genome } from "./organism/genome";
 import { OrganicCell } from "./organic-cell";
 import { OrganismAction } from "./organism/action";
 import { SimulationParameters } from "../../simulation-parameters";
+import { WallCell } from "./wall-cell";
+import { EmptyCell } from "./empty-cell";
 
 export class OrganismCell extends AbstractCell {
     private lifetime: number = 0;
@@ -41,10 +42,6 @@ export class OrganismCell extends AbstractCell {
 
     getGenome(): Genome {
         return this.genome;
-    }
-
-    visit(visitor: CellVisitor): void {
-        visitor.visitOrganism(this);
     }
 
     update(context: CellContext, parameters: SimulationParameters): void {
@@ -107,31 +104,25 @@ export class OrganismCell extends AbstractCell {
     attact(context: CellContext): void {
         const offset = getOffset(this.direction);
         const victim = context.getByOffest(offset[0], offset[1]);
-        const self = this;
 
-        victim.visit(new class extends CellVisitor {
-            visitOrganism(victim: OrganismCell): void {
-                if (victim.getEnergy() <= self.getEnergy()) {
-                    victim.changeEnergy(self.getEnergy() / -3);
-                } 
-                
-                self.changeEnergy(-1);
-            }
-        });
+        if (victim instanceof OrganismCell) {
+            if (victim.getEnergy() <= this.getEnergy()) {
+                victim.changeEnergy(this.getEnergy() / -3);
+            } 
+            
+            this.changeEnergy(-1);
+        }
     }
 
     eat(context: CellContext, parameters: SimulationParameters): void {
         const offset = getOffset(this.direction);
         const food = context.getByOffest(offset[0], offset[1]);
-        const self = this;
 
-        food.visit(new class extends CellVisitor {
-            visitOrganic(cell: OrganicCell): void {
-                context.deleteByOffset(offset[0], offset[1]);
-                context.moveByOffest(offset[0], offset[1]);
-                self.changeEnergy(parameters.organicEnergy);
-            }
-        });
+        if (food instanceof OrganicCell) {
+            context.deleteByOffset(offset[0], offset[1]);
+            context.moveByOffest(offset[0], offset[1]);
+            this.changeEnergy(parameters.organicEnergy);
+        }
     }
 
     photosynthesis(energy: number): void {

@@ -14,7 +14,7 @@ export interface CommandStep {
 export interface CommandRequestState {
     id: number;
     type: 'requestState';
-    payload: CellPayload[];
+    payload: CellPayload;
 }
 
 export interface CommandSetParameter {
@@ -50,7 +50,7 @@ export interface ResponseState {
     id: number;
     type: 'state';
     step: number;
-    payload: CellPayload[];
+    payload: CellPayload;
     buffer: ArrayBufferLike;
 }
 

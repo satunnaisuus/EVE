@@ -31,7 +31,7 @@ export class CommonSimulation extends Simulation {
         });
     }
 
-    getState(payload: CellPayload[]): Promise<StepData> {
+    getState(payload: CellPayload): Promise<StepData> {
         return new Promise((resolve) => {
             const data = Data.create(this.state, payload);
 
