@@ -27,6 +27,10 @@ export const Info = observer(({}: Props) => {
                 <span>Step time</span>
                 <span>{simulation.getStepTime()} ms</span>
             </Row>
+            <Row>
+                <span>Organisms count</span>
+                <span>{simulation.getOrganismsCount()}</span>
+            </Row>
         </>
     );
 });

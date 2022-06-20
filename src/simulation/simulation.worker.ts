@@ -1,6 +1,6 @@
 import { CommonSimulation } from "./common-simulation";
 import { Simulation } from "./simulation";
-import { CommandInit, CommandRequestState, CommandSetParameter, CommandStep, WorkerCommand } from "./types/worker-commands";
+import { CommandGetOrganismsCount, CommandInit, CommandRequestState, CommandSetParameter, CommandStep, WorkerCommand } from "./types/worker-commands";
 
 const ctx: Worker = self as any;
 
@@ -43,18 +43,19 @@ const handlers = {
                 value: value,
             });
         });
-    }
+    },
+
+    getOrganismsCount: (request: CommandGetOrganismsCount) => {
+        simulation.getOrganismsCount().then((count) => {
+            ctx.postMessage({
+                id: request.id,
+                type: 'getOrganismsCount',
+                count: count,
+            });
+        });
+    },
 }
 
 ctx.addEventListener("message", (event: MessageEvent<WorkerCommand>) => {
-    switch (event.data.type) {
-        case 'init':
-            return handlers.init(event.data);
-        case 'step':
-            return handlers.step(event.data);
-        case 'requestState':
-            return handlers.requestState(event.data);
-        case 'setParameter':
-            return handlers.setPatameter(event.data);
-    }
+    handlers[event.data.type as keyof typeof handlers](event.data as any);
 });

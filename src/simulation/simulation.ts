@@ -24,6 +24,8 @@ export abstract class Simulation {
 
     abstract setParameter<T>(parameter: Parameters, value: T): Promise<T>;
 
+    abstract getOrganismsCount(): Promise<number>;
+
     terminate(): void {
 
     }

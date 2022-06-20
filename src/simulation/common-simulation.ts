@@ -48,6 +48,10 @@ export class CommonSimulation extends Simulation {
         return this.state.getParameters()[parameter] as any;
     }
 
+    async getOrganismsCount(): Promise<number> {
+        return this.state.getOrganismsCount();
+    }
+
     private spawnOrganisms(count: number, initialEnergy: number): void {
         const coordinates: [number, number][] = [];
         const cells = this.state.getGrid().toArray();

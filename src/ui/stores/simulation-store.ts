@@ -21,6 +21,9 @@ export class SimulationStore {
     @observable
     private stepTime: number = 0;
 
+    @observable
+    private organismsCount: number = 0;
+
     private simulation: Simulation;
 
     private renderer: CanvasRenderer;
@@ -45,6 +48,12 @@ export class SimulationStore {
 
             this.renderer.update().then(() => {
                 runInAction(() => this.ready = true);
+            });
+
+            this.simulation.getOrganismsCount().then((count) => {
+                runInAction(() => {
+                    this.organismsCount = count;
+                });
             });
         });
     }
@@ -128,17 +137,24 @@ export class SimulationStore {
         return this.stepTime;
     }
 
+    getOrganismsCount(): number {
+        return this.organismsCount;
+    }
+
     private step(): Promise<number> {
         return new Promise((resolve) => {
             const stepStartTime = Date.now();
 
             this.simulation.step().then((step) => {
-                runInAction(() => {
-                    this.stepTime = Date.now() - stepStartTime;
-                    this.currentStep = step;
-                });
+                this.simulation.getOrganismsCount().then((count) => {
+                    runInAction(() => {
+                        this.stepTime = Date.now() - stepStartTime;
+                        this.currentStep = step;
+                        this.organismsCount = count;
+                    });
 
-                resolve(step);
+                    resolve(step);
+                });
             });
         });
     }

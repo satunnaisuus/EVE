@@ -24,11 +24,17 @@ export interface CommandSetParameter {
     value: any;
 }
 
+export interface CommandGetOrganismsCount {
+    id: number;
+    type: 'getOrganismsCount';
+}
+
 export type WorkerCommand =
     | CommandInit
     | CommandStep
     | CommandRequestState
-    | CommandSetParameter;
+    | CommandSetParameter
+    | CommandGetOrganismsCount;
 
 export interface ResponseInit {
     type: 'init';
@@ -54,8 +60,15 @@ export interface ResponseSetParameter {
     value: any;
 }
 
+export interface ResponseGetOrganismsCount {
+    id: number;
+    type: 'getOrganismsCount';
+    count: number;
+}
+
 export type WorkerResponse =
     | ResponseStep
     | ResponseState
     | ResponseInit
-    | ResponseSetParameter;
+    | ResponseSetParameter
+    | ResponseGetOrganismsCount;

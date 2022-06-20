@@ -51,4 +51,20 @@ export class State {
     getParameters(): SimulationParameters {
         return this.parameters;
     }
+
+    getOrganismsCount(): number {
+        let result = 0;
+
+        for (let x = 0; x < this.grid.getWidth(); x++) {
+            for (let y = 0; y < this.grid.getHeight(); y++) {
+                const cell = this.grid.getCell(x, y);
+
+                if (cell.getType() === 'organism') {
+                    result++;
+                }
+            }
+        }
+
+        return result;
+    }
 }

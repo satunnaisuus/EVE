@@ -12,10 +12,12 @@ export class WorkerSimulation extends Simulation {
         step: {[key: number]: (step: number) => void},
         state: {[key: number]: (data: StepData) => void},
         setParameter: {[key: number]: (value: any) => void},
+        getOrganismsCount: {[key: number]: (count: number) => void},
     } = {
         step: {},
         state: {},
         setParameter: {},
+        getOrganismsCount: {},
     };
 
     private constructor(options: SimulationOptions, onInit: (simulation: WorkerSimulation) => any) {
@@ -43,6 +45,11 @@ export class WorkerSimulation extends Simulation {
                 case 'setParameter':
                     this.messageListeners.setParameter[ev.data.id](ev.data.value);
                     delete this.messageListeners.setParameter[ev.data.id];
+                    return;
+
+                case 'getOrganismsCount':
+                    this.messageListeners.getOrganismsCount[ev.data.id](ev.data.count);
+                    delete this.messageListeners.getOrganismsCount[ev.data.id];
                     return;
             }
         });
@@ -79,6 +86,14 @@ export class WorkerSimulation extends Simulation {
             const id = this.nextId();
             this.messageListeners.setParameter[id] = resolve;
             this.worker.postMessage({id: id, type: 'setParameter', parameter: parameter, value: value});
+        });
+    }
+
+    getOrganismsCount(): Promise<number> {
+        return new Promise((resolve) => {
+            const id = this.nextId();
+            this.messageListeners.getOrganismsCount[id] = resolve;
+            this.worker.postMessage({id: id, type: 'getOrganismsCount'});
         });
     }
 
