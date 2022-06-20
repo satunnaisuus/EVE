@@ -18,6 +18,10 @@ const OrganismColor = {
     energy: (energy: number) => (
         energyColor.mix(blackColor, energy / 255)
     ),
+
+    genesis: (r: number, g: number, b: number) => (
+        new Color(r, g, b)
+    )
 }
 
 export class CommonRenderer implements Renderer {
@@ -87,13 +91,13 @@ export class CommonRenderer implements Renderer {
                 for (let y = 0; y < data.getHeight(); y++) {
                     const cursorX = offsetX + x * scale;
                     if (cursorX + scale < 0 || cursorX >= imageData.width) {
-                        i += 2;
+                        i += data.getItemLength();
                         continue;
                     }
 
                     const cursorY = offsetY + y * scale;
                     if (cursorY + scale < 0 || cursorY >= imageData.height) {
-                        i += 2;
+                        i += data.getItemLength();
                         continue;
                     }
 
@@ -107,6 +111,8 @@ export class CommonRenderer implements Renderer {
                                 color = OrganismColor.energy(array[i + 1]);
                             } else if (mode === 'lifetime') {
                                 color = OrganismColor.lifetime(array[i + 1], 255);
+                            } else if (mode === 'genesis') {
+                                color = OrganismColor.genesis(array[i + 1], array[i + 2], array[i + 3]);
                             } else {
                                 color = OrganismColor.default();
                             }
@@ -120,7 +126,7 @@ export class CommonRenderer implements Renderer {
                             break;
                     }
 
-                    i += 2;
+                    i += data.getItemLength();
                 }
             }
 

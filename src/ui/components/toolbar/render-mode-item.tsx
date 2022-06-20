@@ -28,6 +28,7 @@ const rendererOptions = [
     {label: 'Default', value: 'default'},
     {label: 'Energy', value: 'energy'},
     {label: 'Lifetime', value: 'lifetime'},
+    {label: 'Genesis', value: 'genesis'},
 ];
 
 export const RenderModeItem = observer(({}: Props) => {

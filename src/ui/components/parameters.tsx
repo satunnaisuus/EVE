@@ -15,8 +15,8 @@ export const Parameters = observer(({}: Props) => {
     return (
         <>
             <RangeRow label={`Lifetime limit`} min={1} max={255} step={1} onChange={(v) => parameters.setOrganismMaxLifetime(v)} value={parameters.getOrganismMaxLifetime()} />
-            <RangeRow label={`Organic energy`} min={1} max={255} step={1} onChange={(v) => parameters.setOrganicEnergy(v)} value={parameters.getOrganicEnergy()} />
-            <RangeRow label={`Photosynthesis energy`} min={1} max={255} step={1} onChange={(v) => parameters.setPhotosynthesisEnergy(v)} value={parameters.getPhotosynthesisEnergy()} />
+            <RangeRow label={`Organic energy`} min={0} max={255} step={1} onChange={(v) => parameters.setOrganicEnergy(v)} value={parameters.getOrganicEnergy()} />
+            <RangeRow label={`Photosynthesis energy`} min={0} max={255} step={1} onChange={(v) => parameters.setPhotosynthesisEnergy(v)} value={parameters.getPhotosynthesisEnergy()} />
         </>
     );
 });

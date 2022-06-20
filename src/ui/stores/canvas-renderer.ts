@@ -80,8 +80,10 @@ export class CanvasRenderer {
             payload = 'energy';
         } else if (mode === 'lifetime') {
             payload = 'lifetime';
+        } else if (mode === 'genesis') {
+            payload = 'genesis';
         } else {
-            payload = 'direction';
+            payload = null;
         }
 
         this.setState(await this.simulation.getState(payload));
