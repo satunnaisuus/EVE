@@ -5,10 +5,10 @@ import RendererWorker from './renderer.worker.ts';
 export class WorkerRenderer implements Renderer {
     private worker: RendererWorker;
 
-    private listeners: ((value: ImageData) => void)[] = [];
+    private listeners: {[key: number]: (data: ImageData) => any} = {};
 
     private lastId = 0;
-    
+
     constructor() {
         this.worker = new RendererWorker();
 
@@ -18,8 +18,10 @@ export class WorkerRenderer implements Renderer {
         });
     }
 
-    render(width: number, height: number, offsetX: number, offsetY: number, scale: number, mode: RenderMode, data: Data): Promise<ImageData> {
-        const id = this.lastId++;
+    render(done: (data: ImageData) => any, width: number, height: number, offsetX: number, offsetY: number, scale: number, mode: RenderMode, data: Data): void {
+        const id = ++this.lastId;
+        
+        this.listeners[id] = done;
 
         this.worker.postMessage({
             id: id,
@@ -36,10 +38,6 @@ export class WorkerRenderer implements Renderer {
                 array: data.getArray(),
             }
         }, [data.getArray().buffer]);
-
-        return new Promise((resolve) => {
-            this.listeners[id] = resolve;
-        });
     }
 
     terminate(): void {

@@ -24,10 +24,13 @@ let queue: RenderCommand[] = [];
 
 setTimeout(function run () {
     if (queue.length) {
-        const commandData = queue.pop();
-        queue = [];
+        const commandData = queue.shift();
         const simulationData = new Data(commandData.data.array, commandData.data.payload, commandData.data.width, commandData.data.height);
+        
         renderer.render(
+            (data) => {
+                ctx.postMessage({id: commandData.id, data: data}, [data.data.buffer])
+            },
             commandData.width,
             commandData.height,
             commandData.offsetX,
@@ -35,9 +38,7 @@ setTimeout(function run () {
             commandData.scale,
             commandData.mode,
             simulationData
-        ).then(function (data) {
-            ctx.postMessage({id: commandData.id, data: data}, [data.data.buffer])
-        })
+        );
     }
 
     setTimeout(run, 0);

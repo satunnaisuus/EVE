@@ -14,6 +14,9 @@ export class CanvasRenderer {
     @observable
     private mode: RenderMode = 'default';
 
+    @observable
+    private renderTime: number = 0;
+
     private canvas: HTMLCanvasElement;
 
     private context: CanvasRenderingContext2D;
@@ -29,6 +32,10 @@ export class CanvasRenderer {
     private renderer: WorkerRenderer;
 
     private canvasDestroyListeners: (() => any)[] = [];
+
+    private needRender: boolean = false;
+
+    private rendering: boolean = false;
 
     constructor(
         private simulation: SimulationStore
@@ -53,18 +60,34 @@ export class CanvasRenderer {
     }
 
     requestRedraw(): void {
-        this.render(this.mode, this.state)
-            .then((imageData) => {
-                if (this.redrawId) {
-                    cancelAnimationFrame(this.redrawId);
-                }
+        if (this.rendering) {
+            this.needRender = true;
+            return;
+        }
 
-                this.redrawId = requestAnimationFrame(() => {
-                    this.context.putImageData(imageData, 0, 0);
-                    this.redrawId = null;
+        const renderStartTime = +Date.now();
+
+        this.render((imageData) => {
+            if (this.redrawId) {
+                cancelAnimationFrame(this.redrawId);
+            }
+
+            this.redrawId = requestAnimationFrame(() => {
+                this.context.putImageData(imageData, 0, 0);
+
+                runInAction(() => {
+                    this.renderTime = +Date.now() - renderStartTime;
                 });
-            })
-        ;
+
+                this.redrawId = null;
+                this.rendering = false;
+
+                if (this.needRender) {
+                    this.needRender = false;
+                    this.requestRedraw();
+                }
+            });
+        });
     }
 
     @action
@@ -165,36 +188,31 @@ export class CanvasRenderer {
         this.renderer.terminate();
     }
 
-    private render(mode: RenderMode, state: StepData): Promise<ImageData> {
-        return new Promise((resolve, reject) => {
-            if (! this.canvas) {
-                return reject('canvas is null');
-            }
+    getRenderTime(): number {
+        return this.renderTime;
+    }
 
-            if (! this.state) {
-                return reject('state is null');
-            }
-    
-            if (! this.canvas.width || ! this.canvas.height) {
-                return reject('width or height = 0');
-            }
+    private render(done: (data: ImageData) => any): void {
+        if (! this.canvas || ! this.state || ! this.canvas.width || ! this.canvas.height) {
+            return;
+        }
 
-            this.renderer.render(
-                Math.trunc(this.canvas.width),
-                Math.trunc(this.canvas.height),
-                this.offset[0],
-                this.offset[1],
-                this.scale,
-                mode,
-                new Data(
-                    new Uint8Array(state.buffer.slice(0)),
-                    state.payload,
-                    this.simulation.getOptions().width,
-                    this.simulation.getOptions().height
-                )
+        this.rendering = true;
+
+        this.renderer.render(
+            done,
+            Math.trunc(this.canvas.width),
+            Math.trunc(this.canvas.height),
+            this.offset[0],
+            this.offset[1],
+            this.scale,
+            this.mode,
+            new Data(
+                new Uint8Array(this.state.buffer.slice(0)),
+                this.state.payload,
+                this.simulation.getOptions().width,
+                this.simulation.getOptions().height
             )
-            .then(resolve)
-            .catch(reject);
-        });
+        );
     }
 }
