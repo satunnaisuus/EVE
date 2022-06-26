@@ -1,9 +1,9 @@
 export class SimulationParameters {
-    private organismMaxLifetimeValue: number = 255;
+    private organismMaxLifetimeValue: number = 100;
 
-    private photosynthesisEnergyValue: number = 1;
+    private photosynthesisEnergyValue: number = 5;
 
-    private organicEnergyValue: number = 20;
+    private organicEnergyValue: number = 30;
 
     constructor(options: {[key: string]: any} = {}) {
         if (options['photosynthesisEnergy'] != null) {

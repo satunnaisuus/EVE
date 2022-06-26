@@ -9,9 +9,23 @@ export class Color {
         private readonly green: number,
         private readonly blue: number
     ) {
-        assertGreaterOrEqualThan(red, 0);
-        assertGreaterOrEqualThan(green, 0);
-        assertGreaterOrEqualThan(blue, 0);
+        if (red > 255) {
+            red = 255;
+        } else if (red < 0) {
+            red = 0;
+        }
+
+        if (green > 255) {
+            green = 255;
+        } else if (green < 0) {
+            green = 0;
+        }
+
+        if (blue > 255) {
+            blue = 255;
+        } else if (blue < 0) {
+            blue = 0;
+        }
 
         assertLessOrEqualThan(red, 255);
         assertLessOrEqualThan(green, 255);

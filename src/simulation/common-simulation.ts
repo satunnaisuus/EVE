@@ -1,5 +1,4 @@
 import { shuffle } from "../common/array-utils";
-import { Color } from "../common/color";
 import { CellFactory } from "./cell/cell-factory";
 import { Genome } from "./cell/type/organism/genome";
 import { Data } from "./data";
@@ -68,7 +67,6 @@ export class CommonSimulation extends Simulation {
     
         for (const [x, y] of shuffle(coordinates).slice(0, count)) {
             this.state.getGrid().insert(x, y, this.cellFactory.createOrganism(
-                Color.random(),
                 Genome.createRandom(),
                 initialEnergy
             ));

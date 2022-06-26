@@ -28,6 +28,18 @@ export class Network {
         
     }
 
+    getInputLayer(): Layer {
+        return this.input;
+    }
+
+    getHiddenLayers(): Layer[] {
+        return this.hidden;
+    }
+
+    getOutputLayer(): Layer {
+        return this.output;
+    }
+
     activate(data: number[]): number[] {
         this.input.activate(data);
 
@@ -46,7 +58,7 @@ export class Network {
         }
     }
 
-    static deserialize(value: SerializedNetwork): any {
+    static deserialize(value: SerializedNetwork): Network {
         const neuronsMap: {[key: number]: Neuron} = {};
         const connectionsConfigMap: {[key: number]: SerializedConnection[]} = {};
 

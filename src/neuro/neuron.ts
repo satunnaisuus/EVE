@@ -45,4 +45,8 @@ export class Neuron {
             connections: this.connections.map(c => [c.getFrom().getId(), c.getWeight()])
         }
     }
+
+    getConnections(): Connection[] {
+        return this.connections;
+    }
 }

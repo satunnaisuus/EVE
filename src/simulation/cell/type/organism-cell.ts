@@ -7,8 +7,9 @@ import { Genome } from "./organism/genome";
 import { OrganicCell } from "./organic-cell";
 import { OrganismAction } from "./organism/action";
 import { SimulationParameters } from "../../simulation-parameters";
-import { WallCell } from "./wall-cell";
-import { EmptyCell } from "./empty-cell";
+import { shuffle } from "../../../common/array-utils";
+
+const MAX_ENERGY = 255;
 
 export class OrganismCell extends AbstractCell {
     private lifetime: number = 0;
@@ -16,7 +17,6 @@ export class OrganismCell extends AbstractCell {
     private direction: Direction;
 
     constructor(
-        private color: Color,
         private genome: Genome,
         private energy: number
     ) {
@@ -90,12 +90,12 @@ export class OrganismCell extends AbstractCell {
     }
 
     divide(context: CellContext): void {
-        for (const direction in Direction) {
+        for (const direction of shuffle(Object.keys(Direction))) {
             const offset = getOffset(Direction[direction as keyof typeof Direction]);
             if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
                 context.moveByOffest(offset[0], offset[1]);
                 this.changeEnergy(Math.floor(this.energy / -2));
-                context.replace((factory: CellFactory) => factory.createOrganism(this.color, this.genome.clone(), this.energy));
+                context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
                 return;
             }
         }
@@ -106,9 +106,7 @@ export class OrganismCell extends AbstractCell {
         const victim = context.getByOffest(offset[0], offset[1]);
 
         if (victim instanceof OrganismCell) {
-            if (victim.getEnergy() <= this.getEnergy()) {
-                victim.changeEnergy(this.getEnergy() / -3);
-            } 
+            victim.kill();
             
             this.changeEnergy(-1);
         }
@@ -132,8 +130,8 @@ export class OrganismCell extends AbstractCell {
     changeEnergy(value: number) {
         this.energy += value;
 
-        if (this.energy > 100) {
-            this.energy = 100;
+        if (this.energy > MAX_ENERGY) {
+            this.energy = MAX_ENERGY;
         } else if (this.energy < 0) {
             this.energy = 0;
         }
@@ -148,12 +146,11 @@ export class OrganismCell extends AbstractCell {
     }
 
     isSimilar(cell: OrganismCell): boolean {
-        // return this.genome.isSimilar(cell.getGenome());
-        return this.color.equals(cell.getColor());
+        return this.genome.isSimilar(cell.getGenome());
     }
 
     getColor(): Color {
-        return this.color;
+        return this.genome.getColor();
     }
     
     serialize() {
@@ -161,7 +158,7 @@ export class OrganismCell extends AbstractCell {
             type: 'organism',
             lifetime: this.lifetime,
             energy: this.energy,
-            color: this.color.toHexFormat(),
+            color: this.getColor().toHexFormat(),
             direction: this.direction.toString(),
         }
     }

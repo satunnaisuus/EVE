@@ -1,12 +1,17 @@
 import { AbstractCell } from "../../abstract-cell";
-import { EmptyCell } from "../empty-cell";
 import { OrganicCell } from "../organic-cell";
 import { OrganismAction, randomAction } from "./action";
 import { OrganismCell } from "../organism-cell";
 import { WallCell } from "../wall-cell";
+import { Network } from "../../../../neuro/network";
+import { createRNN } from "../../../../neuro/rnn-factory";
 import { randomInt } from "../../../../common/random";
+import { Color } from "../../../../common/color";
 
-const MUTATION_POWER = 5;
+const MUTATION_POWER = 0.5;
+const MUTATION_CHANCE = 20;
+const DIVIDE_LIMIT = 60;
+const SIMILARITY_LIMIT = 30;
 
 enum Target {
     EMPTY = 'EMPTY',
@@ -18,89 +23,106 @@ enum Target {
 
 export class Genome {
     constructor(
-        private mutationСhance: number,
-        private similarityLimit: number,
-        private reflexes: {[key: string]: OrganismAction} = {}
+        private neuralNetwork: Network,
+        private color: Color,
     ) {
         
     }
 
     getAction(organism: OrganismCell, tagretCell: AbstractCell): OrganismAction {
-        const divisionPossible = organism.getEnergy() > 60;
+        const canDivide = organism.getEnergy() >= DIVIDE_LIMIT ? 1 : 0;
 
-        let tagretType;
+        let data: number[];
 
         if (tagretCell instanceof WallCell) {
-            tagretType = Target.WALL;
+            data = [1, 0, 0, 0, 0, canDivide];
         } else if (tagretCell instanceof OrganicCell) {
-            tagretType = Target.ORGANIC;
+            data = [0, 1, 0, 0, 0, canDivide];
         } else if (tagretCell instanceof OrganismCell) {
-            tagretType = organism.isSimilar(tagretCell) ? Target.ORGANISM_SIMILAR : Target.ORGANISM_OTHER;
+            if (organism.isSimilar(tagretCell)) {
+                data = [0, 0, 1, 0, 0, canDivide];
+            } else {
+                data = [0, 0, 0, 1, 0, canDivide];
+            }
         } else {
-            tagretType = Target.EMPTY;
+            data = [0, 0, 0, 0, 1, canDivide];
         }
 
-        if (divisionPossible && tagretType === Target.EMPTY) {
-            return OrganismAction.DIVIDE;
+        const result = this.neuralNetwork.activate(data);
+        const max = Math.max(...result);
+
+        switch (result.indexOf(max)) {
+            case 0:
+                return OrganismAction.STEP;
+            case 1:
+                return OrganismAction.PHOTOSYNTHESIS;
+            case 2:
+                return OrganismAction.EAT;
+            case 3:
+                return OrganismAction.ATTACK;
+            case 4:
+                return OrganismAction.NOTHING;
+            case 5:
+                return OrganismAction.ROTATE_RIGHT;
+            case 6:
+                return OrganismAction.ROTATE_LEFT;
+            case 7:
+                return OrganismAction.DIVIDE;
         }
 
-        const action = this.reflexes[`${tagretType}`];
-
-        if (action === undefined || action === OrganismAction.DIVIDE && ! divisionPossible) {
-            return OrganismAction.NOTHING;
-        }
-
-        return action;
-    }
-
-    compare(genome: Genome): number {
-        return 0;
+        return OrganismAction.NOTHING;
     }
 
     isSimilar(genome: Genome): boolean {
-        return this.compare(genome) >= this.similarityLimit;
+        const color = genome.getColor();
+        const dr = Math.abs(color.getRed() - this.color.getRed());
+        const dh = Math.abs(color.getGreen() - this.color.getGreen());
+        const db = Math.abs(color.getBlue() - this.color.getBlue());
+
+        return dr + dh + db < SIMILARITY_LIMIT;
+    }
+
+    getColor(): Color {
+        return this.color;
     }
 
     clone(): Genome {
-        let similarityLimit = this.similarityLimit;
-        let mutationСhance = this.mutationСhance;
-        let reflexes: {[key: string]: OrganismAction} = {};
-
-        for (let key of Object.keys(Target)) {
-            reflexes[key] = this.reflexes[key];
-        }
-
-        if (this.mutationСhance > randomInt(0, 100)) {
-            const mutateParam = randomInt(0, 7);
-        
-            if (mutateParam === 0) {
-                mutationСhance += MUTATION_POWER * (randomInt(0, 1) === 1 ? -1 : 1)
-            } else if (mutateParam === 1) {
-                similarityLimit += MUTATION_POWER * (randomInt(0, 1) === 1 ? -1 : 1)
-            } else if (mutateParam >= 2) {
-                const keys = Object.keys(Target);
-                reflexes[keys[randomInt(0, keys.length - 1)]] = randomAction();
-            }
-        }
-
-        return new Genome(
-            mutationСhance,
-            similarityLimit,
-            reflexes
+        const network = Network.deserialize(
+            this.neuralNetwork.serialize()
         );
+
+        let color = this.color; 
+
+        if (MUTATION_CHANCE > randomInt(0, 100)) {
+            const layers = network.getHiddenLayers();
+            layers.push(network.getInputLayer(), network.getOutputLayer());
+
+            const neurons = [];
+
+            for (const layer of layers) {
+                neurons.push(...layer.getNeurons())
+            }
+
+            const connections = [];
+
+            for (const neuron of neurons) {
+                connections.push(...neuron.getConnections())
+            }
+
+            const connection = connections[randomInt(0, connections.length - 1)];
+            connection.setWeight(connection.getWeight() + (Math.random() > 0.5 ? 1 : -1) * MUTATION_POWER);
+
+            color = new Color(
+                color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
+                color.getGreen() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
+                color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
+            );
+        }
+
+        return new Genome(network, color);
     }
 
     static createRandom(): Genome {
-        let reflexes: {[key: string]: OrganismAction} = {};
-
-        for (let key of Object.keys(Target)) {
-            reflexes[key] = randomAction();
-        }
-
-        return new Genome(
-            Math.floor(Math.random() * 100),
-            Math.floor(Math.random() * 100),
-            reflexes
-        );
+        return new Genome(createRNN(6, [8], 8), Color.random());
     }
 }

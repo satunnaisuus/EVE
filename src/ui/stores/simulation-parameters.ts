@@ -3,13 +3,13 @@ import { SimulationStore } from "./simulation-store";
 
 export class SimulationParameters {
     @observable
-    private organismMaxLifetime: number = 255;
+    private organismMaxLifetime: number = 100;
 
     @observable
-    private organicEnergy: number = 10;
+    private organicEnergy: number = 30;
 
     @observable
-    private photosynthesisEnergy: number = 1;
+    private photosynthesisEnergy: number = 5;
 
     constructor(private store: SimulationStore) {
         makeObservable(this);
