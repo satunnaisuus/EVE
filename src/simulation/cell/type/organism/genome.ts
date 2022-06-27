@@ -87,37 +87,37 @@ export class Genome {
     }
 
     clone(): Genome {
+        if (MUTATION_CHANCE <= randomInt(0, 100)) {
+            return this;
+        }
+
         const network = Network.deserialize(
             this.neuralNetwork.serialize()
         );
 
-        let color = this.color; 
+        const layers = network.getHiddenLayers();
+        layers.push(network.getInputLayer(), network.getOutputLayer());
 
-        if (MUTATION_CHANCE > randomInt(0, 100)) {
-            const layers = network.getHiddenLayers();
-            layers.push(network.getInputLayer(), network.getOutputLayer());
+        const neurons = [];
 
-            const neurons = [];
-
-            for (const layer of layers) {
-                neurons.push(...layer.getNeurons())
-            }
-
-            const connections = [];
-
-            for (const neuron of neurons) {
-                connections.push(...neuron.getConnections())
-            }
-
-            const connection = connections[randomInt(0, connections.length - 1)];
-            connection.setWeight(connection.getWeight() + (Math.random() > 0.5 ? 1 : -1) * MUTATION_POWER);
-
-            color = new Color(
-                color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
-                color.getGreen() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
-                color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
-            );
+        for (const layer of layers) {
+            neurons.push(...layer.getNeurons())
         }
+
+        const connections = [];
+
+        for (const neuron of neurons) {
+            connections.push(...neuron.getConnections())
+        }
+
+        const connection = connections[randomInt(0, connections.length - 1)];
+        connection.setWeight(connection.getWeight() + (Math.random() > 0.5 ? 1 : -1) * MUTATION_POWER);
+
+        const color = new Color(
+            this.color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
+            this.color.getGreen() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
+            this.color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
+        );
 
         return new Genome(network, color);
     }

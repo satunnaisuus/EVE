@@ -99,6 +99,8 @@ export class OrganismCell extends AbstractCell {
                 return;
             }
         }
+
+        context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
     }
 
     attact(context: CellContext): void {

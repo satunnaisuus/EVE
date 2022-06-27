@@ -48,7 +48,7 @@ export class CommonRenderer implements Renderer {
             height
         );
 
-        const renderCell = (x: number, y: number, color: [number, number, number]) => {
+        const renderCell = (x: number, y: number, color: Color) => {
             const line = [];
 
             let visibleWidth = scale;
@@ -73,7 +73,7 @@ export class CommonRenderer implements Renderer {
             }
             
             for (let i = 0; i < visibleWidth; i++) {
-                line.push(color[0], color[1], color[2], 255);
+                line.push(color.getRed(), color.getGreen(), color.getBlue(), 255);
             }
 
             const offsetX = x * 4;
@@ -116,10 +116,10 @@ export class CommonRenderer implements Renderer {
                             color = OrganismColor.default();
                         }
 
-                        renderCell(cursorX, cursorY, color.toArray());
+                        renderCell(cursorX, cursorY, color);
                         break;
                     case 2: //organic
-                        renderCell(cursorX, cursorY, organicColor.toArray());
+                        renderCell(cursorX, cursorY, organicColor);
                         break;
                     case 3: //wall
                         break;
