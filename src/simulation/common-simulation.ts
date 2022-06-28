@@ -5,6 +5,7 @@ import { Data } from "./data";
 import { CellPayload, Parameters, Simulation, StepData } from "./simulation";
 import { SimulationParameters } from "./simulation-parameters";
 import { State } from "./state";
+import { CellType } from "./types/cells";
 import { SimulationOptions } from "./types/simulation-options";
 
 export class CommonSimulation extends Simulation {
@@ -49,6 +50,20 @@ export class CommonSimulation extends Simulation {
 
     async getOrganismsCount(): Promise<number> {
         return this.state.getOrganismsCount();
+    }
+
+    async findCellById(id: number): Promise<CellType> {
+        const cell = this.state.getGrid().find(id);
+
+        if (cell) {
+            return cell.serialize();
+        }
+
+        return null;
+    }
+
+    async getCell(x: number, y: number): Promise<CellType> {
+        return this.state.getGrid().getCell(x, y).serialize();
     }
 
     private spawnOrganisms(count: number, initialEnergy: number): void {

@@ -192,6 +192,20 @@ export class CanvasRenderer {
         return this.renderTime;
     }
 
+    click(x: number, y: number): void {
+        const cellX = Math.ceil((x - this.offset[0]) / this.scale) - 1;
+        if (cellX < 0 || cellX >= this.simulation.getOptions().width) {
+            return;
+        }
+
+        const cellY = Math.ceil((y - this.offset[1]) / this.scale) - 1;
+        if (cellY < 0 || cellY >= this.simulation.getOptions().height) {
+            return;
+        }
+
+        this.simulation.selectCell(cellX, cellY);
+    }
+
     private render(done: (data: ImageData) => any): void {
         if (! this.canvas || ! this.state || ! this.canvas.width || ! this.canvas.height) {
             return;

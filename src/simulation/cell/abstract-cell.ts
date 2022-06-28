@@ -14,6 +14,10 @@ export abstract class AbstractCell {
         return false;
     }
 
+    getId(): number {
+        return 0;
+    }
+
     abstract getType(): string;
 
     abstract serialize(): any;

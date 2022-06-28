@@ -7,6 +7,8 @@ import { GridLoopType } from "./types/grid-loop-type";
 export class Grid {
     private cells: AbstractCell[][] = [];
 
+    private cellIdMap: {[key: number]: AbstractCell} = {};
+
     constructor(
         private width: number,
         private height: number,
@@ -31,14 +33,24 @@ export class Grid {
         assertGreaterOrEqualThan(y, 0);
 
         this.cells[x][y] = cell;
+
+        if (cell.getId()) {
+            this.cellIdMap[cell.getId()] = cell;
+        }
     }
 
     delete(x: number, y: number): void {
+        const cell = this.cells[x][y];
         this.cells[x][y] = this.cellFactory.createEmpty();
+        delete this.cellIdMap[cell.getId()]
     }
 
     getCell(x: number, y: number): AbstractCell {
         return this.cells[x][y];
+    }
+
+    find(id: number): AbstractCell {
+        return this.cellIdMap[id];
     }
 
     getLoopMode(): GridLoopType {

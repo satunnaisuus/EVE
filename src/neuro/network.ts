@@ -43,7 +43,7 @@ export class Network {
     activate(data: number[]): number[] {
         this.input.activate(data);
 
-        for (let layer of this.hidden) {
+        for (const layer of this.hidden) {
             layer.activate();
         }
 

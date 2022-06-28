@@ -1,4 +1,3 @@
-import { Color } from "../../common/color";
 import { EmptyCell } from "./type/empty-cell";
 import { Genome } from "./type/organism/genome";
 import { OrganicCell } from "./type/organic-cell";
@@ -11,6 +10,8 @@ export class CellFactory {
     private empty: EmptyCell;
 
     private organic: OrganicCell;
+
+    private id: number = 0;
 
     createWall(): WallCell {
         if (this.wall) {
@@ -29,7 +30,7 @@ export class CellFactory {
     }
 
     createOrganism(genome: Genome, energy: number): OrganismCell {
-        return new OrganismCell(genome, energy);
+        return new OrganismCell(++this.id, genome, energy);
     }
 
     createOrganic(): OrganicCell {

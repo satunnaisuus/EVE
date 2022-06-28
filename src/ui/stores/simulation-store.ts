@@ -1,10 +1,11 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
 import { createSimulation } from "../../simulation/factory";
 import { CellPayload, Simulation, StepData } from "../../simulation/simulation";
+import { CellType } from "../../simulation/types/cells";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SimulationParameters } from "./simulation-parameters";
-import { SimulationUI } from "./simulation-ui";
+import { SimulationTabType, SimulationUI } from "./simulation-ui";
 
 const TIMEOUT_DELAY = 4;
 
@@ -23,6 +24,12 @@ export class SimulationStore {
 
     @observable
     private organismsCount: number = 0;
+
+    @observable
+    private selectedCellCoords: [number, number] = null;
+
+    @observable
+    private selectedCell: CellType = null;
 
     private simulation: Simulation;
 
@@ -74,7 +81,7 @@ export class SimulationStore {
         this.paused = false;
 
         const tick = () => {
-            this.step().then((step) => {
+            this.step().then(() => {
                 this.renderer.update().then(() => {
                     if (! this.paused) {
                         this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
@@ -95,7 +102,7 @@ export class SimulationStore {
     }
 
     makeStep(): void {
-        this.step().then((step) => {
+        this.step().then(() => {
             this.renderer.update();
         })
     }
@@ -149,21 +156,41 @@ export class SimulationStore {
         return this.simulation.getOptions().height;
     }
 
-    private step(): Promise<number> {
-        return new Promise((resolve) => {
-            const stepStartTime = Date.now();
-
-            this.simulation.step().then((step) => {
-                this.simulation.getOrganismsCount().then((count) => {
-                    runInAction(() => {
-                        this.stepTime = Date.now() - stepStartTime;
-                        this.currentStep = step;
-                        this.organismsCount = count;
-                    });
-
-                    resolve(step);
-                });
+    @action
+    selectCell(x: number, y: number): void {
+        this.selectedCellCoords = [x, y];
+        this.simulation.getCell(x, y).then((cell) => {
+            runInAction(() => {
+                this.selectedCell = cell; 
             });
+            this.ui.openTab(SimulationTabType.CELL);
+        });
+    }
+
+    getSelectedCellCoords(): [number, number] {
+        return this.selectedCellCoords;
+    }
+
+    getSelectedCell(): CellType {
+        return this.selectedCell;
+    }
+
+    private async step(): Promise<void> {
+        const stepStartTime = Date.now();
+        const step = await this.simulation.step();
+        const organismsCount = await this.simulation.getOrganismsCount();
+        
+        if (this.selectedCell && this.selectedCell.type === 'organism') {
+            const cell = await this.simulation.findCellById(this.selectedCell.id);
+            runInAction(() => {
+                this.selectedCell = cell;
+            });
+        }
+
+        runInAction(() => {
+            this.stepTime = Date.now() - stepStartTime;
+            this.currentStep = step;
+            this.organismsCount = organismsCount;
         });
     }
 }

@@ -1,6 +1,6 @@
 import { CommonSimulation } from "./common-simulation";
 import { Simulation } from "./simulation";
-import { CommandGetOrganismsCount, CommandInit, CommandRequestState, CommandSetParameter, CommandStep, WorkerCommand } from "./types/worker-commands";
+import { CommandFindCellById, CommandGetCell, CommandGetOrganismsCount, CommandInit, CommandRequestState, CommandSetParameter, CommandStep, WorkerCommand } from "./types/worker-commands";
 
 const ctx: Worker = self as any;
 
@@ -51,6 +51,26 @@ const handlers = {
                 id: request.id,
                 type: 'getOrganismsCount',
                 count: count,
+            });
+        });
+    },
+
+    getCell: (request: CommandGetCell) => {
+        simulation.getCell(request.x, request.y).then((cell) => {
+            ctx.postMessage({
+                id: request.id,
+                type: 'getCell',
+                cell: cell,
+            });
+        });
+    },
+
+    findCellById: (request: CommandFindCellById) => {
+        simulation.findCellById(request.cellId).then((cell) => {
+            ctx.postMessage({
+                id: request.id,
+                type: 'findCellById',
+                cell: cell,
             });
         });
     },

@@ -10,8 +10,16 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
         dragging = true;
     }
 
+    const mouseupListener = (e: MouseEvent) => {
+        e.preventDefault();
+    }
+
     const mousemoveListener = (e: MouseEvent) => {
         e.preventDefault();
+    }
+
+    const clickListener = (e: MouseEvent) => {
+        renderer.click(e.offsetX, e.offsetY);
     }
 
     let scaleBuffer = 0;
@@ -64,7 +72,9 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
     
     canvas.addEventListener('wheel', wheelListener);
     canvas.addEventListener('mousedown', mousedownListener);
+    canvas.addEventListener('mouseup', mouseupListener);
     canvas.addEventListener('mousemove', mousemoveListener);
+    canvas.addEventListener('click', clickListener);
 
     document.body.addEventListener('mousemove', bodyMousemoveListener);
     document.body.addEventListener('mouseup', bodyMouseupListener);
@@ -72,7 +82,9 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
     return () => {
         canvas.removeEventListener('wheel', wheelListener);
         canvas.removeEventListener('mousedown', mousedownListener);
+        canvas.removeEventListener('mouseup', mouseupListener);
         canvas.removeEventListener('mousemove', mousemoveListener);
+        canvas.removeEventListener('click', clickListener);
         
         document.body.removeEventListener('mousemove', bodyMousemoveListener);
         document.body.removeEventListener('mouseup', bodyMouseupListener);

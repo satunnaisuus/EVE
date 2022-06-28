@@ -8,6 +8,7 @@ import { SidebarTabs } from "./sidebar/sidebar-tabs";
 import { TabPane } from "./sidebar/tab-pane";
 import { SimulationTabType } from "../stores/simulation-ui";
 import { Info } from "./info";
+import { SelectedCell } from "./selected-cell";
 
 const StyledSidebar = styled.div`
     position: absolute;
@@ -34,6 +35,9 @@ export const Sidebar = observer(({}: Props) => {
             </TabPane>
             <TabPane active={openedTab === SimulationTabType.INFO}>
                 <Info />
+            </TabPane>
+            <TabPane active={openedTab === SimulationTabType.CELL}>
+                <SelectedCell />
             </TabPane>
         </StyledSidebar>
     );

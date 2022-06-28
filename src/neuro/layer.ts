@@ -1,5 +1,9 @@
 import { Neuron } from "./neuron";
 
+function getOutput(neuron: Neuron) {
+    return neuron.getOutput()
+}
+
 export class Layer {
     constructor(
         private id: number,
@@ -19,7 +23,7 @@ export class Layer {
             }
         }
 
-        return this.neurons.map(n => n.getOutput());
+        return this.neurons.map(getOutput);
     }
 
     getNeurons(): Neuron[] {

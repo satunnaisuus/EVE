@@ -1,7 +1,8 @@
 import { CellPayload, Parameters, Simulation, StepData } from "./simulation";
 import { SimulationOptions } from "./types/simulation-options";
-import { WorkerResponse } from "./types/worker-commands";
+import { WorkerResponse } from "./types/worker-response";
 import SimulationWorker from './simulation.worker.ts';
+import { CellType } from "./types/cells";
 
 export class WorkerSimulation extends Simulation {
     private worker: SimulationWorker;
@@ -13,11 +14,15 @@ export class WorkerSimulation extends Simulation {
         state: {[key: number]: (data: StepData) => void},
         setParameter: {[key: number]: (value: any) => void},
         getOrganismsCount: {[key: number]: (count: number) => void},
+        getCell: {[key: number]: (cell: CellType) => void},
+        findCellById: {[key: number]: (cell: CellType) => void},
     } = {
         step: {},
         state: {},
         setParameter: {},
         getOrganismsCount: {},
+        getCell: {},
+        findCellById: {},
     };
 
     private constructor(options: SimulationOptions, onInit: (simulation: WorkerSimulation) => any) {
@@ -50,6 +55,16 @@ export class WorkerSimulation extends Simulation {
                 case 'getOrganismsCount':
                     this.messageListeners.getOrganismsCount[ev.data.id](ev.data.count);
                     delete this.messageListeners.getOrganismsCount[ev.data.id];
+                    return;
+                
+                case 'getCell':
+                    this.messageListeners.getCell[ev.data.id](ev.data.cell);
+                    delete this.messageListeners.getCell[ev.data.id];
+                    return;
+                
+                case 'findCellById':
+                    this.messageListeners.findCellById[ev.data.id](ev.data.cell);
+                    delete this.messageListeners.findCellById[ev.data.id];
                     return;
             }
         });
@@ -94,6 +109,22 @@ export class WorkerSimulation extends Simulation {
             const id = this.nextId();
             this.messageListeners.getOrganismsCount[id] = resolve;
             this.worker.postMessage({id: id, type: 'getOrganismsCount'});
+        });
+    }
+
+    findCellById(cellId: number): Promise<CellType> {
+        return new Promise((resolve) => {
+            const id = this.nextId();
+            this.messageListeners.findCellById[id] = resolve;
+            this.worker.postMessage({id: id, type: 'findCellById', cellId: cellId});
+        });
+    }
+
+    getCell(x: number, y: number): Promise<CellType> {
+        return new Promise((resolve) => {
+            const id = this.nextId();
+            this.messageListeners.getCell[id] = resolve;
+            this.worker.postMessage({id: id, type: 'getCell', x: x, y: y});
         });
     }
 

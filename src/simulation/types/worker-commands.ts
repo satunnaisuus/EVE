@@ -29,46 +29,24 @@ export interface CommandGetOrganismsCount {
     type: 'getOrganismsCount';
 }
 
+export interface CommandGetCell {
+    id: number;
+    type: 'getCell';
+    x: number;
+    y: number;
+}
+
+export interface CommandFindCellById {
+    id: number;
+    type: 'findCellById';
+    cellId: number;
+}
+
 export type WorkerCommand =
     | CommandInit
     | CommandStep
     | CommandRequestState
     | CommandSetParameter
-    | CommandGetOrganismsCount;
-
-export interface ResponseInit {
-    type: 'init';
-}
-
-export interface ResponseStep {
-    id: number;
-    type: 'step';
-    step: number;
-}
-
-export interface ResponseState {
-    id: number;
-    type: 'state';
-    step: number;
-    payload: CellPayload;
-    buffer: ArrayBufferLike;
-}
-
-export interface ResponseSetParameter {
-    id: number;
-    type: 'setParameter';
-    value: any;
-}
-
-export interface ResponseGetOrganismsCount {
-    id: number;
-    type: 'getOrganismsCount';
-    count: number;
-}
-
-export type WorkerResponse =
-    | ResponseStep
-    | ResponseState
-    | ResponseInit
-    | ResponseSetParameter
-    | ResponseGetOrganismsCount;
+    | CommandGetOrganismsCount
+    | CommandGetCell
+    | CommandFindCellById;

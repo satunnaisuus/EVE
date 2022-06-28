@@ -1,3 +1,4 @@
+import { CellType } from "./types/cells";
 import { SimulationOptions } from "./types/simulation-options";
 
 export class StepData {
@@ -25,6 +26,10 @@ export abstract class Simulation {
     abstract setParameter<T>(parameter: Parameters, value: T): Promise<T>;
 
     abstract getOrganismsCount(): Promise<number>;
+
+    abstract findCellById(id: number): Promise<CellType>;
+
+    abstract getCell(x: number, y: number): Promise<CellType>;
 
     terminate(): void {
 

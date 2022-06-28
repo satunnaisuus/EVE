@@ -3,6 +3,7 @@ import { makeObservable, observable, action } from "mobx";
 export enum SimulationTabType {
     PARAMETERS = 'PARAMETERS',
     INFO = 'INFO',
+    CELL = 'CELL',
 }
 
 export class SimulationUI {

@@ -10,6 +10,7 @@ import { SimulationParameters } from "../../simulation-parameters";
 import { shuffle } from "../../../common/array-utils";
 
 const MAX_ENERGY = 255;
+const DIVIDE_ENERGY_COAST = 5;
 
 export class OrganismCell extends AbstractCell {
     private lifetime: number = 0;
@@ -17,11 +18,16 @@ export class OrganismCell extends AbstractCell {
     private direction: Direction;
 
     constructor(
+        private id: number,
         private genome: Genome,
         private energy: number
     ) {
         super();
         this.direction = randomDirection();
+    }
+
+    getId(): number {
+        return this.id;
     }
 
     getType(): string {
@@ -45,7 +51,7 @@ export class OrganismCell extends AbstractCell {
     }
 
     update(context: CellContext, parameters: SimulationParameters): void {
-        if (parameters.organismMaxLifetime !== 0 && this.lifetime > parameters.organismMaxLifetime || this.energy <= 0) {
+        if (parameters.organismMaxLifetime !== 0 && this.lifetime >= parameters.organismMaxLifetime || this.energy <= 0) {
             context.replace((factory: CellFactory) => factory.createOrganic());
             return;
         }
@@ -95,12 +101,19 @@ export class OrganismCell extends AbstractCell {
             if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
                 context.moveByOffest(offset[0], offset[1]);
                 this.changeEnergy(Math.floor(this.energy / -2));
-                context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
+                if (this.energy > 0) {
+                    context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
+                }
+                
                 return;
             }
         }
 
-        context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
+        const energy = this.energy - DIVIDE_ENERGY_COAST;
+
+        if (energy > 0) {
+            context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), energy));
+        }
     }
 
     attact(context: CellContext): void {
@@ -157,6 +170,7 @@ export class OrganismCell extends AbstractCell {
     
     serialize() {
         return {
+            id: this.id,
             type: 'organism',
             lifetime: this.lifetime,
             energy: this.energy,

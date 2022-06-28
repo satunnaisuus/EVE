@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { SimulationContext } from "../../context";
 import { faCogs } from "@fortawesome/free-solid-svg-icons/faCogs";
 import { faInfo } from "@fortawesome/free-solid-svg-icons/faInfo";
+import { faMicroscope } from "@fortawesome/free-solid-svg-icons/faMicroscope";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SimulationTabType } from "../../stores/simulation-ui";
 
@@ -53,6 +54,9 @@ export const SidebarTabs = observer(({}: Props) => {
             </StyledSidebarTab>
             <StyledSidebarTab onClick={() => toggleTab(SimulationTabType.PARAMETERS)} active={openedTab === SimulationTabType.PARAMETERS}>
                 <FontAwesomeIcon icon={faCogs} />
+            </StyledSidebarTab>
+            <StyledSidebarTab onClick={() => toggleTab(SimulationTabType.CELL)} active={openedTab === SimulationTabType.CELL}>
+                <FontAwesomeIcon icon={faMicroscope} />
             </StyledSidebarTab>
         </StyledSidebarTabs>
     );
