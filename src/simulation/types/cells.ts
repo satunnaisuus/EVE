@@ -5,6 +5,7 @@ export interface CellOrganism {
     direction: Direction;
     color: string;
     lifetime: number;
+    lastAction: OrganismAction;
 }
 
 export type Direction = 'NORTH_WEST'
@@ -15,6 +16,15 @@ export type Direction = 'NORTH_WEST'
     | 'SOUTH_WEST'
     | 'EAST'
     | 'WEST';
+
+export type OrganismAction = 'ROTATE_LEFT'
+    | 'ROTATE_RIGHT'
+    | 'STEP'
+    | 'ATTACK'
+    | 'EAT'
+    | 'DIVIDE'
+    | 'NOTHING'
+    | 'PHOTOSYNTHESIS';
 
 export interface CellWall {
     type: 'wall';

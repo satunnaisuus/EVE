@@ -17,6 +17,8 @@ export class OrganismCell extends AbstractCell {
 
     private direction: Direction;
 
+    private lastAction: OrganismAction;
+
     constructor(
         private id: number,
         private genome: Genome,
@@ -76,6 +78,7 @@ export class OrganismCell extends AbstractCell {
             this.photosynthesis(parameters.photosynthesisEnergy);
         }
 
+        this.lastAction = action;
         this.lifetime++;
     }
 
@@ -96,6 +99,8 @@ export class OrganismCell extends AbstractCell {
     }
 
     divide(context: CellContext): void {
+        this.changeEnergy(- DIVIDE_ENERGY_COAST);
+
         for (const direction of shuffle(Object.keys(Direction))) {
             const offset = getOffset(Direction[direction as keyof typeof Direction]);
             if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
@@ -109,10 +114,10 @@ export class OrganismCell extends AbstractCell {
             }
         }
 
-        const energy = this.energy - DIVIDE_ENERGY_COAST;
-
-        if (energy > 0) {
-            context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), energy));
+        if (this.energy > 50) {
+            context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
+        } else {
+            this.energy = 0;
         }
     }
 
@@ -122,9 +127,9 @@ export class OrganismCell extends AbstractCell {
 
         if (victim instanceof OrganismCell) {
             victim.kill();
-            
-            this.changeEnergy(-1);
         }
+
+        this.changeEnergy(-1);
     }
 
     eat(context: CellContext, parameters: SimulationParameters): void {
@@ -136,6 +141,8 @@ export class OrganismCell extends AbstractCell {
             context.moveByOffest(offset[0], offset[1]);
             this.changeEnergy(parameters.organicEnergy);
         }
+
+        this.changeEnergy(-1);
     }
 
     photosynthesis(energy: number): void {
@@ -176,6 +183,7 @@ export class OrganismCell extends AbstractCell {
             energy: this.energy,
             color: this.getColor().toHexFormat(),
             direction: this.direction.toString(),
+            lastAction: this.lastAction,
         }
     }
 }

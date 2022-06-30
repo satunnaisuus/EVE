@@ -12,7 +12,8 @@ interface Props {
 
 export const SelectedCell = observer(({}: Props) => {
     const simulation = useContext(SimulationContext);
-    const cell = simulation.getSelectedCell();
+    const selectedCell = simulation.getSelectedCell();
+    const cell = selectedCell.getCell();
 
     if (! cell || cell.type !== 'organism') {
         return <UnselectedCell />

@@ -31,4 +31,22 @@ export const GlobalStyle = createGlobalStyle`
     canvas {
         display: block;
     }
+
+    * {
+        scrollbar-width: auto;
+        scrollbar-color: #ffffff transparent;
+    }
+
+    *::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: #ffffff;
+        border-radius: 10px;
+    }
 `;

@@ -203,7 +203,7 @@ export class CanvasRenderer {
             return;
         }
 
-        this.simulation.selectCell(cellX, cellY);
+        this.simulation.getSelectedCell().select(cellX, cellY);
     }
 
     private render(done: (data: ImageData) => any): void {

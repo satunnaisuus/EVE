@@ -4,6 +4,7 @@ import { CellPayload, Simulation, StepData } from "../../simulation/simulation";
 import { CellType } from "../../simulation/types/cells";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
+import { SelectedCell } from "./selected-cell";
 import { SimulationParameters } from "./simulation-parameters";
 import { SimulationTabType, SimulationUI } from "./simulation-ui";
 
@@ -25,12 +26,6 @@ export class SimulationStore {
     @observable
     private organismsCount: number = 0;
 
-    @observable
-    private selectedCellCoords: [number, number] = null;
-
-    @observable
-    private selectedCell: CellType = null;
-
     private simulation: Simulation;
 
     private renderer: CanvasRenderer;
@@ -41,6 +36,8 @@ export class SimulationStore {
 
     private ui: SimulationUI;
 
+    private selectedCell: SelectedCell;
+
     constructor(
         private options: SimulationOptions
     ) {
@@ -49,6 +46,7 @@ export class SimulationStore {
         this.renderer = new CanvasRenderer(this);
         this.parameters = new SimulationParameters(this);
         this.ui = new SimulationUI();
+        this.selectedCell = new SelectedCell(this);
 
         createSimulation(options).then((simulation) => {
             this.simulation = simulation;
@@ -156,36 +154,23 @@ export class SimulationStore {
         return this.simulation.getOptions().height;
     }
 
-    @action
-    selectCell(x: number, y: number): void {
-        this.selectedCellCoords = [x, y];
-        this.simulation.getCell(x, y).then((cell) => {
-            runInAction(() => {
-                this.selectedCell = cell; 
-            });
-            this.ui.openTab(SimulationTabType.CELL);
-        });
+    getCell(x: number, y: number): Promise<CellType> {
+        return this.simulation.getCell(x, y);
     }
 
-    getSelectedCellCoords(): [number, number] {
-        return this.selectedCellCoords;
+    findCellById(id: number): Promise<CellType> {
+        return this.simulation.findCellById(id);
     }
 
-    getSelectedCell(): CellType {
+    getSelectedCell(): SelectedCell {
         return this.selectedCell;
-    }
+    } 
 
     private async step(): Promise<void> {
         const stepStartTime = Date.now();
         const step = await this.simulation.step();
         const organismsCount = await this.simulation.getOrganismsCount();
-        
-        if (this.selectedCell && this.selectedCell.type === 'organism') {
-            const cell = await this.simulation.findCellById(this.selectedCell.id);
-            runInAction(() => {
-                this.selectedCell = cell;
-            });
-        }
+        this.selectedCell.update();
 
         runInAction(() => {
             this.stepTime = Date.now() - stepStartTime;

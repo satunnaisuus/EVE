@@ -4,16 +4,47 @@ import { SimulationContext } from "../../context";
 import { useContext } from "react";
 import styled from "styled-components";
 import { Direction } from "../../../simulation/types/cells";
+import { Flex } from "../flex";
 
 interface Props {
     
 }
+
+const actionMap = {
+    ROTATE_LEFT: 'Rotate left',
+    ROTATE_RIGHT:'Rotate right' ,
+    STEP: 'Step',
+    ATTACK: 'Attack',
+    EAT: 'Eat',
+    DIVIDE: 'Divide',
+    NOTHING: 'Nothing',
+    PHOTOSYNTHESIS: 'Photosynthesis',
+};
 
 const Row = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 6px;
+`;
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`;
+
+const DangerText = styled.span`
+    color: #ff0000;
+`;
+
+const SuccessText = styled.span`
+    color: #00ff00;
+`;
+
+const History = styled.div`
+    flex-grow: 1;
+    overflow-y: auto;
 `;
 
 const VisualizedOrganism = styled.div<{direction: Direction, color: string}>`
@@ -59,7 +90,8 @@ const VisualizedOrganism = styled.div<{direction: Direction, color: string}>`
 
 export const OrganismCell = observer(({}: Props) => {
     const simulation = useContext(SimulationContext);
-    const cell = simulation.getSelectedCell();
+    const selectedCell = simulation.getSelectedCell();
+    const cell = selectedCell.getCell();
 
     if (cell.type !== 'organism') {
         return;
@@ -67,18 +99,24 @@ export const OrganismCell = observer(({}: Props) => {
 
     return (
         <>
-            <Row>
-                <span><VisualizedOrganism color={cell.color} direction={cell.direction} /></span>
-                <span>{cell.type}</span>
-            </Row>
-            <Row>
-                <span>Energy</span>
-                <span>{cell.energy}</span>
-            </Row>
-            <Row>
-                <span>Lifetime</span>
-                <span>{cell.lifetime}</span>
-            </Row>
+            <Container>
+                <div>
+                    <Row>
+                        <span><VisualizedOrganism color={cell.color} direction={cell.direction} /></span>
+                        {selectedCell.isAlive() ? <SuccessText>Alive</SuccessText> : <DangerText>Dead</DangerText>}
+                    </Row>
+                    <Row>
+                        <span>Energy</span>
+                        <span>{cell.energy}</span>
+                    </Row>
+                    <Row>
+                        <span>Lifetime</span>
+                        <span>{cell.lifetime}</span>
+                    </Row>
+                    <h3>Action history</h3>
+                </div>
+                <History>{selectedCell.getHistory().map((action) => <div>{actionMap[action]}</div>)}</History>
+            </Container>
         </>
     );
 });
