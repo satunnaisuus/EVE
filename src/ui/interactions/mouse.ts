@@ -4,22 +4,24 @@ const SCALE_BUFFER_SIZE = 40;
 
 export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
     let dragging = false;
+    let moving = false;
 
     const mousedownListener = (e: MouseEvent) => {
         e.preventDefault();
         dragging = true;
+        moving = false;
     }
 
     const mouseupListener = (e: MouseEvent) => {
         e.preventDefault();
+
+        if (! moving) {
+            renderer.click(e.offsetX, e.offsetY);
+        }
     }
 
     const mousemoveListener = (e: MouseEvent) => {
         e.preventDefault();
-    }
-
-    const clickListener = (e: MouseEvent) => {
-        renderer.click(e.offsetX, e.offsetY);
     }
 
     let scaleBuffer = 0;
@@ -58,6 +60,8 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
             return;
         }
 
+        moving = true;
+
         const [offsetX, offsetY] = renderer.getOffset();
 
         renderer.setOffset(
@@ -68,13 +72,13 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
 
     const bodyMouseupListener = () => {
         dragging = false;
+        moving = false;
     }
     
     canvas.addEventListener('wheel', wheelListener);
     canvas.addEventListener('mousedown', mousedownListener);
     canvas.addEventListener('mouseup', mouseupListener);
     canvas.addEventListener('mousemove', mousemoveListener);
-    canvas.addEventListener('click', clickListener);
 
     document.body.addEventListener('mousemove', bodyMousemoveListener);
     document.body.addEventListener('mouseup', bodyMouseupListener);
@@ -84,7 +88,6 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
         canvas.removeEventListener('mousedown', mousedownListener);
         canvas.removeEventListener('mouseup', mouseupListener);
         canvas.removeEventListener('mousemove', mousemoveListener);
-        canvas.removeEventListener('click', clickListener);
         
         document.body.removeEventListener('mousemove', bodyMousemoveListener);
         document.body.removeEventListener('mouseup', bodyMouseupListener);

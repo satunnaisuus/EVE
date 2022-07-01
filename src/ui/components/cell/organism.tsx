@@ -115,7 +115,7 @@ export const OrganismCell = observer(({}: Props) => {
                     </Row>
                     <h3>Action history</h3>
                 </div>
-                <History>{selectedCell.getHistory().map((action) => <div>{actionMap[action]}</div>)}</History>
+                <History>{selectedCell.getHistory().map((action, i) => <div key={i}>{actionMap[action]}</div>)}</History>
             </Container>
         </>
     );

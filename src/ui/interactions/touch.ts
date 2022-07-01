@@ -5,6 +5,8 @@ const TOUCH_SCALE_BUFFER_LIMIT = 20;
 export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
     let activeTouches: {[key: string]: [number, number]} = {};
     let scaleBuffer = 0;
+    let moving = false;
+
     const scaling = () => Object.keys(activeTouches).length === 2;
 
     const getTouchPosition = (touch: Touch): [number, number] => {
@@ -24,11 +26,23 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
                 activeTouches[touch.identifier] = getTouchPosition(touch);
             }
         }
+
+        if (e.touches.length > 1) {
+            moving = true;
+        }
     };
 
     const touchend = (e: TouchEvent) => {
         for (const touch of e.changedTouches) {
             delete activeTouches[touch.identifier];
+        }
+
+        if (! moving) {
+            renderer.click(...getTouchPosition(e.changedTouches[0]));
+        }
+
+        if (Object.keys(activeTouches).length === 0) {
+            moving = false;
         }
 
         scaleBuffer = 0;
@@ -39,12 +53,18 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
         for (const touch of e.changedTouches) {
             delete activeTouches[touch.identifier];
         }
+
+        if (Object.keys(activeTouches).length === 0) {
+            moving = false;
+        }
         
         scaleBuffer = 0;
     };
 
     const touchmove = (e: TouchEvent) => {
         e.preventDefault();
+        
+        moving = true;
         
         const currentActiveTouches = Object.assign({}, activeTouches);
         const [offsetX, offsetY] = renderer.getOffset();
