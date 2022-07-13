@@ -42,6 +42,13 @@ export interface CommandFindCellById {
     cellId: number;
 }
 
+export interface CommandReplace {
+    id: number;
+    type: 'replce';
+    coords: [number, number][],
+    cellType: string;
+}
+
 export type WorkerCommand =
     | CommandInit
     | CommandStep
@@ -49,4 +56,5 @@ export type WorkerCommand =
     | CommandSetParameter
     | CommandGetOrganismsCount
     | CommandGetCell
-    | CommandFindCellById;
+    | CommandFindCellById
+    | CommandReplace;

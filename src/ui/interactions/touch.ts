@@ -76,10 +76,14 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
 
             currentActiveTouches[touch.identifier] = getTouchPosition(touch);
 
-            renderer.setOffset(
-                offsetX + (currentActiveTouches[touch.identifier][0] - activeTouches[touch.identifier][0]),
-                offsetY + (currentActiveTouches[touch.identifier][1] - activeTouches[touch.identifier][1])
-            );
+            if (e.changedTouches.length === 1 && renderer.getPaintMode().isEnabled()) {
+                renderer.paint(...currentActiveTouches[touch.identifier]);
+            } else {
+                renderer.setOffset(
+                    offsetX + (currentActiveTouches[touch.identifier][0] - activeTouches[touch.identifier][0]),
+                    offsetY + (currentActiveTouches[touch.identifier][1] - activeTouches[touch.identifier][1])
+                );
+            }
         }
 
         if (scaling()) {

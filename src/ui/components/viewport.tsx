@@ -21,7 +21,7 @@ export const Viewport = observer(({}: Props) => {
     const [width, height, containerRef] = useSize();
 
     useEffect(() => {
-        simulation.getRenderer().setCanvas(canvasRef.current);
+        simulation.getRenderer().setElement(canvasRef.current);
         return () => {};
     }, [canvasRef.current]);
 

@@ -6,7 +6,7 @@ import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SelectedCell } from "./selected-cell";
 import { SimulationParameters } from "./simulation-parameters";
-import { SimulationTabType, SimulationUI } from "./simulation-ui";
+import { SimulationUI } from "./simulation-ui";
 
 const TIMEOUT_DELAY = 4;
 
@@ -28,7 +28,7 @@ export class SimulationStore {
 
     private simulation: Simulation;
 
-    private renderer: CanvasRenderer;
+    private canvasRenderer: CanvasRenderer;
 
     private timeoutId: ReturnType<typeof setTimeout>;
 
@@ -43,7 +43,7 @@ export class SimulationStore {
     ) {
         makeObservable(this);
 
-        this.renderer = new CanvasRenderer(this);
+        this.canvasRenderer = new CanvasRenderer(this);
         this.parameters = new SimulationParameters(this);
         this.ui = new SimulationUI();
         this.selectedCell = new SelectedCell(this);
@@ -51,7 +51,7 @@ export class SimulationStore {
         createSimulation(options).then((simulation) => {
             this.simulation = simulation;
 
-            this.renderer.update().then(() => {
+            this.canvasRenderer.update().then(() => {
                 runInAction(() => this.ready = true);
             });
 
@@ -80,7 +80,7 @@ export class SimulationStore {
 
         const tick = () => {
             this.step().then(() => {
-                this.renderer.update().then(() => {
+                this.canvasRenderer.update().then(() => {
                     if (! this.paused) {
                         this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
                     }
@@ -101,7 +101,7 @@ export class SimulationStore {
 
     makeStep(): void {
         this.step().then(() => {
-            this.renderer.update();
+            this.canvasRenderer.update();
         })
     }
 
@@ -114,12 +114,12 @@ export class SimulationStore {
     }
 
     getRenderer(): CanvasRenderer {
-        return this.renderer;
+        return this.canvasRenderer;
     }
 
     terminate(): void {
         this.simulation && this.simulation.terminate();
-        this.renderer && this.renderer.terminate();
+        this.canvasRenderer && this.canvasRenderer.terminate();
     }
 
     getParameters(): SimulationParameters {
@@ -164,7 +164,11 @@ export class SimulationStore {
 
     getSelectedCell(): SelectedCell {
         return this.selectedCell;
-    } 
+    }
+
+    replace(coords: [number, number][], type: string): Promise<void> {
+        return this.simulation.replace(coords, type);
+    }
 
     private async step(): Promise<void> {
         const stepStartTime = Date.now();

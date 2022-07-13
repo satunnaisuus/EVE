@@ -31,6 +31,8 @@ export abstract class Simulation {
 
     abstract getCell(x: number, y: number): Promise<CellType>;
 
+    abstract replace(coords: [number, number][], type: string): Promise<void>;
+
     terminate(): void {
 
     }

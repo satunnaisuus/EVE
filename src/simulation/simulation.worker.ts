@@ -1,6 +1,6 @@
 import { CommonSimulation } from "./common-simulation";
 import { Simulation } from "./simulation";
-import { CommandFindCellById, CommandGetCell, CommandGetOrganismsCount, CommandInit, CommandRequestState, CommandSetParameter, CommandStep, WorkerCommand } from "./types/worker-commands";
+import { CommandFindCellById, CommandGetCell, CommandGetOrganismsCount, CommandInit, CommandReplace, CommandRequestState, CommandSetParameter, CommandStep, WorkerCommand } from "./types/worker-commands";
 
 const ctx: Worker = self as any;
 
@@ -71,6 +71,15 @@ const handlers = {
                 id: request.id,
                 type: 'findCellById',
                 cell: cell,
+            });
+        });
+    },
+
+    replace: (request: CommandReplace) => {
+        simulation.replace(request.coords, request.cellType).then(() => {
+            ctx.postMessage({
+                id: request.id,
+                type: 'replace',
             });
         });
     },

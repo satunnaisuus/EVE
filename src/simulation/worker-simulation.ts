@@ -16,6 +16,7 @@ export class WorkerSimulation extends Simulation {
         getOrganismsCount: {[key: number]: (count: number) => void},
         getCell: {[key: number]: (cell: CellType) => void},
         findCellById: {[key: number]: (cell: CellType) => void},
+        replace: {[key: number]: () => void},
     } = {
         step: {},
         state: {},
@@ -23,6 +24,7 @@ export class WorkerSimulation extends Simulation {
         getOrganismsCount: {},
         getCell: {},
         findCellById: {},
+        replace: {},
     };
 
     private constructor(options: SimulationOptions, onInit: (simulation: WorkerSimulation) => any) {
@@ -65,6 +67,11 @@ export class WorkerSimulation extends Simulation {
                 case 'findCellById':
                     this.messageListeners.findCellById[ev.data.id](ev.data.cell);
                     delete this.messageListeners.findCellById[ev.data.id];
+                    return;
+                
+                case 'replace':
+                    this.messageListeners.replace[ev.data.id]();
+                    delete this.messageListeners.replace[ev.data.id];
                     return;
             }
         });
@@ -125,6 +132,14 @@ export class WorkerSimulation extends Simulation {
             const id = this.nextId();
             this.messageListeners.getCell[id] = resolve;
             this.worker.postMessage({id: id, type: 'getCell', x: x, y: y});
+        });
+    }
+
+    replace(coords: [number, number][], type: string): Promise<void> {
+        return new Promise((resolve) => {
+            const id = this.nextId();
+            this.messageListeners.replace[id] = resolve;
+            this.worker.postMessage({id: id, type: 'replace', coords: coords, cellType: type});
         });
     }
 

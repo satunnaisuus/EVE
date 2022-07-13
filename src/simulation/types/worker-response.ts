@@ -43,6 +43,11 @@ export interface ResponseFindCellById {
     cell: CellType;
 }
 
+export interface ResponseReplace {
+    id: number;
+    type: 'replace';
+}
+
 export type WorkerResponse =
     | ResponseStep
     | ResponseState
@@ -50,4 +55,5 @@ export type WorkerResponse =
     | ResponseSetParameter
     | ResponseGetOrganismsCount
     | ResponseGetCell
-    | ResponseFindCellById;
+    | ResponseFindCellById
+    | ResponseReplace;

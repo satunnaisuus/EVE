@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 interface Props {
     focused?: boolean;
+    enabled?: boolean;
     children?: React.ReactNode;
     onClick?: () => any;
 }
@@ -18,17 +19,17 @@ const StyledToolbarItem = styled.div<Props>`
     min-width: 50px;
     height: 100%;
     ${({focused}) => focused && 'background: #07090d;'}
+    ${({enabled, theme}) => enabled && `background: ${theme.primary};`}
 
+    
     &:hover {
-        background: #07090d;
+        ${({enabled}) => ! enabled && `background: #07090d;`}
     }
 `;
 
 
-export const ToolbarItem = observer(({children, onClick, focused}: Props) => {
+export const ToolbarItem = observer((props: Props) => {
     return (
-        <StyledToolbarItem focused={focused} onClick={onClick}>
-            {children}
-        </StyledToolbarItem>
+        <StyledToolbarItem {...props} />
     );
 });

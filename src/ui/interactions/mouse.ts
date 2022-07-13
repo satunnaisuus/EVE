@@ -2,7 +2,7 @@ import { CanvasRenderer } from "../stores/canvas-renderer";
 
 const SCALE_BUFFER_SIZE = 40;
 
-export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
+export function initMouseInteractions(canvasElement: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
     let dragging = false;
     let moving = false;
 
@@ -39,7 +39,7 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
         
         const [offsetX, offsetY] = renderer.getOffset();
 
-        const canvasBoundingClientRect = canvas.getBoundingClientRect();
+        const canvasBoundingClientRect = canvasElement.getBoundingClientRect();
 
         const relativeMousePositionX = e.clientX - Math.trunc(canvasBoundingClientRect.left);
         const relativeMousePositionY = e.clientY - Math.trunc(canvasBoundingClientRect.top);
@@ -62,12 +62,13 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
 
         moving = true;
 
-        const [offsetX, offsetY] = renderer.getOffset();
-
-        renderer.setOffset(
-            offsetX + e.movementX,
-            offsetY + e.movementY
-        );
+        if (renderer.getPaintMode().isEnabled() && e.buttons === 1) {
+            const canvasRect = canvasElement.getBoundingClientRect();
+            renderer.paint(e.clientX - canvasRect.x, e.clientY - canvasRect.y);
+        } else {
+            const [offsetX, offsetY] = renderer.getOffset();
+            renderer.setOffset(offsetX + e.movementX, offsetY + e.movementY);
+        }
     }
 
     const bodyMouseupListener = () => {
@@ -75,19 +76,19 @@ export function initMouseInteractions(canvas: HTMLCanvasElement, renderer: Canva
         moving = false;
     }
     
-    canvas.addEventListener('wheel', wheelListener);
-    canvas.addEventListener('mousedown', mousedownListener);
-    canvas.addEventListener('mouseup', mouseupListener);
-    canvas.addEventListener('mousemove', mousemoveListener);
+    canvasElement.addEventListener('wheel', wheelListener);
+    canvasElement.addEventListener('mousedown', mousedownListener);
+    canvasElement.addEventListener('mouseup', mouseupListener);
+    canvasElement.addEventListener('mousemove', mousemoveListener);
 
     document.body.addEventListener('mousemove', bodyMousemoveListener);
     document.body.addEventListener('mouseup', bodyMouseupListener);
 
     return () => {
-        canvas.removeEventListener('wheel', wheelListener);
-        canvas.removeEventListener('mousedown', mousedownListener);
-        canvas.removeEventListener('mouseup', mouseupListener);
-        canvas.removeEventListener('mousemove', mousemoveListener);
+        canvasElement.removeEventListener('wheel', wheelListener);
+        canvasElement.removeEventListener('mousedown', mousedownListener);
+        canvasElement.removeEventListener('mouseup', mouseupListener);
+        canvasElement.removeEventListener('mousemove', mousemoveListener);
         
         document.body.removeEventListener('mousemove', bodyMousemoveListener);
         document.body.removeEventListener('mouseup', bodyMouseupListener);

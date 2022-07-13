@@ -16,7 +16,7 @@ const StyledContextMenu = styled.div<MenuProps>`
     background: #202c3c;
     margin-top: 10px;
     border-radius: 5px;
-    padding: 5px 0;
+    padding: 10px 15px;
     width: 250px;
     box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 `;

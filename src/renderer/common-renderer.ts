@@ -7,6 +7,7 @@ const lifetimeColor = Color.fromHex('#ffffff');
 const energyColor = Color.fromHex('#F8CB2E');
 const organismColor = Color.fromHex('#2155CD');
 const organicColor = Color.fromHex('#F0E9D2');
+const wallColor = Color.fromHex('#575757');
 
 const OrganismColor = {
     default: () => organismColor,
@@ -122,6 +123,7 @@ export class CommonRenderer implements Renderer {
                         renderCell(cursorX, cursorY, organicColor);
                         break;
                     case 3: //wall
+                        renderCell(cursorX, cursorY, wallColor);
                         break;
                 }
 

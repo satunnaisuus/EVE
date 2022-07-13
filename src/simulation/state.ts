@@ -67,4 +67,10 @@ export class State {
 
         return result;
     }
+
+    replace(coords: [number, number][], type: string): void {
+        for (const [x, y] of coords) {
+            this.getGrid().insert(x, y, this.cellFactory.create(type));
+        }
+    }
 }

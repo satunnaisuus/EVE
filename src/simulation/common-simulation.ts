@@ -66,6 +66,10 @@ export class CommonSimulation extends Simulation {
         return this.state.getGrid().getCell(x, y).serialize();
     }
 
+    async replace(coords: [number, number][], type: string): Promise<void> {
+        this.state.replace(coords, type);
+    }
+
     private spawnOrganisms(count: number, initialEnergy: number): void {
         const coordinates: [number, number][] = [];
         const cells = this.state.getGrid().toArray();

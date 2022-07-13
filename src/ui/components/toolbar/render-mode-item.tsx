@@ -10,15 +10,12 @@ import { ToolbarItem } from "./item";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons/faCaretDown";
 import { RenderMode } from "../../../renderer/renderer";
 import { Overflow } from "../overflow";
-import { ContextMenu, ContextMenuItem } from "../context-menu";
+import { ContextMenu } from "../context-menu";
+import { RadioGroup } from "../form/radio-group";
 
 interface Props {
     
 }
-
-const ContextMenuRadio = styled.div`
-    width: 20px;
-`;
 
 const Caret = styled.div`
     margin-left: 5px;
@@ -39,7 +36,7 @@ export const RenderModeItem = observer(({}: Props) => {
     const renderModeButtonRef = useRef();
 
     const selectMode = (mode: RenderMode) => {
-        renderer.setMode(mode);
+        renderer.setRenderMode(mode);
         setRendererModeOpened(false);
     }
 
@@ -51,16 +48,7 @@ export const RenderModeItem = observer(({}: Props) => {
             </ToolbarItem>
             {renderModeOpened && <Overflow root={renderModeButtonRef.current} onLoseFocus={() => setRendererModeOpened(false)}>
                 <ContextMenu>
-                    {rendererOptions.map(({label, value}, index) => {
-                        return (
-                            <ContextMenuItem key={index} onClick={() => selectMode(value as RenderMode)}>
-                                <ContextMenuRadio>
-                                    {value === renderer.getMode() && <FontAwesomeIcon icon={faCheck} />}
-                                </ContextMenuRadio>
-                                {label}
-                            </ContextMenuItem>
-                        );
-                    })}
+                    <RadioGroup choices={rendererOptions} value={renderer.getRenderMode()} onChange={(v) => selectMode(v as RenderMode)} />
                 </ContextMenu>
             </Overflow>}
         </div>

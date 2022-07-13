@@ -5,6 +5,7 @@ import { StartPauseItem } from "./toolbar/start-pause-item";
 import { StepItem } from "./toolbar/step-item";
 import { RenderModeItem } from "./toolbar/render-mode-item";
 import { NewSimulationItem } from "./toolbar/new-simulation-item";
+import { PaintModeItem } from "./toolbar/paint-mode-item";
 
 const StyledToolbar = styled.div`
     display: flex;
@@ -28,6 +29,7 @@ export const Toolbar = observer(({}: Props) => {
             <StartPauseItem />
             <StepItem />
             <RenderModeItem />
+            <PaintModeItem />
             <NewSimulationItem />
         </StyledToolbar>
     );
