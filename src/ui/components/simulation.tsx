@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { observer } from "mobx-react-lite";
 import { SimulationStore } from "../stores/simulation-store";
 import { Viewport } from "./viewport";
-import { Sidebar } from "./sidebar";
+import { Overlay } from "./overlay";
 import { Toolbar } from "./toolbar";
 import { SimulationContext } from "../context";
 
@@ -25,7 +25,7 @@ export const Simulation = observer(({simulation}: Props) => {
             {simulation.isReady() && 
                 <StyledSimulation>
                     <Toolbar />
-                    <Sidebar />
+                    <Overlay />
                     <Viewport />
                 </StyledSimulation>
             }

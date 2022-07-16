@@ -6,6 +6,9 @@ import { StepItem } from "./toolbar/step-item";
 import { RenderModeItem } from "./toolbar/render-mode-item";
 import { NewSimulationItem } from "./toolbar/new-simulation-item";
 import { PaintModeItem } from "./toolbar/paint-mode-item";
+import { ParametersItem } from "./toolbar/parameters-item";
+import { InfoItem } from "./toolbar/info-item";
+import { CellItem } from "./toolbar/cell-item";
 
 const StyledToolbar = styled.div`
     display: flex;
@@ -17,6 +20,16 @@ const StyledToolbar = styled.div`
     position: relative;
     z-index: 1;
     user-select: none;
+    box-shadow: 0 0 14px 0 #00000066;
+`;
+
+const StyledGroup = styled.div<{justify: string}>`
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    z-index: 1;
+    flex-grow: 1;
+    justify-content: ${props => props.justify};
 `;
 
 interface Props {
@@ -26,11 +39,22 @@ interface Props {
 export const Toolbar = observer(({}: Props) => {
     return (
         <StyledToolbar>
-            <StartPauseItem />
-            <StepItem />
-            <RenderModeItem />
-            <PaintModeItem />
-            <NewSimulationItem />
+            <StyledGroup justify="flex-start">
+                <ParametersItem />
+                <CellItem />
+            </StyledGroup>
+
+            <StyledGroup justify="center">
+                <StartPauseItem />
+                <StepItem />
+                <NewSimulationItem />
+            </StyledGroup>
+            
+            <StyledGroup justify="flex-end">
+                <RenderModeItem />
+                <PaintModeItem />
+                <InfoItem />
+            </StyledGroup>
         </StyledToolbar>
     );
 });

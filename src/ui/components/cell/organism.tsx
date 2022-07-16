@@ -92,6 +92,7 @@ export const OrganismCell = observer(({}: Props) => {
     const simulation = useContext(SimulationContext);
     const selectedCell = simulation.getSelectedCell();
     const cell = selectedCell.getCell();
+    const history = selectedCell.getHistory();
 
     if (cell.type !== 'organism') {
         return;
@@ -113,9 +114,11 @@ export const OrganismCell = observer(({}: Props) => {
                         <span>Lifetime</span>
                         <span>{cell.lifetime}</span>
                     </Row>
-                    <h3>Action history</h3>
                 </div>
-                <History>{selectedCell.getHistory().map((action, i) => <div key={i}>{actionMap[action]}</div>)}</History>
+                {history.length > 0 && <>
+                    <h3>Action history</h3>
+                    <History>{history.map((action, i) => <div key={i}>{actionMap[action]}</div>)}</History>
+                </>}
             </Container>
         </>
     );

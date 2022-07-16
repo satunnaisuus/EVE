@@ -1,7 +1,6 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
 import { CellType, OrganismAction } from "../../simulation/types/cells";
 import { SimulationStore } from "./simulation-store";
-import { SimulationTabType } from "./simulation-ui";
 
 export class SelectedCell {
     @observable
@@ -42,7 +41,8 @@ export class SelectedCell {
                     });
                 }
             });
-            this.simulation.getUI().openTab(SimulationTabType.CELL);
+
+            this.simulation.getUI().setActiveTab('cell');
         });
     }
 

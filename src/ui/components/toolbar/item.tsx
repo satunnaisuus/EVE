@@ -5,6 +5,7 @@ import styled from "styled-components";
 interface Props {
     focused?: boolean;
     enabled?: boolean;
+    disabled?: boolean;
     children?: React.ReactNode;
     onClick?: () => any;
 }
@@ -20,7 +21,7 @@ const StyledToolbarItem = styled.div<Props>`
     height: 100%;
     ${({focused}) => focused && 'background: #07090d;'}
     ${({enabled, theme}) => enabled && `background: ${theme.primary};`}
-
+    ${({disabled}) => disabled && 'opacity: 0.5; pointer-events: none;'}
     
     &:hover {
         ${({enabled}) => ! enabled && `background: #07090d;`}
