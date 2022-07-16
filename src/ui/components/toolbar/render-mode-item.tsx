@@ -26,6 +26,7 @@ const rendererOptions = [
     {label: 'Energy', value: 'energy'},
     {label: 'Lifetime', value: 'lifetime'},
     {label: 'Genesis', value: 'genesis'},
+    {label: 'Supply', value: 'supply'},
 ];
 
 export const RenderModeItem = observer(({}: Props) => {

@@ -107,6 +107,8 @@ export class CanvasRenderer {
             payload = 'energy';
         } else if (mode === 'lifetime') {
             payload = 'lifetime';
+        } else if (mode === 'supply') {
+            payload = 'supply';
         } else if (mode === 'genesis') {
             payload = 'genesis';
         } else {

@@ -1,7 +1,8 @@
+import { Color } from "../common/color";
 import { OrganismCell } from "./cell/type/organism-cell";
 import { State } from "./state";
 
-export type PayloadData = 'direction' | 'energy' | 'lifetime' | 'genesis';
+export type PayloadData = 'direction' | 'energy' | 'lifetime' | 'genesis' | 'supply';
 
 const CELL_TYPE_MAP: {[key: string]: number} = {
     empty: 0,
@@ -15,6 +16,7 @@ const PAYLOAD_SIZE_MAP = {
     energy: 1,
     lifetime: 1,
     genesis: 3,
+    supply: 3,
 }
 
 const DIRECTION_MAP: any = {
@@ -27,6 +29,9 @@ const DIRECTION_MAP: any = {
     EAST: 6,
     WEST: 7
 };
+
+const SUPPLY_ORGANIC = new Color(255, 0, 0);
+const SUPPLY_PHOTOSYNTHESIS = new Color(0, 255, 0);
 
 export class Data {
     private readonly itemLength;
@@ -70,6 +75,17 @@ export class Data {
                             array[i] = color[0];
                             array[i + 1] = color[1];
                             array[i + 2] = color[2];
+                            break;
+                        case 'supply':
+                            const energyFromOrganic = cell.getEnergyFromOrganic();
+                            const energyFromPhotosynthesis = cell.getEnergyFromPhotosynthesis();
+                            const total = energyFromOrganic + energyFromPhotosynthesis;
+
+                            const c = SUPPLY_ORGANIC.mix(SUPPLY_PHOTOSYNTHESIS, energyFromPhotosynthesis / total).toArray();
+
+                            array[i] = c[0];
+                            array[i + 1] = c[1];
+                            array[i + 2] = c[2];
                             break;
                     }
                 }

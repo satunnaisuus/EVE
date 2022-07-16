@@ -10,7 +10,7 @@ export class StepData {
     }
 }
 
-export type CellPayload = 'energy' | 'lifetime' | 'direction' | 'genesis';
+export type CellPayload = 'energy' | 'lifetime' | 'direction' | 'genesis' | 'supply';
 
 export type Parameters = 'organismMaxLifetime' | 'organicEnergy' | 'photosynthesisEnergy';
 

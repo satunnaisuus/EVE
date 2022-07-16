@@ -56,9 +56,9 @@ export class Color {
         //assertLessOrEqualThan(percent, 1);
 
         return new Color(
-            Math.round(this.red * percent + to.getRed() * (1 - percent)),
-            Math.round(this.green * percent + to.getGreen() * (1 - percent)),
-            Math.round(this.blue * percent + to.getBlue() * (1 - percent))
+            Math.round(this.red * (1 - percent) + to.getRed() * percent),
+            Math.round(this.green * (1 - percent) + to.getGreen() * percent),
+            Math.round(this.blue * (1 - percent) + to.getBlue() * percent)
         );
     }
 

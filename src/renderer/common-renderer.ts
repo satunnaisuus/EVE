@@ -13,14 +13,18 @@ const OrganismColor = {
     default: () => organismColor,
 
     lifetime: (lifeTime: number, lifitimeLimit: number) => (
-        blackColor.mix(lifetimeColor, lifeTime / lifitimeLimit)
+        lifetimeColor.mix(blackColor, lifeTime / lifitimeLimit)
     ),
 
     energy: (energy: number) => (
-        energyColor.mix(blackColor, energy / 255)
+        blackColor.mix(energyColor, energy / 255)
     ),
 
     genesis: (r: number, g: number, b: number) => (
+        new Color(r, g, b)
+    ),
+
+    supply: (r: number, g: number, b: number) => (
         new Color(r, g, b)
     )
 }
@@ -113,6 +117,8 @@ export class CommonRenderer implements Renderer {
                             color = OrganismColor.lifetime(array[i + 1], 255);
                         } else if (mode === 'genesis') {
                             color = OrganismColor.genesis(array[i + 1], array[i + 2], array[i + 3]);
+                        } else if (mode === 'supply') {
+                            color = OrganismColor.supply(array[i + 1], array[i + 2], array[i + 3]);
                         } else {
                             color = OrganismColor.default();
                         }

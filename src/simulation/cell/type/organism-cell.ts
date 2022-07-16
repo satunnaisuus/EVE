@@ -19,6 +19,10 @@ export class OrganismCell extends AbstractCell {
 
     private lastAction: OrganismAction;
 
+    private energyFromPhotosynthesis = 0;
+
+    private energyFromOrganic = 0;
+
     constructor(
         private id: number,
         private genome: Genome,
@@ -140,12 +144,14 @@ export class OrganismCell extends AbstractCell {
             context.deleteByOffset(offset[0], offset[1]);
             context.moveByOffest(offset[0], offset[1]);
             this.changeEnergy(parameters.organicEnergy);
+            this.energyFromOrganic += parameters.organicEnergy;
         }
 
         this.changeEnergy(-1);
     }
 
     photosynthesis(energy: number): void {
+        this.energyFromPhotosynthesis += energy;
         this.changeEnergy(energy);
     }
 
@@ -173,6 +179,14 @@ export class OrganismCell extends AbstractCell {
 
     getColor(): Color {
         return this.genome.getColor();
+    }
+
+    getEnergyFromOrganic(): number {
+        return this.energyFromOrganic;
+    }
+
+    getEnergyFromPhotosynthesis(): number {
+        return this.energyFromPhotosynthesis;
     }
     
     serialize() {
