@@ -57,16 +57,18 @@ export class Genome {
             case 1:
                 return OrganismAction.PHOTOSYNTHESIS;
             case 2:
-                return OrganismAction.EAT;
+                return OrganismAction.CHEMOSYNTHESIS;
             case 3:
-                return OrganismAction.ATTACK;
+                return OrganismAction.EAT;
             case 4:
-                return OrganismAction.NOTHING;
+                return OrganismAction.ATTACK;
             case 5:
-                return OrganismAction.ROTATE_RIGHT;
+                return OrganismAction.NOTHING;
             case 6:
-                return OrganismAction.ROTATE_LEFT;
+                return OrganismAction.ROTATE_RIGHT;
             case 7:
+                return OrganismAction.ROTATE_LEFT;
+            case 8:
                 return OrganismAction.DIVIDE;
         }
 
@@ -123,6 +125,6 @@ export class Genome {
     }
 
     static createRandom(): Genome {
-        return new Genome(createRNN(6, [8], 8), Color.random());
+        return new Genome(createRNN(6, [9], 9), Color.random());
     }
 }

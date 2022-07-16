@@ -9,6 +9,7 @@ export enum OrganismAction {
     DIVIDE = 'DIVIDE',
     NOTHING = 'NOTHING',
     PHOTOSYNTHESIS = 'PHOTOSYNTHESIS',
+    CHEMOSYNTHESIS = 'CHEMOSYNTHESIS',
 }
 
 export function randomAction(): OrganismAction {

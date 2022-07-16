@@ -21,6 +21,8 @@ export class OrganismCell extends AbstractCell {
 
     private energyFromPhotosynthesis = 0;
 
+    private energyFromChemosynthesis = 0;
+
     private energyFromOrganic = 0;
 
     constructor(
@@ -80,6 +82,8 @@ export class OrganismCell extends AbstractCell {
             this.eat(context, parameters);
         } else if (action === OrganismAction.PHOTOSYNTHESIS) {
             this.photosynthesis(parameters.photosynthesisEnergy);
+        } else if (action === OrganismAction.CHEMOSYNTHESIS) {
+            this.chemosynthesis(parameters.chemosynthesisEnergy);
         }
 
         this.lastAction = action;
@@ -155,6 +159,11 @@ export class OrganismCell extends AbstractCell {
         this.changeEnergy(energy);
     }
 
+    chemosynthesis(energy: number): void {
+        this.energyFromChemosynthesis += energy;
+        this.changeEnergy(energy);
+    }
+
     changeEnergy(value: number) {
         this.energy += value;
 
@@ -187,6 +196,10 @@ export class OrganismCell extends AbstractCell {
 
     getEnergyFromPhotosynthesis(): number {
         return this.energyFromPhotosynthesis;
+    }
+
+    getEnergyFromChemosynthesis(): number {
+        return this.energyFromChemosynthesis;
     }
     
     serialize() {

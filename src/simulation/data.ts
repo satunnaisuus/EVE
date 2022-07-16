@@ -1,4 +1,3 @@
-import { Color } from "../common/color";
 import { OrganismCell } from "./cell/type/organism-cell";
 import { State } from "./state";
 
@@ -29,9 +28,6 @@ const DIRECTION_MAP: any = {
     EAST: 6,
     WEST: 7
 };
-
-const SUPPLY_ORGANIC = new Color(255, 0, 0);
-const SUPPLY_PHOTOSYNTHESIS = new Color(0, 255, 0);
 
 export class Data {
     private readonly itemLength;
@@ -79,13 +75,20 @@ export class Data {
                         case 'supply':
                             const energyFromOrganic = cell.getEnergyFromOrganic();
                             const energyFromPhotosynthesis = cell.getEnergyFromPhotosynthesis();
-                            const total = energyFromOrganic + energyFromPhotosynthesis;
+                            const energyFromChemosynthesis = cell.getEnergyFromChemosynthesis();
 
-                            const c = SUPPLY_ORGANIC.mix(SUPPLY_PHOTOSYNTHESIS, energyFromPhotosynthesis / total).toArray();
+                            const max = Math.max(energyFromOrganic, energyFromPhotosynthesis, energyFromChemosynthesis);
 
-                            array[i] = c[0];
-                            array[i + 1] = c[1];
-                            array[i + 2] = c[2];
+                            if (max === 0) {
+                                array[i] = 255;
+                                array[i + 1] = 255;
+                                array[i + 2] = 255;
+                            } else {
+                                array[i] = Math.trunc(255 * energyFromOrganic / max);
+                                array[i + 1] = Math.trunc(255 * energyFromPhotosynthesis / max);
+                                array[i + 2] = Math.trunc(255 * energyFromChemosynthesis / max);
+                            }
+                            
                             break;
                     }
                 }

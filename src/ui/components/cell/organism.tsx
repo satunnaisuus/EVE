@@ -19,6 +19,7 @@ const actionMap = {
     DIVIDE: 'Divide',
     NOTHING: 'Nothing',
     PHOTOSYNTHESIS: 'Photosynthesis',
+    CHEMOSYNTHESIS: 'Chemosynthesis',
 };
 
 const Row = styled.div`

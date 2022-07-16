@@ -11,6 +11,9 @@ export class SimulationParameters {
     @observable
     private photosynthesisEnergy: number = 5;
 
+    @observable
+    private chemosynthesisEnergy: number = 5;
+
     constructor(private store: SimulationStore) {
         makeObservable(this);
     }
@@ -42,6 +45,15 @@ export class SimulationParameters {
         });
     }
 
+    @action
+    setChemosynthesisEnergy(value: number): void {
+        this.store.getSimulation().setParameter('chemosynthesisEnergy', value).then(value => {
+            runInAction(() => {
+                this.chemosynthesisEnergy = value;
+            });
+        });
+    }
+
     getOrganismMaxLifetime(): number {
         return this.organismMaxLifetime;
     }
@@ -52,5 +64,9 @@ export class SimulationParameters {
 
     getPhotosynthesisEnergy(): number {
         return this.photosynthesisEnergy;
+    }
+
+    getChemosynthesisEnergy(): number {
+        return this.chemosynthesisEnergy;
     }
 }
