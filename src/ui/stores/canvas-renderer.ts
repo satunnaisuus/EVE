@@ -11,6 +11,18 @@ import { SimulationStore } from "./simulation-store";
 const SCALE_FACTOR = 2;
 const MAX_SCALE = 64;
 
+const RenderModePayloadMap: {[Property in RenderMode]: CellPayload|null} = {
+    default: null,
+    energy: 'energy',
+    lifetime: 'lifetime',
+    supply: 'supply',
+    genesis: 'genesis',
+    children: 'children',
+    attack: 'attack',
+    step: 'step',
+    action: 'action',
+}
+
 export class CanvasRenderer {
     @observable
     private renderMode: RenderMode = 'default';
@@ -101,29 +113,7 @@ export class CanvasRenderer {
     }
 
     async update(mode = this.renderMode): Promise<void> {
-        let payload: CellPayload;
-
-        if (mode === 'energy') {
-            payload = 'energy';
-        } else if (mode === 'lifetime') {
-            payload = 'lifetime';
-        } else if (mode === 'supply') {
-            payload = 'supply';
-        } else if (mode === 'genesis') {
-            payload = 'genesis';
-        } else if (mode === 'children') {
-            payload = 'children';
-        } else if (mode === 'attack') {
-            payload = 'attack';
-        } else if (mode === 'step') {
-            payload = 'step';
-        } else if (mode === 'action') {
-            payload = 'action';
-        } else {
-            payload = null;
-        }
-
-        this.setState(await this.simulation.getState(payload));
+        this.setState(await this.simulation.getState(RenderModePayloadMap[mode]));
         this.requestRedraw();
     }
 
@@ -237,7 +227,13 @@ export class CanvasRenderer {
     }
 
     private render(done: (data: ImageData) => any): void {
-        if (! this.element || ! this.state || ! this.element.width || ! this.element.height) {
+        if (
+            ! this.element
+            || ! this.state
+            || ! this.element.width
+            || ! this.element.height
+            || RenderModePayloadMap[this.renderMode] !== this.state.payload
+        ) {
             return;
         }
 

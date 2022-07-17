@@ -23,6 +23,11 @@ const ActionColors = [
     Color.fromHex('#0000ff'),
 ];
 
+const CELL_TYPE_EMPTY = 0;
+const CELL_TYPE_ORGANISM = 1;
+const CELL_TYPE_ORGANIC = 2;
+const CELL_TYPE_WALL = 3;
+
 const OrganismColor = {
     default: () => organismColor,
 
@@ -134,7 +139,6 @@ export class CommonRenderer implements Renderer {
         }
 
         i = 0;
-
         for (let x = 0; x < data.getWidth(); x++) {
             for (let y = 0; y < data.getHeight(); y++) {
                 const cursorX = offsetX + x * scale;
@@ -150,9 +154,9 @@ export class CommonRenderer implements Renderer {
                 }
 
                 switch (array[i]) {
-                    case 0: //empty
+                    case CELL_TYPE_EMPTY:
                         break;
-                    case 1: //organism
+                    case CELL_TYPE_ORGANISM:
                         let color: Color;
 
                         if (mode === 'energy') {
@@ -177,10 +181,10 @@ export class CommonRenderer implements Renderer {
 
                         renderCell(cursorX, cursorY, color);
                         break;
-                    case 2: //organic
+                    case CELL_TYPE_ORGANIC:
                         renderCell(cursorX, cursorY, organicColor);
                         break;
-                    case 3: //wall
+                    case CELL_TYPE_WALL:
                         renderCell(cursorX, cursorY, wallColor);
                         break;
                 }
