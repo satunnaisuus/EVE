@@ -6,9 +6,6 @@ export class SimulationParameters {
     private organismMaxLifetime: number = 100;
 
     @observable
-    private organicEnergy: number = 30;
-
-    @observable
     private photosynthesisEnergy: number = 5;
 
     @observable
@@ -23,15 +20,6 @@ export class SimulationParameters {
         this.store.getSimulation().setParameter('organismMaxLifetime', value).then(value => {
             runInAction(() => {
                 this.organismMaxLifetime = value;
-            });
-        });
-    }
-
-    @action
-    setOrganicEnergy(value: number): void {
-        this.store.getSimulation().setParameter('organicEnergy', value).then(value => {
-            runInAction(() => {
-                this.organicEnergy = value;
             });
         });
     }
@@ -56,10 +44,6 @@ export class SimulationParameters {
 
     getOrganismMaxLifetime(): number {
         return this.organismMaxLifetime;
-    }
-
-    getOrganicEnergy(): number {
-        return this.organicEnergy;
     }
 
     getPhotosynthesisEnergy(): number {

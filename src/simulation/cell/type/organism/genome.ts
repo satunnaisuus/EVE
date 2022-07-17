@@ -9,7 +9,7 @@ import { randomInt } from "../../../../common/random";
 import { Color } from "../../../../common/color";
 
 const MUTATION_POWER = 0.5;
-const MUTATION_CHANCE = 10;
+const MUTATION_CHANCE = 20;
 const DIVIDE_LIMIT = 60;
 const SIMILARITY_LIMIT = 30;
 

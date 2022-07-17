@@ -25,6 +25,8 @@ export class OrganismCell extends AbstractCell {
 
     private energyFromOrganic = 0;
 
+    private energyBuffer = 0;
+
     constructor(
         private id: number,
         private genome: Genome,
@@ -59,8 +61,18 @@ export class OrganismCell extends AbstractCell {
     }
 
     update(context: CellContext, parameters: SimulationParameters): void {
-        if (parameters.organismMaxLifetime !== 0 && this.lifetime >= parameters.organismMaxLifetime || this.energy <= 0) {
-            context.replace((factory: CellFactory) => factory.createOrganic());
+        if (this.energy <= 0) {
+            if (this.energyBuffer === 0) {
+                context.replace((factory: CellFactory) => factory.createEmpty());
+            } else {
+                context.replace((factory: CellFactory) => factory.createOrganic(this.energyBuffer));
+            }
+            
+            return;
+        }
+
+        if (this.lifetime >= parameters.organismMaxLifetime) {
+            context.replace((factory: CellFactory) => factory.createOrganic(this.energy));
             return;
         }
 
@@ -79,7 +91,7 @@ export class OrganismCell extends AbstractCell {
         } else if (action === OrganismAction.ATTACK) {
             this.attact(context);
         } else if (action === OrganismAction.EAT) {
-            this.eat(context, parameters);
+            this.eat(context);
         } else if (action === OrganismAction.PHOTOSYNTHESIS) {
             this.photosynthesis(parameters.photosynthesisEnergy);
         } else if (action === OrganismAction.CHEMOSYNTHESIS) {
@@ -140,15 +152,15 @@ export class OrganismCell extends AbstractCell {
         this.changeEnergy(-1);
     }
 
-    eat(context: CellContext, parameters: SimulationParameters): void {
+    eat(context: CellContext): void {
         const offset = getOffset(this.direction);
         const food = context.getByOffest(offset[0], offset[1]);
 
         if (food instanceof OrganicCell) {
             context.deleteByOffset(offset[0], offset[1]);
             context.moveByOffest(offset[0], offset[1]);
-            this.changeEnergy(parameters.organicEnergy);
-            this.energyFromOrganic += parameters.organicEnergy;
+            this.changeEnergy(food.getEnergy());
+            this.energyFromOrganic += food.getEnergy();
         }
 
         this.changeEnergy(-1);
@@ -175,6 +187,11 @@ export class OrganismCell extends AbstractCell {
     }
 
     kill() {
+        if (this.energy === 0) {
+            return;
+        }
+
+        this.energyBuffer = this.energy;
         this.energy = 0;
     }
 

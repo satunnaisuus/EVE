@@ -10,8 +10,6 @@ export class CellFactory {
 
     private empty: EmptyCell;
 
-    private organic: OrganicCell;
-
     private id: number = 0;
 
     create(type: string): AbstractCell {
@@ -23,7 +21,7 @@ export class CellFactory {
             case 'organism':
                 return this.createOrganism(Genome.createRandom(), 255);
             case 'organic':
-                return this.createOrganic();
+                return this.createOrganic(255);
         }
 
         throw new Error();
@@ -49,11 +47,7 @@ export class CellFactory {
         return new OrganismCell(++this.id, genome, energy);
     }
 
-    createOrganic(): OrganicCell {
-        if (this.organic) {
-            return this.organic;
-        }
-
-        return this.organic = new OrganicCell();
+    createOrganic(energy: number): OrganicCell {
+        return new OrganicCell(energy);
     }
 }

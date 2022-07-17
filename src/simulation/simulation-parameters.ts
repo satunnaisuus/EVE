@@ -5,8 +5,6 @@ export class SimulationParameters {
 
     private chemosynthesisEnergyValue: number = 5;
 
-    private organicEnergyValue: number = 30;
-
     constructor(options: {[key: string]: any} = {}) {
         if (options['photosynthesisEnergy'] != null) {
             this.photosynthesisEnergy = options['photosynthesisEnergy'];
@@ -18,10 +16,6 @@ export class SimulationParameters {
 
         if (options['organismMaxLifetime'] != null) {
             this.organismMaxLifetime = options['organismMaxLifetime'];
-        }
-
-        if (options['organicEnergy'] != null) {
-            this.organicEnergy = options['organicEnergy'];
         }
     }
 
@@ -49,20 +43,11 @@ export class SimulationParameters {
         return this.chemosynthesisEnergyValue;
     }
 
-    set organicEnergy(value: number) {
-        this.organicEnergyValue = this.converNumberValue(value, false, 0, 255);
-    }
-
-    get organicEnergy(): number {
-        return this.organicEnergyValue;
-    }
-
     serialize(): any {
         return {
             photosynthesisEnergy: this.photosynthesisEnergy,
             chemosynthesisEnergy: this.chemosynthesisEnergy,
             organismMaxLifetime: this.organismMaxLifetime,
-            organicEnergy: this.organicEnergy,
         };
     }
 
