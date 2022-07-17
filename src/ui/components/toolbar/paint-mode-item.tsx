@@ -12,6 +12,7 @@ import { ContextMenu } from "../context-menu";
 import { RadioGroup } from "../form/radio-group";
 import { FormRow } from "../form/form-row";
 import { RangeRow } from "../form/range-row";
+import { Checkbox } from "../form/checkbox";
 
 interface Props {
     
@@ -77,6 +78,16 @@ export const PaintModeItem = observer(({}: Props) => {
                     </FormRow>
                     <FormRow label="Brush shape">
                         <RadioGroup choices={paintBrushOptions} value={paintMode.getBrush()} onChange={(v) => paintMode.setBrush(v as any)} />
+                    </FormRow>
+                    <FormRow label="Ignore">
+                        {paintTypeOptions.map((option, i) => (
+                            <Checkbox
+                                key={i}
+                                label={option.label}
+                                checked={paintMode.isIgnore(option.value)}
+                                onChange={(checked) => checked ? paintMode.addIgnore(option.value) : paintMode.removeIgnore(option.value)}
+                            />
+                        ))}
                     </FormRow>
                     <RangeRow label="Brush size" min={1} max={20} step={1} onChange={(v) => paintMode.setSize(v)} value={paintMode.getSize()} />
                 </ContextMenu>

@@ -67,8 +67,8 @@ export class CommonSimulation extends Simulation {
         return this.state.getGrid().getCell(x, y).serialize();
     }
 
-    async replace(coords: [number, number][], type: string): Promise<void> {
-        this.state.replace(coords, type);
+    async replace(coords: [number, number][], type: string, ignore: string[]): Promise<void> {
+        this.state.replace(coords, type, ignore);
     }
 
     private spawnOrganisms(count: number, initialEnergy: number): void {

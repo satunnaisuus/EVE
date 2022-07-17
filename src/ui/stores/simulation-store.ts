@@ -166,8 +166,8 @@ export class SimulationStore {
         return this.selectedCell;
     }
 
-    replace(coords: [number, number][], type: string): Promise<void> {
-        return this.simulation.replace(coords, type);
+    replace(coords: [number, number][], type: string, ignore: string[]): Promise<void> {
+        return this.simulation.replace(coords, type, ignore);
     }
 
     private async step(): Promise<void> {

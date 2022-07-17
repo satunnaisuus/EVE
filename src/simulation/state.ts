@@ -68,9 +68,13 @@ export class State {
         return result;
     }
 
-    replace(coords: [number, number][], type: string): void {
+    replace(coords: [number, number][], type: string, ignore: string[]): void {
         for (const [x, y] of coords) {
-            this.getGrid().insert(x, y, this.cellFactory.create(type));
+            const cell = this.getGrid().getCell(x, y);
+
+            if (! ignore.includes(cell.getType())) {
+                this.getGrid().insert(x, y, this.cellFactory.create(type));
+            }
         }
     }
 }

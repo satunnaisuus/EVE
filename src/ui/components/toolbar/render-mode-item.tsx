@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { observer } from "mobx-react-lite";
 import { useContext, useRef, useState } from "react";
 import { faEye } from "@fortawesome/free-solid-svg-icons/faEye";
-import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SimulationContext } from "../../context";
 import { ToolbarItem } from "./item";
@@ -40,11 +39,6 @@ export const RenderModeItem = observer(({}: Props) => {
     const [renderModeOpened, setRendererModeOpened] = useState(false);
     const renderModeButtonRef = useRef();
 
-    const selectMode = (mode: RenderMode) => {
-        renderer.setRenderMode(mode);
-        setRendererModeOpened(false);
-    }
-
     return (
         <div ref={renderModeButtonRef}>
             <ToolbarItem focused={renderModeOpened} onClick={() => setRendererModeOpened(! renderModeOpened)}>
@@ -53,7 +47,7 @@ export const RenderModeItem = observer(({}: Props) => {
             </ToolbarItem>
             {renderModeOpened && <Overflow root={renderModeButtonRef.current} onLoseFocus={() => setRendererModeOpened(false)}>
                 <ContextMenu>
-                    <RadioGroup choices={rendererOptions} value={renderer.getRenderMode()} onChange={(v) => selectMode(v as RenderMode)} />
+                    <RadioGroup choices={rendererOptions} value={renderer.getRenderMode()} onChange={(v: RenderMode) => renderer.setRenderMode(v)} />
                 </ContextMenu>
             </Overflow>}
         </div>

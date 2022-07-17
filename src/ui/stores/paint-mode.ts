@@ -1,4 +1,4 @@
-import { makeObservable, observable, action } from "mobx";
+import { makeObservable, observable, action, toJS } from "mobx";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SimulationStore } from "./simulation-store";
 
@@ -19,6 +19,9 @@ export class PaintMode {
 
     @observable
     private size: number = 2;
+
+    @observable
+    private ignore: string[] = [];
 
     private lastPainted: {[key: string]: number} = {};
 
@@ -63,6 +66,24 @@ export class PaintMode {
     @action
     setSize(size: number): void {
         this.size = size;
+    }
+
+    getIgnore(): string[] {
+        return this.ignore;
+    }
+
+    @action
+    addIgnore(type: string): void {
+        this.ignore.push(type);
+    }
+
+    @action
+    removeIgnore(type: string): void {
+        this.ignore = this.ignore.filter(i => i !== type);
+    }
+
+    isIgnore(type: string): boolean {
+        return this.ignore.includes(type);
     }
 
     paint(centerX: number, centerY: number): void {
@@ -134,7 +155,7 @@ export class PaintMode {
             return;
         }
 
-        this.simulation.replace(cells, this.getType()).then(() => {
+        this.simulation.replace(cells, this.getType(), toJS(this.ignore)).then(() => {
             this.canvasRenderer.update();
         });
     }

@@ -135,11 +135,11 @@ export class WorkerSimulation extends Simulation {
         });
     }
 
-    replace(coords: [number, number][], type: string): Promise<void> {
+    replace(coords: [number, number][], type: string, ignore: string[]): Promise<void> {
         return new Promise((resolve) => {
             const id = this.nextId();
             this.messageListeners.replace[id] = resolve;
-            this.worker.postMessage({id: id, type: 'replace', coords: coords, cellType: type});
+            this.worker.postMessage({id: id, type: 'replace', coords: coords, cellType: type, ignore: ignore});
         });
     }
 

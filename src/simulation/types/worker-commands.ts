@@ -47,6 +47,7 @@ export interface CommandReplace {
     type: 'replce';
     coords: [number, number][],
     cellType: string;
+    ignore: string[];
 }
 
 export type WorkerCommand =
