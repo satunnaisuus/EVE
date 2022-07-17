@@ -8,7 +8,7 @@ import { createRNN } from "../../../../neuro/rnn-factory";
 import { randomInt } from "../../../../common/random";
 import { Color } from "../../../../common/color";
 
-const MUTATION_POWER = 0.5;
+const MUTATION_POWER = 1;
 const MUTATION_CHANCE = 20;
 const DIVIDE_LIMIT = 60;
 const SIMILARITY_LIMIT = 30;
@@ -113,7 +113,7 @@ export class Genome {
         }
 
         const connection = connections[randomInt(0, connections.length - 1)];
-        connection.setWeight(connection.getWeight() + (Math.random() > 0.5 ? 1 : -1) * MUTATION_POWER);
+        connection.setWeight(connection.getWeight() + (Math.random() > 0.5 ? 1 : -1) * MUTATION_POWER * Math.random());
 
         const color = new Color(
             this.color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),

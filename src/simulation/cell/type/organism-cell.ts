@@ -15,9 +15,7 @@ const DIVIDE_ENERGY_COAST = 5;
 export class OrganismCell extends AbstractCell {
     private lifetime: number = 0;
 
-    private direction: Direction;
-
-    private lastAction: OrganismAction;
+    private lastAction: OrganismAction = null;
 
     private energyFromPhotosynthesis = 0;
 
@@ -27,13 +25,19 @@ export class OrganismCell extends AbstractCell {
 
     private energyBuffer = 0;
 
+    private childrenCount = 0;
+
+    private stepCount = 0;
+
+    private attackCount = 0;
+
     constructor(
         private id: number,
         private genome: Genome,
-        private energy: number
+        private energy: number,
+        private direction: Direction
     ) {
         super();
-        this.direction = randomDirection();
     }
 
     getId(): number {
@@ -116,6 +120,7 @@ export class OrganismCell extends AbstractCell {
         const offset = getOffset(this.direction);
         context.moveByOffest(offset[0], offset[1]);
         this.changeEnergy(-1);
+        this.stepCount++;
     }
 
     divide(context: CellContext): void {
@@ -127,7 +132,8 @@ export class OrganismCell extends AbstractCell {
                 context.moveByOffest(offset[0], offset[1]);
                 this.changeEnergy(Math.floor(this.energy / -2));
                 if (this.energy > 0) {
-                    context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
+                    context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy, this.direction));
+                    this.childrenCount++;
                 }
                 
                 return;
@@ -135,7 +141,7 @@ export class OrganismCell extends AbstractCell {
         }
 
         if (this.energy > 50) {
-            context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy));
+            context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), Math.floor(this.energy / 2), randomDirection()));
         } else {
             this.energy = 0;
         }
@@ -149,6 +155,7 @@ export class OrganismCell extends AbstractCell {
             victim.kill();
         }
 
+        this.attackCount++;
         this.changeEnergy(-1);
     }
 
@@ -218,6 +225,22 @@ export class OrganismCell extends AbstractCell {
     getEnergyFromChemosynthesis(): number {
         return this.energyFromChemosynthesis;
     }
+
+    getChildrenCount(): number {
+        return this.childrenCount;
+    }
+
+    getAttackCount(): number {
+        return this.attackCount;
+    }
+
+    getStepCount(): number {
+        return this.stepCount;
+    }
+
+    getLastAction(): OrganismAction {
+        return this.lastAction;
+    }
     
     serialize() {
         return {
@@ -228,6 +251,9 @@ export class OrganismCell extends AbstractCell {
             color: this.getColor().toHexFormat(),
             direction: this.direction.toString(),
             lastAction: this.lastAction,
+            childrenCount: this.childrenCount,
+            attackCount: this.attackCount,
+            stepCount: this.stepCount,
         }
     }
 }

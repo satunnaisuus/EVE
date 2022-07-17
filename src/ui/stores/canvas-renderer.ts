@@ -111,6 +111,14 @@ export class CanvasRenderer {
             payload = 'supply';
         } else if (mode === 'genesis') {
             payload = 'genesis';
+        } else if (mode === 'children') {
+            payload = 'children';
+        } else if (mode === 'attack') {
+            payload = 'attack';
+        } else if (mode === 'step') {
+            payload = 'step';
+        } else if (mode === 'action') {
+            payload = 'action';
         } else {
             payload = null;
         }

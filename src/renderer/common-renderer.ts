@@ -8,6 +8,20 @@ const energyColor = Color.fromHex('#F8CB2E');
 const organismColor = Color.fromHex('#2155CD');
 const organicColor = Color.fromHex('#F0E9D2');
 const wallColor = Color.fromHex('#575757');
+const redColor = Color.fromHex('#ff0000');
+
+const ActionColors = [
+    Color.fromHex('#ffffff'),
+    Color.fromHex('#03fcc2'),
+    Color.fromHex('#03cafc'),
+    Color.fromHex('#aaf200'),
+    Color.fromHex('#a705f7'),
+    Color.fromHex('#ff0000'),
+    Color.fromHex('#ff00f2'),
+    Color.fromHex('#ffffff'),
+    Color.fromHex('#00ff00'),
+    Color.fromHex('#0000ff'),
+];
 
 const OrganismColor = {
     default: () => organismColor,
@@ -16,8 +30,8 @@ const OrganismColor = {
         lifetimeColor.mix(blackColor, lifeTime / lifitimeLimit)
     ),
 
-    energy: (energy: number) => (
-        blackColor.mix(energyColor, energy / 255)
+    energy: (energy: number, max: number) => (
+        blackColor.mix(energyColor, energy / max)
     ),
 
     genesis: (r: number, g: number, b: number) => (
@@ -26,7 +40,23 @@ const OrganismColor = {
 
     supply: (r: number, g: number, b: number) => (
         new Color(r, g, b)
-    )
+    ),
+
+    attack: (count: number, max: number) => (
+        blackColor.mix(redColor, count / max)
+    ),
+
+    children: (count: number, max: number) => (
+        blackColor.mix(redColor, count / max)
+    ),
+
+    step: (count: number, max: number) => (
+        blackColor.mix(redColor, count / max)
+    ),
+
+    action: (action: number) => (
+        ActionColors[action]
+    ),
 }
 
 export class CommonRenderer implements Renderer {
@@ -89,7 +119,21 @@ export class CommonRenderer implements Renderer {
             }
         }
 
+        let maxPayloadValue = 0;
         let i = 0;
+        if (mode === 'children' || mode === 'step' || mode === 'attack' ||  mode === 'lifetime' || mode === 'energy') {
+            for (let x = 0; x < data.getWidth(); x++) {
+                for (let y = 0; y < data.getHeight(); y++) {
+                    if (array[i] === 1 && maxPayloadValue < array[i + 1]) {
+                        maxPayloadValue = array[i + 1];
+                    }
+                    
+                    i += data.getItemLength();
+                }
+            }
+        }
+
+        i = 0;
 
         for (let x = 0; x < data.getWidth(); x++) {
             for (let y = 0; y < data.getHeight(); y++) {
@@ -112,13 +156,21 @@ export class CommonRenderer implements Renderer {
                         let color: Color;
 
                         if (mode === 'energy') {
-                            color = OrganismColor.energy(array[i + 1]);
+                            color = OrganismColor.energy(array[i + 1], maxPayloadValue);
                         } else if (mode === 'lifetime') {
-                            color = OrganismColor.lifetime(array[i + 1], 255);
+                            color = OrganismColor.lifetime(array[i + 1], maxPayloadValue);
                         } else if (mode === 'genesis') {
                             color = OrganismColor.genesis(array[i + 1], array[i + 2], array[i + 3]);
                         } else if (mode === 'supply') {
                             color = OrganismColor.supply(array[i + 1], array[i + 2], array[i + 3]);
+                        } else if (mode === 'action') {
+                            color = OrganismColor.action(array[i + 1]);
+                        } else if (mode === 'children') {
+                            color = OrganismColor.children(array[i + 1], maxPayloadValue);
+                        } else if (mode === 'attack') {
+                            color = OrganismColor.attack(array[i + 1], maxPayloadValue);
+                        } else if (mode === 'step') {
+                            color = OrganismColor.step(array[i + 1], maxPayloadValue);
                         } else {
                             color = OrganismColor.default();
                         }

@@ -1,5 +1,6 @@
 import { shuffle } from "../common/array-utils";
 import { CellFactory } from "./cell/cell-factory";
+import { randomDirection } from "./cell/type/organism/direction";
 import { Genome } from "./cell/type/organism/genome";
 import { Data } from "./data";
 import { CellPayload, Parameters, Simulation, StepData } from "./simulation";
@@ -87,7 +88,8 @@ export class CommonSimulation extends Simulation {
         for (const [x, y] of shuffle(coordinates).slice(0, count)) {
             this.state.getGrid().insert(x, y, this.cellFactory.createOrganism(
                 Genome.createRandom(),
-                initialEnergy
+                initialEnergy,
+                randomDirection()
             ));
         }
     }

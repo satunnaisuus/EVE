@@ -1,7 +1,8 @@
 import { OrganismCell } from "./cell/type/organism-cell";
+import { OrganismAction } from "./cell/type/organism/action";
 import { State } from "./state";
 
-export type PayloadData = 'direction' | 'energy' | 'lifetime' | 'genesis' | 'supply';
+export type PayloadData = 'direction' | 'energy' | 'lifetime' | 'genesis' | 'supply' | 'attack' | 'step' | 'children' | 'action';
 
 const CELL_TYPE_MAP: {[key: string]: number} = {
     empty: 0,
@@ -16,6 +17,10 @@ const PAYLOAD_SIZE_MAP = {
     lifetime: 1,
     genesis: 3,
     supply: 3,
+    attack: 1,
+    step: 1,
+    children: 1,
+    action: 1,
 }
 
 const DIRECTION_MAP: any = {
@@ -27,6 +32,18 @@ const DIRECTION_MAP: any = {
     SOUTH_WEST: 5,
     EAST: 6,
     WEST: 7
+};
+
+const ACTION_MAP: any = {
+    [OrganismAction.ROTATE_LEFT]: 1,
+    [OrganismAction.ROTATE_RIGHT]: 2,
+    [OrganismAction.STEP]: 3,
+    [OrganismAction.ATTACK]: 4,
+    [OrganismAction.EAT]: 5,
+    [OrganismAction.DIVIDE]: 6,
+    [OrganismAction.NOTHING]: 7,
+    [OrganismAction.PHOTOSYNTHESIS]: 8,
+    [OrganismAction.CHEMOSYNTHESIS]: 9,
 };
 
 export class Data {
@@ -60,18 +77,22 @@ export class Data {
                         case 'direction':
                             array[i] = DIRECTION_MAP[cell.getDirection()];
                             break;
+
                         case 'energy':
                             array[i] = cell.getEnergy();
                             break;
+
                         case 'lifetime':
                             array[i] = cell.getLifetime();
                             break;
+
                         case 'genesis':
                             const color = cell.getColor().toArray();
                             array[i] = color[0];
                             array[i + 1] = color[1];
                             array[i + 2] = color[2];
                             break;
+
                         case 'supply':
                             const energyFromOrganic = cell.getEnergyFromOrganic();
                             const energyFromPhotosynthesis = cell.getEnergyFromPhotosynthesis();
@@ -89,6 +110,23 @@ export class Data {
                                 array[i + 2] = Math.trunc(255 * energyFromChemosynthesis / max);
                             }
                             
+                            break;
+
+                        case 'attack':
+                            array[i] = cell.getAttackCount();
+                            break;
+
+                        case 'step':
+                            array[i] = cell.getStepCount();
+                            break;
+
+                        case 'children':
+                            array[i] = cell.getChildrenCount();
+                            break;
+
+                        case 'action':
+                            const action = cell.getLastAction();
+                            array[i] = action === null ? 0 : ACTION_MAP[action];
                             break;
                     }
                 }
