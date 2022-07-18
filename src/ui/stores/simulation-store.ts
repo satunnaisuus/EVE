@@ -51,7 +51,7 @@ export class SimulationStore {
         createSimulation(options).then((simulation) => {
             this.simulation = simulation;
 
-            this.canvasRenderer.update().then(() => {
+            this.canvasRenderer.update(() => {
                 runInAction(() => this.ready = true);
             });
 
@@ -80,7 +80,7 @@ export class SimulationStore {
 
         const tick = () => {
             this.step().then(() => {
-                this.canvasRenderer.update().then(() => {
+                this.canvasRenderer.update(() => {
                     if (! this.paused) {
                         this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
                     }

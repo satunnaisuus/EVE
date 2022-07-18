@@ -52,6 +52,12 @@ export class CanvasRenderer {
 
     private rendering: boolean = false;
 
+    private updatingState = false;
+
+    private updateListeners: (() => any)[] = [];
+
+    private needUpdate = false;
+
     constructor(
         private simulation: SimulationStore
     ) {
@@ -109,12 +115,40 @@ export class CanvasRenderer {
     @action
     setRenderMode(mode: RenderMode): void {
         this.renderMode = mode;
-        this.update(mode).then(() => {});
+        this.update(null, mode);
     }
 
-    async update(mode = this.renderMode): Promise<void> {
-        this.setState(await this.simulation.getState(RenderModePayloadMap[mode]));
-        this.requestRedraw();
+    update(ready?: () => any, mode = this.renderMode): void {
+        if (this.updatingState) {
+            this.needUpdate = true;
+            
+            if (ready) {
+                this.updateListeners.push(ready);
+            }
+            
+            return;
+        }
+
+        const listeners = this.updateListeners;
+        this.updateListeners = [];
+        this.updatingState = true;
+
+        this.simulation.getState(RenderModePayloadMap[mode]).then((state) => {
+            this.setState(state);
+            this.updatingState = false;
+            this.requestRedraw();
+
+            listeners.map(listener => listener());
+
+            if (ready) {
+                ready();
+            }
+
+            if (this.needUpdate) {
+                this.needUpdate = false;
+                this.update();
+            }
+        });
     }
 
     getRenderMode(): RenderMode {
