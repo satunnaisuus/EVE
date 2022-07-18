@@ -8,8 +8,6 @@ import { SelectedCell } from "./selected-cell";
 import { SimulationParameters } from "./simulation-parameters";
 import { SimulationUI } from "./simulation-ui";
 
-const TIMEOUT_DELAY = 4;
-
 export class SimulationStore {
     @observable
     private paused: boolean = true;
@@ -66,8 +64,6 @@ export class SimulationStore {
     @action
     pause(): void {
         this.paused = true;
-        clearTimeout(this.timeoutId);
-        this.timeoutId = null;
     }
 
     @action
@@ -82,13 +78,13 @@ export class SimulationStore {
             this.step().then(() => {
                 this.canvasRenderer.update(() => {
                     if (! this.paused) {
-                        this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
+                        tick();
                     }
                 });
             });
         }
 
-        this.timeoutId = setTimeout(tick, TIMEOUT_DELAY);
+        tick();
     }
 
     isPaused(): boolean {
