@@ -1,27 +1,7 @@
 import { Color } from "../common/color";
 import { Data } from "../simulation/data";
+import { Colors } from "./colors";
 import { Renderer, RenderMode } from "./renderer";
-
-const blackColor = Color.fromHex('#000000');
-const lifetimeColor = Color.fromHex('#ffffff');
-const energyColor = Color.fromHex('#F8CB2E');
-const organismColor = Color.fromHex('#2155CD');
-const organicColor = Color.fromHex('#F0E9D2');
-const wallColor = Color.fromHex('#575757');
-const redColor = Color.fromHex('#ff0000');
-
-const ActionColors = [
-    Color.fromHex('#ffffff'),
-    Color.fromHex('#03fcc2'),
-    Color.fromHex('#03cafc'),
-    Color.fromHex('#aaf200'),
-    Color.fromHex('#a705f7'),
-    Color.fromHex('#ff0000'),
-    Color.fromHex('#ff00f2'),
-    Color.fromHex('#ffffff'),
-    Color.fromHex('#00ff00'),
-    Color.fromHex('#0000ff'),
-];
 
 const CELL_TYPE_EMPTY = 0;
 const CELL_TYPE_ORGANISM = 1;
@@ -29,14 +9,14 @@ const CELL_TYPE_ORGANIC = 2;
 const CELL_TYPE_WALL = 3;
 
 const OrganismColor = {
-    default: () => organismColor,
+    default: () => Colors.organism,
 
-    lifetime: (lifeTime: number, lifitimeLimit: number) => (
-        lifetimeColor.mix(blackColor, lifeTime / lifitimeLimit)
+    lifetime: (lifeTime: number, max: number) => (
+        Colors.lifetimeMax.mix(Colors.lifetimeMin, lifeTime / max)
     ),
 
     energy: (energy: number, max: number) => (
-        blackColor.mix(energyColor, energy / max)
+        Colors.energyMin.mix(Colors.energyMax, energy / max)
     ),
 
     genesis: (r: number, g: number, b: number) => (
@@ -48,38 +28,39 @@ const OrganismColor = {
     ),
 
     attack: (count: number, max: number) => (
-        blackColor.mix(redColor, count / max)
+        Colors.aggressionMin.mix(Colors.aggressionMax, count / max)
     ),
 
     children: (count: number, max: number) => (
-        blackColor.mix(redColor, count / max)
+        Colors.childrenMin.mix(Colors.childrenMax, count / max)
     ),
 
     step: (count: number, max: number) => (
-        blackColor.mix(redColor, count / max)
+        Colors.stepMin.mix(Colors.stepMax, count / max)
     ),
 
     action: (action: number) => (
-        ActionColors[action]
+        Colors.actions[action]
     ),
 }
 
 export class CommonRenderer implements Renderer {
     private empty: ImageData;
 
-    constructor() {
-
-    }
-
-    render(done: (data: ImageData) => any, width: number, height: number, offsetX: number, offsetY: number, scale: number, mode: RenderMode, data: Data): void {
+    render(
+        done: (data: ImageData) => any,
+        width: number,
+        height: number,
+        offsetX: number,
+        offsetY: number,
+        scale: number,
+        mode: RenderMode,
+        data: Data
+    ): void {
         const array = data.getArray();
 
         if (! this.empty || this.empty.width !== width || this.empty.height !== height) {
-            this.empty = new ImageData(
-                (new Uint8ClampedArray(width * height * 4)).map((_, i) => i % 4 === 3 ? 255 : 0),
-                width,
-                height,
-            );
+            this.createEmpty(width, height);
         }
         
         const imageData = new ImageData(
@@ -182,10 +163,10 @@ export class CommonRenderer implements Renderer {
                         renderCell(cursorX, cursorY, color);
                         break;
                     case CELL_TYPE_ORGANIC:
-                        renderCell(cursorX, cursorY, organicColor);
+                        renderCell(cursorX, cursorY, Colors.organic);
                         break;
                     case CELL_TYPE_WALL:
-                        renderCell(cursorX, cursorY, wallColor);
+                        renderCell(cursorX, cursorY, Colors.wall);
                         break;
                 }
 
@@ -194,5 +175,13 @@ export class CommonRenderer implements Renderer {
         }
 
         done(imageData);
+    }
+
+    private createEmpty(width: number, height: number): void {
+        this.empty = new ImageData(
+            (new Uint8ClampedArray(width * height * 4)).map((_, i) => i % 4 === 3 ? 255 : 0),
+            width,
+            height,
+        );
     }
 }

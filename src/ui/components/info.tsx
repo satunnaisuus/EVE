@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { SimulationContext } from "../context";
 import { useContext } from "react";
 import styled from "styled-components";
+import { Legend } from "./legend";
 
 interface Props {
     
@@ -39,6 +40,7 @@ export const Info = observer(({}: Props) => {
                 <span>Organisms count</span>
                 <span>{simulation.getOrganismsCount()}</span>
             </Row>
+            <Legend />
         </>
     );
 });

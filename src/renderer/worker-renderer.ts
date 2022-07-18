@@ -18,7 +18,16 @@ export class WorkerRenderer implements Renderer {
         });
     }
 
-    render(done: (data: ImageData) => any, width: number, height: number, offsetX: number, offsetY: number, scale: number, mode: RenderMode, data: Data): void {
+    render(
+        done: (data: ImageData) => any,
+        width: number,
+        height: number,
+        offsetX: number,
+        offsetY: number,
+        scale: number,
+        mode: RenderMode,
+        data: Data
+    ): void {
         const id = ++this.lastId;
         
         this.listeners[id] = done;
