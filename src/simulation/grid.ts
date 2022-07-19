@@ -9,6 +9,10 @@ export class Grid {
 
     private cellIdMap: {[key: number]: AbstractCell} = {};
 
+    private minerals: number[][] = [];
+
+    private light: number[][] = [];
+
     constructor(
         private width: number,
         private height: number,
@@ -20,10 +24,31 @@ export class Grid {
 
         for (let x = 0; x < width; x++) {
             this.cells[x] = [];
+            this.minerals[x] = [];
+            this.light[x] = [];
+
             for (let y = 0; y < height; y++) {
                 this.cells[x][y] = cellFactory.createEmpty();
+                this.minerals[x][y] = 100;
+                this.light[x][y] = 100;
             }
         }
+    }
+
+    getLightLevel(x: number, y: number): number {
+        return this.light[x][y];
+    }
+
+    getMineralsLevel(x: number, y: number): number {
+        return this.minerals[x][y];
+    }
+
+    setLightLevel(x: number, y: number, level: number): void {
+        this.light[x][y] = level;
+    }
+
+    setMineralsLevel(x: number, y: number, level: number): void {
+        this.minerals[x][y] = level;
     }
 
     insert(x: number, y: number, cell: AbstractCell): void {

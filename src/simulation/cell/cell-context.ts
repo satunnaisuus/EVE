@@ -2,6 +2,7 @@ import { AbstractCell } from "./abstract-cell";
 import { CellFactory } from "./cell-factory";
 import { Grid } from "../grid";
 import { GridLoopType } from "../types/grid-loop-type";
+import { SimulationParameters } from "../simulation-parameters";
 
 class OutofBoundsError extends Error {
 
@@ -12,7 +13,8 @@ export class CellContext {
         private grid: Grid,
         private x: number,
         private y: number,
-        private factory: CellFactory
+        private factory: CellFactory,
+        private parameters: SimulationParameters
     ) {
 
     }
@@ -50,6 +52,14 @@ export class CellContext {
     replace(createCell: (factory: CellFactory) => AbstractCell) {
         this.grid.delete(this.x, this.y);
         this.grid.insert(this.x, this.y, createCell(this.factory));
+    }
+
+    getLightEnergy(): number {
+        return Math.round(this.parameters.photosynthesisEnergy * this.grid.getLightLevel(this.x, this.y) / 100);
+    }
+
+    getMineralsEnergy(): number {
+        return Math.round(this.parameters.chemosynthesisEnergy * this.grid.getMineralsLevel(this.x, this.y) / 100);
     }
 
     private getCoordinatesbyOffset(x: number, y: number): [number, number] {

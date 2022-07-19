@@ -97,9 +97,9 @@ export class OrganismCell extends AbstractCell {
         } else if (action === OrganismAction.EAT) {
             this.eat(context);
         } else if (action === OrganismAction.PHOTOSYNTHESIS) {
-            this.photosynthesis(parameters.photosynthesisEnergy);
+            this.photosynthesis(context.getLightEnergy());
         } else if (action === OrganismAction.CHEMOSYNTHESIS) {
-            this.chemosynthesis(parameters.chemosynthesisEnergy);
+            this.chemosynthesis(context.getMineralsEnergy());
         }
 
         this.lastAction = action;

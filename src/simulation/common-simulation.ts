@@ -21,6 +21,34 @@ export class CommonSimulation extends Simulation {
         this.cellFactory = new CellFactory();
         this.state = new State(options.width, options.height, options.loop, new SimulationParameters(), this.cellFactory);
         const population = Math.ceil(options.width * options.height * options.population / 100);
+
+        const lightHeight = Math.round(options.height * options.lightDepth / 100);
+        const mineralsHeight = Math.round(options.height * options.mineralsDepth / 100);
+        const mineralsStartY = options.height - mineralsHeight;
+
+        for (let x = 0; x < options.width; x++) {
+            for (let y = 0; y < options.height; y++) {
+                
+
+                let light = 100;
+                let minerals = 100;
+
+                if (y >= lightHeight) {
+                    light = 0;
+                } else if (options.lightGradient) {
+                    light = 100 - Math.round(100 * y / lightHeight);
+                }
+
+                if (y < mineralsStartY) {
+                    minerals = 0;
+                } else if (options.lightGradient) {
+                    minerals = Math.ceil(100 * (y - mineralsStartY) / mineralsHeight);
+                }
+
+                this.state.getGrid().setLightLevel(x, y, light);
+                this.state.getGrid().setMineralsLevel(x, y, minerals);
+            }
+        }
     
         this.spawnOrganisms(population, options.initialEnergy);
     }

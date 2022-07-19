@@ -26,14 +26,14 @@ const StyledInput = styled.input`
     }
 
     &:checked + div:before {
-        transform: translateX(26px);
+        transform: translateX(18px);
     }
 `;
 
 const StyledControl = styled.div`
     cursor: pointer;
-    width: 60px;
-    height: 34px;
+    width: 40px;
+    height: 22px;
     background-color: ${props => props.theme.secondary};
     border-radius: 34px;
     position: relative;
@@ -42,10 +42,10 @@ const StyledControl = styled.div`
     &:before {
         position: absolute;
         content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
+        height: 16px;
+        width: 16px;
+        left: 3px;
+        bottom: 3px;
         background: #fff;
         transition: .4s;
         border-radius: 50%;
@@ -60,7 +60,7 @@ export const Switch = (props: Props) => {
     return (
         <StyledLabel>
             <StyledInput
-                type="checkbox"
+                type='checkbox'
                 checked={props.value}
                 onChange={e => props.onChange(e.target.checked)}
             />

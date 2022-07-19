@@ -7,9 +7,9 @@ import { Card } from "./card";
 import { Flex } from "./flex";
 import { FormRow } from "./form/form-row";
 import { NumberInput } from "./form/number-input";
-import { RangeInput } from "./form/range-input";
 import { RangeRow } from "./form/range-row";
 import { Select } from "./form/select";
+import { Switch } from "./form/switch";
 
 interface Props {
     options: SimulationOptions;
@@ -29,6 +29,10 @@ export const CreateSimulationForm = ({options, onCreate}: Props) => {
     const [height, setHeight] = useState(options.height);
     const [initialEnergy, setInitialEnergy] = useState(options.initialEnergy);
     const [population, setPopulation] = useState(options.population);
+    const [lightDepth, setLightDepth] = useState(options.lightDepth);
+    const [lightGradient, setLightGradient] = useState(options.lightGradient);
+    const [mineralsDepth, setMineralsDepth] = useState(options.mineralsDepth);
+    const [mineralsGradient, setMineralsGradient] = useState(options.mineralsGradient);
 
     const create = () => {
         onCreate({
@@ -37,24 +41,41 @@ export const CreateSimulationForm = ({options, onCreate}: Props) => {
             height: height,
             initialEnergy: initialEnergy,
             population: population,
+            lightDepth: lightDepth,
+            lightGradient: lightGradient,
+            mineralsDepth: mineralsDepth,
+            mineralsGradient: mineralsGradient,
         });
     }
 
     return (
-        <Flex align="center" justify="center">
+        <Flex align='center' justify='center'>
             <Card>
-                <FormRow label="Grid width">
+                <FormRow label='Grid width'>
                     <NumberInput min={0} onChange={(value) => setWidth(value)} value={width} />
                 </FormRow>
-                <FormRow label="Grid height">
+
+                <FormRow label='Grid height'>
                     <NumberInput min={0} onChange={(value) => setHeight(value)} value={height} />
                 </FormRow>
-                <FormRow label="Loop">
+
+                <FormRow label='Loop'>
                     <Select onSelect={(value) => setLoop(value as GridLoopType)} options={LoopTypes} value={loop} />
                 </FormRow>
-                <RangeRow label={`Population`} postfix='%' min={0} max={100} step={0.1} onChange={(value) => setPopulation(value)} value={population} />
-                <RangeRow label={`Initial energy`} min={0} max={100} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
-                <Button apperance="primary" width="100%" onClick={create}>Create</Button>
+
+                <RangeRow label='Population' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setPopulation(value)} value={population} />
+
+                <RangeRow label='Initial energy' min={0} max={100} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
+
+                <RangeRow label='Light depth' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setLightDepth(value)} value={lightDepth} />
+
+                <Switch label='Light gradient' value={lightGradient} onChange={(checked) => setLightGradient(checked)} />
+
+                <RangeRow label='Minerals depth' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setMineralsDepth(value)} value={mineralsDepth} />
+
+                <Switch label='Minerals gradient' value={mineralsGradient} onChange={(checked) => setMineralsGradient(checked)} />
+
+                <Button apperance='primary' width='100%' onClick={create}>Create</Button>
             </Card>
         </Flex>
     );

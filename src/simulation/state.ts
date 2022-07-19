@@ -31,7 +31,7 @@ export class State {
                 }
 
                 cell.update(
-                    new CellContext(this.grid, x, y, this.cellFactory),
+                    new CellContext(this.grid, x, y, this.cellFactory, this.parameters),
                     this.parameters
                 );
             }

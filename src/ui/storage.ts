@@ -10,6 +10,10 @@ export function loadOptions(): SimulationOptions {
         loop: GridLoopType.NONE,
         population: 5,
         initialEnergy: 70,
+        lightDepth: 100,
+        lightGradient: false,
+        mineralsDepth: 100,
+        mineralsGradient: false,
     }, loadObject(optionsKey));
 }
 
