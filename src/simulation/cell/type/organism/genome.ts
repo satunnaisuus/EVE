@@ -2,7 +2,6 @@ import { randomInt } from "../../../../common/random";
 import { Color } from "../../../../common/color";
 import { Program } from "./program";
 
-const MUTATION_CHANCE = 25;
 const SIMILARITY_LIMIT = 1;
 
 export class Genome {
@@ -37,8 +36,8 @@ export class Genome {
         return this.program;
     }
 
-    clone(): Genome {
-        if (MUTATION_CHANCE <= randomInt(0, 100)) {
+    clone(mutationChance: number): Genome {
+        if (mutationChance <= randomInt(0, 100)) {
             return this;
         }
 

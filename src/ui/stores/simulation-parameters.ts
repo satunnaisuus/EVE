@@ -11,6 +11,9 @@ export class SimulationParameters {
     @observable
     private chemosynthesisEnergy: number = 5;
 
+    @observable
+    private mutationChance: number = 25;
+
     constructor(private store: SimulationStore) {
         makeObservable(this);
     }
@@ -42,6 +45,15 @@ export class SimulationParameters {
         });
     }
 
+    @action
+    setMutationChance(value: number): void {
+        this.store.getSimulation().setParameter('mutationChance', value).then(value => {
+            runInAction(() => {
+                this.mutationChance = value;
+            });
+        });
+    }
+
     getOrganismMaxLifetime(): number {
         return this.organismMaxLifetime;
     }
@@ -52,5 +64,9 @@ export class SimulationParameters {
 
     getChemosynthesisEnergy(): number {
         return this.chemosynthesisEnergy;
+    }
+
+    getMutationChance(): number {
+        return this.mutationChance;
     }
 }

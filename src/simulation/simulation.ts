@@ -12,7 +12,7 @@ export class StepData {
 
 export type CellPayload = 'energy' | 'lifetime' | 'direction' | 'genesis' | 'supply' | 'attack' | 'children' | 'action' | 'step';
 
-export type Parameters = 'organismMaxLifetime' | 'photosynthesisEnergy' | 'chemosynthesisEnergy';
+export type Parameters = 'organismMaxLifetime' | 'photosynthesisEnergy' | 'chemosynthesisEnergy' | 'mutationChance';
 
 export abstract class Simulation {
     constructor(protected options: SimulationOptions) {

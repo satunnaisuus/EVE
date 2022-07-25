@@ -111,8 +111,15 @@ export class OrganismCell extends AbstractCell {
             if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
                 context.moveByOffest(offset[0], offset[1]);
                 this.changeEnergy(Math.floor(this.energy / -2));
+                
                 if (this.energy > 0) {
-                    context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy, randomDirection()));
+                    context.replace((factory: CellFactory) => {
+                        return factory.createOrganism(
+                            this.genome.clone(context.getSimulationParameters().mutationChance),
+                            this.energy,
+                            randomDirection()
+                        );
+                    });
                     this.childrenCount++;
                 }
                 

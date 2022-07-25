@@ -5,6 +5,8 @@ export class SimulationParameters {
 
     private chemosynthesisEnergyValue: number = 5;
 
+    private mutationChanceValue: number = 25;
+
     constructor(options: {[key: string]: any} = {}) {
         if (options['photosynthesisEnergy'] != null) {
             this.photosynthesisEnergy = options['photosynthesisEnergy'];
@@ -16,6 +18,10 @@ export class SimulationParameters {
 
         if (options['organismMaxLifetime'] != null) {
             this.organismMaxLifetime = options['organismMaxLifetime'];
+        }
+
+        if (options['mutationChance'] != null) {
+            this.mutationChance = options['mutationChance'];
         }
     }
 
@@ -41,6 +47,14 @@ export class SimulationParameters {
 
     get chemosynthesisEnergy(): number {
         return this.chemosynthesisEnergyValue;
+    }
+
+    set mutationChance(value: number) {
+        this.mutationChanceValue = this.converNumberValue(value, false, 0, 100);
+    }
+
+    get mutationChance(): number {
+        return this.mutationChanceValue;
     }
 
     serialize(): any {

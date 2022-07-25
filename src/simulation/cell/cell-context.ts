@@ -62,6 +62,10 @@ export class CellContext {
         return Math.round(this.parameters.chemosynthesisEnergy * this.grid.getMineralsLevel(this.x, this.y) / 100);
     }
 
+    getSimulationParameters(): SimulationParameters {
+        return this.parameters;
+    }
+
     private getCoordinatesbyOffset(x: number, y: number): [number, number] {
         const loop = this.grid.getLoopMode();
 
