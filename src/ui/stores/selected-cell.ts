@@ -30,10 +30,6 @@ export class SelectedCell {
                 if (cell && cell.type === 'organism') {
                     runInAction(() => {
                         this.cell = cell;
-                        
-                        if (cell.lastAction) {
-                            this.history = [cell.lastAction];
-                        }
                     });
                 } else {
                     runInAction(() => {
@@ -52,7 +48,6 @@ export class SelectedCell {
                 if (cell && cell.type === 'organism') {
                     runInAction(() => {
                         this.cell = cell;
-                        this.history.unshift(cell.lastAction);
                     });
                 } else {
                     runInAction(() => {

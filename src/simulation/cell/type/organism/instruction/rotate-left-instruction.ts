@@ -1,0 +1,12 @@
+import { CellContext } from "../../../cell-context";
+import { OrganismCell } from "../../organism-cell";
+import { AbstractInstruction } from "../abstract-instruction";
+
+export class RotateLeftInstruction extends AbstractInstruction {
+    execute(organism: OrganismCell, context: CellContext): boolean {
+        organism.rotateLeft();
+        organism.addProgramCounterRelative(1);
+        
+        return false;
+    }
+}

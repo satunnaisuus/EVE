@@ -28,8 +28,6 @@ export class CommonSimulation extends Simulation {
 
         for (let x = 0; x < options.width; x++) {
             for (let y = 0; y < options.height; y++) {
-                
-
                 let light = 100;
                 let minerals = 100;
 

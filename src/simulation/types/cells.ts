@@ -3,9 +3,12 @@ export interface CellOrganism {
     type: 'organism';
     energy: number;
     direction: Direction;
-    color: string;
     lifetime: number;
-    lastAction: OrganismAction;
+    genome: {
+        color: string;
+        divideLimit: number;
+        program: number[];
+    }
 }
 
 export type Direction = 'NORTH_WEST'

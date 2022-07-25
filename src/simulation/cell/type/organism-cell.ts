@@ -8,9 +8,9 @@ import { OrganicCell } from "./organic-cell";
 import { OrganismAction } from "./organism/action";
 import { SimulationParameters } from "../../simulation-parameters";
 import { shuffle } from "../../../common/array-utils";
+import { CellOrganism } from "../../types/cells";
 
 const MAX_ENERGY = 255;
-const DIVIDE_ENERGY_COAST = 5;
 
 export class OrganismCell extends AbstractCell {
     private lifetime: number = 0;
@@ -30,6 +30,8 @@ export class OrganismCell extends AbstractCell {
     private stepCount = 0;
 
     private attackCount = 0;
+
+    private programCounter = 0;
 
     constructor(
         private id: number,
@@ -80,59 +82,37 @@ export class OrganismCell extends AbstractCell {
             return;
         }
 
-        const offsetByDirection = getOffset(this.direction);
-        const cell = context.getByOffest(offsetByDirection[0], offsetByDirection[1]);
-        const action = this.genome.getAction(this, cell);
-
-        if (action === OrganismAction.STEP) {
-            this.makeStep(context);
-        } else if (action === OrganismAction.ROTATE_LEFT) {
-            this.rotateLeft();
-        } else if (action === OrganismAction.ROTATE_RIGHT) {
-            this.rotateRight();
-        } else if (action === OrganismAction.DIVIDE) {
-            this.divide(context);
-        } else if (action === OrganismAction.ATTACK) {
-            this.attact(context);
-        } else if (action === OrganismAction.EAT) {
-            this.eat(context);
-        } else if (action === OrganismAction.PHOTOSYNTHESIS) {
-            this.photosynthesis(context.getLightEnergy());
-        } else if (action === OrganismAction.CHEMOSYNTHESIS) {
-            this.chemosynthesis(context.getMineralsEnergy());
-        }
-
-        this.lastAction = action;
+        this.genome.getProgram().execute(this, context);
+        this.changeEnergy(-1);
         this.lifetime++;
+
+        if (this.energy >= this.genome.getDivideEnergyLimit()) {
+            this.divide(context);
+        }
     }
 
     rotateLeft(): void {
         this.direction = rotateLeft(this.direction);
-        this.changeEnergy(-1);
     }
 
     rotateRight(): void {
         this.direction = rotateRight(this.direction);
-        this.changeEnergy(-1);
     }
 
     makeStep(context: CellContext): void {
         const offset = getOffset(this.direction);
         context.moveByOffest(offset[0], offset[1]);
-        this.changeEnergy(-1);
         this.stepCount++;
     }
 
     divide(context: CellContext): void {
-        this.changeEnergy(- DIVIDE_ENERGY_COAST);
-
         for (const direction of shuffle(Object.keys(Direction))) {
             const offset = getOffset(Direction[direction as keyof typeof Direction]);
             if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
                 context.moveByOffest(offset[0], offset[1]);
                 this.changeEnergy(Math.floor(this.energy / -2));
                 if (this.energy > 0) {
-                    context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy, this.direction));
+                    context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), this.energy, randomDirection()));
                     this.childrenCount++;
                 }
                 
@@ -140,11 +120,7 @@ export class OrganismCell extends AbstractCell {
             }
         }
 
-        if (this.energy > 50) {
-            context.replace((factory: CellFactory) => factory.createOrganism(this.genome.clone(), Math.floor(this.energy / 2), randomDirection()));
-        } else {
-            this.energy = 0;
-        }
+        context.replace((factory: CellFactory) => factory.createEmpty());
     }
 
     attact(context: CellContext): void {
@@ -156,7 +132,6 @@ export class OrganismCell extends AbstractCell {
         }
 
         this.attackCount++;
-        this.changeEnergy(-1);
     }
 
     eat(context: CellContext): void {
@@ -169,8 +144,6 @@ export class OrganismCell extends AbstractCell {
             this.changeEnergy(food.getEnergy());
             this.energyFromOrganic += food.getEnergy();
         }
-
-        this.changeEnergy(-1);
     }
 
     photosynthesis(energy: number): void {
@@ -241,19 +214,45 @@ export class OrganismCell extends AbstractCell {
     getLastAction(): OrganismAction {
         return this.lastAction;
     }
+
+    getProgramCounter(): number {
+        return this.programCounter;
+    }
+
+    setProgramCounter(value: number): void {
+        if (this.genome.getProgram().getLength() > value) {
+            this.programCounter = value;
+        } else {
+            this.programCounter = 0;
+        }
+    }
+
+    addProgramCounterRelative(value: number): void {
+        this.programCounter += value;
+
+        const length = this.genome.getProgram().getLength();
+
+        if (this.programCounter >= length) {
+            this.programCounter -= length;
+        }
+    }
+
+    getArgument(n: number): number {
+        return this.getGenome().getProgram().get(1 + n + this.programCounter);
+    }
+
+    getInstruction(): number {
+        return this.getGenome().getProgram().get(this.programCounter);
+    }
     
-    serialize() {
+    serialize(): CellOrganism {
         return {
             id: this.id,
             type: 'organism',
             lifetime: this.lifetime,
             energy: this.energy,
-            color: this.getColor().toHexFormat(),
-            direction: this.direction.toString(),
-            lastAction: this.lastAction,
-            childrenCount: this.childrenCount,
-            attackCount: this.attackCount,
-            stepCount: this.stepCount,
+            direction: this.direction,
+            genome: this.genome.serialize(),
         }
     }
 }

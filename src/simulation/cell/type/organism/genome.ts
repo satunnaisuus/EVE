@@ -1,91 +1,40 @@
-import { AbstractCell } from "../../abstract-cell";
-import { OrganicCell } from "../organic-cell";
-import { OrganismAction, randomAction } from "./action";
-import { OrganismCell } from "../organism-cell";
-import { WallCell } from "../wall-cell";
-import { Network } from "../../../../neuro/network";
-import { createRNN } from "../../../../neuro/rnn-factory";
 import { randomInt } from "../../../../common/random";
 import { Color } from "../../../../common/color";
+import { Program } from "./program";
 
-const MUTATION_POWER = 1;
-const MUTATION_CHANCE = 20;
-const DIVIDE_LIMIT = 60;
-const SIMILARITY_LIMIT = 30;
-
-enum Target {
-    EMPTY = 'EMPTY',
-    WALL = 'WALL',
-    ORGANIC = 'ORGANIC',
-    ORGANISM_SIMILAR = 'ORGANISM_SIMILAR',
-    ORGANISM_OTHER = 'ORGANISM_OTHER',
-}
+const MUTATION_CHANCE = 25;
+const SIMILARITY_LIMIT = 1;
 
 export class Genome {
     constructor(
-        private neuralNetwork: Network,
+        private program: Program,
         private color: Color,
+        private divideLimit: number,
     ) {
         
     }
 
-    getAction(organism: OrganismCell, tagretCell: AbstractCell): OrganismAction {
-        const canDivide = organism.getEnergy() >= DIVIDE_LIMIT ? 1 : 0;
-
-        let data: number[];
-
-        if (tagretCell instanceof WallCell) {
-            data = [1, 0, 0, 0, 0, canDivide];
-        } else if (tagretCell instanceof OrganicCell) {
-            data = [0, 1, 0, 0, 0, canDivide];
-        } else if (tagretCell instanceof OrganismCell) {
-            if (organism.isSimilar(tagretCell)) {
-                data = [0, 0, 1, 0, 0, canDivide];
-            } else {
-                data = [0, 0, 0, 1, 0, canDivide];
-            }
-        } else {
-            data = [0, 0, 0, 0, 1, canDivide];
-        }
-
-        const result = this.neuralNetwork.activate(data);
-        const max = Math.max(...result);
-
-        switch (result.indexOf(max)) {
-            case 0:
-                return OrganismAction.STEP;
-            case 1:
-                return OrganismAction.PHOTOSYNTHESIS;
-            case 2:
-                return OrganismAction.CHEMOSYNTHESIS;
-            case 3:
-                return OrganismAction.EAT;
-            case 4:
-                return OrganismAction.ATTACK;
-            case 5:
-                return OrganismAction.NOTHING;
-            case 6:
-                return OrganismAction.ROTATE_RIGHT;
-            case 7:
-                return OrganismAction.ROTATE_LEFT;
-            case 8:
-                return OrganismAction.DIVIDE;
-        }
-
-        return OrganismAction.NOTHING;
-    }
-
     isSimilar(genome: Genome): boolean {
-        const color = genome.getColor();
-        const dr = Math.abs(color.getRed() - this.color.getRed());
-        const dh = Math.abs(color.getGreen() - this.color.getGreen());
-        const db = Math.abs(color.getBlue() - this.color.getBlue());
+        const otherInstructions = genome.getProgram().getInstructions();
+        const selfInstructions = this.getProgram().getInstructions();
+        
+        let differences = 0;
 
-        return dr + dh + db < SIMILARITY_LIMIT;
+        for (let i = 0; i < selfInstructions.length; i++) {
+            if (selfInstructions[i] !== otherInstructions[i]) {
+                differences++;
+            }
+        }
+
+        return differences <= SIMILARITY_LIMIT;
     }
 
     getColor(): Color {
         return this.color;
+    }
+
+    getProgram(): Program {
+        return this.program;
     }
 
     clone(): Genome {
@@ -93,27 +42,21 @@ export class Genome {
             return this;
         }
 
-        const network = Network.deserialize(
-            this.neuralNetwork.serialize()
-        );
+        let divideLimit = this.divideLimit;
 
-        const layers = network.getHiddenLayers();
-        layers.push(network.getInputLayer(), network.getOutputLayer());
-
-        const neurons = [];
-
-        for (const layer of layers) {
-            neurons.push(...layer.getNeurons())
+        if (divideLimit === 255) {
+            divideLimit--;
+        } else if (divideLimit === 0) {
+            divideLimit++;
+        } else if (Math.random() > 0.5) {
+            divideLimit++;
+        } else {
+            divideLimit--;
         }
 
-        const connections = [];
+        const instructions = this.program.getInstructions().slice();
 
-        for (const neuron of neurons) {
-            connections.push(...neuron.getConnections())
-        }
-
-        const connection = connections[randomInt(0, connections.length - 1)];
-        connection.setWeight(connection.getWeight() + (Math.random() > 0.5 ? 1 : -1) * MUTATION_POWER * Math.random());
+        instructions[randomInt(0, instructions.length - 1)] = randomInt(0, instructions.length - 1);
 
         const color = new Color(
             this.color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
@@ -121,10 +64,22 @@ export class Genome {
             this.color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
         );
 
-        return new Genome(network, color);
+        return new Genome(new Program(instructions), color, divideLimit);
+    }
+
+    getDivideEnergyLimit(): number {
+        return this.divideLimit;
+    }
+
+    serialize() {
+        return {
+            color: this.color.toHexFormat(),
+            program: this.program.getInstructions(),
+            divideLimit: this.divideLimit,
+        };
     }
 
     static createRandom(): Genome {
-        return new Genome(createRNN(6, [9], 9), Color.random());
+        return new Genome(Program.createPrimitive(64), Color.random(), randomInt(100, 255));
     }
 }

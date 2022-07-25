@@ -4,7 +4,7 @@ import { SimulationContext } from "../../context";
 import { useContext } from "react";
 import styled from "styled-components";
 import { Direction } from "../../../simulation/types/cells";
-import { Flex } from "../flex";
+import { toJS } from "mobx";
 
 interface Props {
     
@@ -104,7 +104,7 @@ export const OrganismCell = observer(({}: Props) => {
             <Container>
                 <div>
                     <Row>
-                        <span><VisualizedOrganism color={cell.color} direction={cell.direction} /></span>
+                        <span><VisualizedOrganism color={cell.genome.color} direction={cell.direction} /></span>
                         {selectedCell.isAlive() ? <SuccessText>Alive</SuccessText> : <DangerText>Dead</DangerText>}
                     </Row>
                     <Row>
@@ -114,6 +114,10 @@ export const OrganismCell = observer(({}: Props) => {
                     <Row>
                         <span>Lifetime</span>
                         <span>{cell.lifetime}</span>
+                    </Row>
+                    <Row>
+                        <span>Divide limit</span>
+                        <span>{cell.genome.divideLimit}</span>
                     </Row>
                 </div>
                 {history.length > 0 && <>

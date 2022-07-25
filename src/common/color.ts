@@ -1,5 +1,13 @@
-import { assertGreaterOrEqualThan, assertLessOrEqualThan } from "./asserts";
 import { randomInt } from "./random";
+
+const hexMap: {[key: number]: string} = {};
+
+for(let i = 0; i < 256; i++) {
+	hexMap[i] = i.toString(16);
+	if (hexMap[i].length === 1) {
+		hexMap[i] = '0' + hexMap[i];
+	}
+}
 
 export class Color {
     private readonly hex: string;
@@ -10,33 +18,24 @@ export class Color {
         private readonly blue: number
     ) {
         if (red > 255) {
-            red = 255;
+            this.red = 255;
         } else if (red < 0) {
-            red = 0;
+            this.red = 0;
         }
 
         if (green > 255) {
-            green = 255;
+            this.green = 255;
         } else if (green < 0) {
-            green = 0;
+            this.green = 0;
         }
 
         if (blue > 255) {
-            blue = 255;
+            this.blue = 255;
         } else if (blue < 0) {
-            blue = 0;
+            this.blue = 0;
         }
 
-        assertLessOrEqualThan(red, 255);
-        assertLessOrEqualThan(green, 255);
-        assertLessOrEqualThan(blue, 255);
-
-        const segement = (v: string) => v.length === 1 ? '0' + v : v;
-
-        this.hex = '#'
-            + segement(this.red.toString(16))
-            + segement(this.green.toString(16))
-            + segement(this.blue.toString(16));
+        this.hex = '#' + hexMap[this.red] + hexMap[this.green] + hexMap[this.blue];
     }
 
     getRed(): number {
@@ -52,9 +51,6 @@ export class Color {
     }
 
     mix(to: Color, percent: number): Color {
-        //assertGreaterOrEqualThan(percent, 0);
-        //assertLessOrEqualThan(percent, 1);
-
         return new Color(
             Math.round(this.red * (1 - percent) + to.getRed() * percent),
             Math.round(this.green * (1 - percent) + to.getGreen() * percent),
