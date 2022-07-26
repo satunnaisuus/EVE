@@ -17,12 +17,6 @@ export class OrganismCell extends AbstractCell {
 
     private lastAction: OrganismAction = null;
 
-    private energyFromPhotosynthesis = 0;
-
-    private energyFromChemosynthesis = 0;
-
-    private energyFromOrganic = 0;
-
     private energyBuffer = 0;
 
     private childrenCount = 0;
@@ -149,18 +143,24 @@ export class OrganismCell extends AbstractCell {
             context.deleteByOffset(offset[0], offset[1]);
             context.moveByOffest(offset[0], offset[1]);
             this.changeEnergy(food.getEnergy());
-            this.energyFromOrganic += food.getEnergy();
+
+            const supplyColor = this.genome.getSupplyColor();
+            this.genome.setSupplyColor(new Color(supplyColor.getRed() + 10, supplyColor.getGreen() - 5, supplyColor.getBlue() - 5));
         }
     }
 
     photosynthesis(energy: number): void {
-        this.energyFromPhotosynthesis += energy;
         this.changeEnergy(energy);
+        const supplyColor = this.genome.getSupplyColor();
+        this.genome.setSupplyColor(new Color(supplyColor.getRed() - 5, supplyColor.getGreen() + 10, supplyColor.getBlue() - 5));
     }
 
     chemosynthesis(energy: number): void {
-        this.energyFromChemosynthesis += energy;
+        
         this.changeEnergy(energy);
+
+        const supplyColor = this.genome.getSupplyColor();
+        this.genome.setSupplyColor(new Color(supplyColor.getRed() - 5, supplyColor.getGreen() - 5, supplyColor.getBlue() + 10));
     }
 
     changeEnergy(value: number) {
@@ -192,18 +192,6 @@ export class OrganismCell extends AbstractCell {
 
     getColor(): Color {
         return this.genome.getColor();
-    }
-
-    getEnergyFromOrganic(): number {
-        return this.energyFromOrganic;
-    }
-
-    getEnergyFromPhotosynthesis(): number {
-        return this.energyFromPhotosynthesis;
-    }
-
-    getEnergyFromChemosynthesis(): number {
-        return this.energyFromChemosynthesis;
     }
 
     getChildrenCount(): number {

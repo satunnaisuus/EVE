@@ -94,22 +94,10 @@ export class Data {
                             break;
 
                         case 'supply':
-                            const energyFromOrganic = cell.getEnergyFromOrganic();
-                            const energyFromPhotosynthesis = cell.getEnergyFromPhotosynthesis();
-                            const energyFromChemosynthesis = cell.getEnergyFromChemosynthesis();
-
-                            const max = Math.max(energyFromOrganic, energyFromPhotosynthesis, energyFromChemosynthesis);
-
-                            if (max === 0) {
-                                array[i] = 255;
-                                array[i + 1] = 255;
-                                array[i + 2] = 255;
-                            } else {
-                                array[i] = Math.trunc(255 * energyFromOrganic / max);
-                                array[i + 1] = Math.trunc(255 * energyFromPhotosynthesis / max);
-                                array[i + 2] = Math.trunc(255 * energyFromChemosynthesis / max);
-                            }
-                            
+                            const supplyColor = cell.getGenome().getSupplyColor().toArray();
+                            array[i] = supplyColor[0];
+                            array[i + 1] = supplyColor[1];
+                            array[i + 2] = supplyColor[2];
                             break;
 
                         case 'attack':

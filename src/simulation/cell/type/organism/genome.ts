@@ -9,6 +9,7 @@ export class Genome {
         private program: Program,
         private color: Color,
         private divideLimit: number,
+        private supplyColor: Color,
     ) {
         
     }
@@ -63,7 +64,7 @@ export class Genome {
             this.color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
         );
 
-        return new Genome(new Program(instructions), color, divideLimit);
+        return new Genome(new Program(instructions), color, divideLimit, this.supplyColor);
     }
 
     getDivideEnergyLimit(): number {
@@ -78,7 +79,15 @@ export class Genome {
         };
     }
 
+    getSupplyColor(): Color {
+        return this.supplyColor;
+    }
+
+    setSupplyColor(color: Color): void {
+        this.supplyColor = color;
+    }
+
     static createRandom(): Genome {
-        return new Genome(Program.createPrimitive(64), Color.random(), randomInt(100, 255));
+        return new Genome(Program.createPrimitive(64), Color.random(), randomInt(100, 255), new Color(255, 255, 255));
     }
 }
