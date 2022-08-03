@@ -1,5 +1,5 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
-import { CellType, OrganismAction } from "../../simulation/types/cells";
+import { CellType } from "../../simulation/types/cells";
 import { SimulationStore } from "./simulation-store";
 
 export class SelectedCell {
@@ -8,9 +8,6 @@ export class SelectedCell {
 
     @observable
     private cell: CellType = null;
-
-    @observable
-    private history: OrganismAction[] = [];
 
     @observable
     private alive: boolean = true;
@@ -23,18 +20,13 @@ export class SelectedCell {
     select(x: number, y: number): void {
         this.alive = true;
         this.coords = [x, y];
-        this.history = [];
 
         this.simulation.getCell(x, y).then((cell) => {
             runInAction(() => {
                 if (cell && cell.type === 'organism') {
-                    runInAction(() => {
-                        this.cell = cell;
-                    });
+                    runInAction(() => this.cell = cell);
                 } else {
-                    runInAction(() => {
-                        this.cell = null;
-                    });
+                    runInAction(() => this.cell = null);
                 }
             });
 
@@ -46,13 +38,9 @@ export class SelectedCell {
         if (this.cell && this.alive && this.cell.type === 'organism') {
             this.simulation.findCellById(this.cell.id).then((cell) => {
                 if (cell && cell.type === 'organism') {
-                    runInAction(() => {
-                        this.cell = cell;
-                    });
+                    runInAction(() => this.cell = cell);
                 } else {
-                    runInAction(() => {
-                        this.alive = false; 
-                    });
+                    runInAction(() => this.alive = false);
                 }
             });
         }
@@ -64,10 +52,6 @@ export class SelectedCell {
 
     getCell(): CellType {
         return this.cell;
-    }
-
-    getHistory(): OrganismAction[] {
-        return this.history;
     }
 
     isAlive(): boolean {

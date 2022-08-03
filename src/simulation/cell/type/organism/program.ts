@@ -1,63 +1,45 @@
 import { CellContext } from "../../cell-context";
 import { OrganismCell } from "../organism-cell";
-import { AbstractInstruction, TargetType } from "./abstract-instruction";
-import { AttactInstruction } from "./instruction/attact-instruction";
-import { ChemosynthesisInstruction } from "./instruction/chemosynthesis-instruction";
-import { DivideInstruction } from "./instruction/divide-instruction";
-import { EatInstruction } from "./instruction/eat-instruction";
+import { AbstractInstruction } from "./abstract-instruction";
+import { ActionInstruction } from "./instruction/action-instruction";
 import { IfInstruction } from "./instruction/if-instruction";
+import { JumpInstruction } from "./instruction/jump-instruction";
 import { NothingInstruction } from "./instruction/nothing-instruction";
-import { PhotosynthesisInstruction } from "./instruction/photosynthesis-instruction";
-import { RotateLeftInstruction } from "./instruction/rotate-left-instruction";
-import { RotateRightInstruction } from "./instruction/rotate-right-instruction";
-import { StepInstruction } from "./instruction/step-instruction";
 
-const INSTRUCTIONS_PER_STEP_LIMIT = 16;
+const INSTRUCTIONS_PER_STEP_LIMIT = 8;
 
 const CMD_NOTHING = 0;
-const CMD_ROTATE_LEFT = 1;
-const CMD_ROTATE_RIGHT = 2;
-const CMD_STEP = 3;
-const CMD_EAT = 4;
-const CMD_ATTACK = 5;
-const CMD_DIVIDE = 6;
-const CMD_PHOTOSYNTHESIS = 7;
-const CMD_CHEMOSYNTHESIS = 8;
-const CMD_IS_EMPTY = 9;
-const CMD_IS_ORGANIC = 10;
-const CMD_IS_WALL = 11;
-const CMD_IS_ORGANISM_SIMILAR = 12;
-const CMD_IS_ORGANISM_OTHER = 13;
+const CMD_JUMP = 1;
+const CMD_IF = 2;
+const CMD_ACTION = 3;
 
-const instructions: {[key: number]: AbstractInstruction} = {
+const handlers: {[key: number]: AbstractInstruction} = {
     [CMD_NOTHING]: new NothingInstruction(),
-    [CMD_ROTATE_LEFT]: new RotateLeftInstruction(),
-    [CMD_ROTATE_RIGHT]: new RotateRightInstruction(),
-    [CMD_STEP]: new StepInstruction(),
-    [CMD_EAT]: new EatInstruction(),
-    [CMD_ATTACK]: new AttactInstruction(),
-    [CMD_DIVIDE]: new DivideInstruction(),
-    [CMD_PHOTOSYNTHESIS]: new PhotosynthesisInstruction(),
-    [CMD_CHEMOSYNTHESIS]: new ChemosynthesisInstruction(),
-    [CMD_IS_EMPTY]: new IfInstruction(TargetType.EMPTY),
-    [CMD_IS_ORGANIC]: new IfInstruction(TargetType.ORGANIC),
-    [CMD_IS_WALL]: new IfInstruction(TargetType.WALL),
-    [CMD_IS_ORGANISM_SIMILAR]: new IfInstruction(TargetType.ORGANISM_SIMILAR),
-    [CMD_IS_ORGANISM_OTHER]: new IfInstruction(TargetType.ORGANISM_OTHER),
+    [CMD_JUMP]: new JumpInstruction(),
+    [CMD_IF]: new IfInstruction(),
+    [CMD_ACTION]: new ActionInstruction(),
+}
+
+export interface InstructionConfig {
+    code: number;
+    args: number[];
+    branches: number[];
 }
 
 export class Program {
-    private length: number;
+    constructor(private instructions: InstructionConfig[]) {
 
-    constructor(private instructions: number[]) {
-        this.length = instructions.length;
     }
 
     static createPrimitive(size: number): Program {
-        const instructions = [];
+        const instructions: InstructionConfig[] = [];
 
         for (let i = 0; i < size; i++) {
-            instructions.push(CMD_PHOTOSYNTHESIS);
+            instructions.push({
+                code: CMD_ACTION,
+                args: [0, 0],
+                branches: [],
+            });
         }
 
         return new Program(instructions);
@@ -65,28 +47,47 @@ export class Program {
 
     execute(organism: OrganismCell, context: CellContext): void {
         for (let i = 0; i < INSTRUCTIONS_PER_STEP_LIMIT; i++) {
-            const instruction = instructions[organism.getInstruction()];
+            const instruction = this.instructions[organism.getProgramCounter()];
+            const instructionHandler = handlers[instruction.code];
 
-            if (instruction === undefined) {
-                organism.addProgramCounterRelative(organism.getInstruction());
+            if (instructionHandler === undefined) {
+                organism.addProgramCounterRelative(1);
                 continue;
             }
 
-            if (instruction.execute(organism, context)) {
+            if (instructionHandler.execute(organism, context, instruction.args, instruction.branches)) {
                 break;
             }
         }
     }
 
-    getInstructions(): number[] {
-        return this.instructions;
+    getInstructions(): InstructionConfig[] {
+        return this.instructions.slice();
     }
 
-    get(i: number): number {
+    get(i: number): InstructionConfig {
         return this.instructions[i];
     }
 
     getLength(): number {
-        return this.length;
+        return this.instructions.length;
+    }
+
+    getHandlersCount(): number {
+        return 4;
+    }
+
+    getHandler(code: number): AbstractInstruction {
+        return handlers[code];
+    }
+
+    clone(): Program {
+        return new Program(this.instructions.map(i => {
+            return {
+                code: i.code,
+                args: i.args.slice(),
+                branches: i.branches.slice(),
+            };
+        }));
     }
 }

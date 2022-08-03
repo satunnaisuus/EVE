@@ -1,6 +1,6 @@
 import { Data } from "../simulation/data";
 
-export type RenderMode = 'default' | 'energy' | 'lifetime' | 'genesis' | 'supply' | 'children' | 'action' | 'attack' | 'step';
+export type RenderMode = 'default' | 'energy' | 'lifetime' | 'genesis' | 'supply';
 
 export interface Renderer {
     render(

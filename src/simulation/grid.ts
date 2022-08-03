@@ -1,4 +1,4 @@
-import { assertGreaterOrEqualThan, assertGreaterThan, assertLessThan } from "../common/asserts";
+import { assertGreaterThan } from "../common/asserts";
 import { AbstractCell } from "./cell/abstract-cell";
 import { CellFactory } from "./cell/cell-factory";
 import { CellType } from "./types/cells";
@@ -52,12 +52,13 @@ export class Grid {
     }
 
     insert(x: number, y: number, cell: AbstractCell): void {
-        assertLessThan(x, this.width);
-        assertLessThan(y, this.height);
-        assertGreaterOrEqualThan(x, 0);
-        assertGreaterOrEqualThan(y, 0);
+        const coords = this.normalizeCoordinates(x, y);
 
-        this.cells[x][y] = cell;
+        if (this.checkOutOfBounds(coords[0], coords[1])) {
+            return;
+        }
+
+        this.cells[coords[0]][coords[1]] = cell;
 
         if (cell.getId()) {
             this.cellIdMap[cell.getId()] = cell;
@@ -65,13 +66,25 @@ export class Grid {
     }
 
     delete(x: number, y: number): void {
-        const cell = this.cells[x][y];
-        this.cells[x][y] = this.cellFactory.createEmpty();
+        const coords = this.normalizeCoordinates(x, y);
+
+        if (this.checkOutOfBounds(coords[0], coords[1])) {
+            return;
+        }
+
+        const cell = this.cells[coords[0]][coords[1]];
+        this.cells[coords[0]][coords[1]] = this.cellFactory.createEmpty();
         delete this.cellIdMap[cell.getId()]
     }
 
     getCell(x: number, y: number): AbstractCell {
-        return this.cells[x][y];
+        const coords = this.normalizeCoordinates(x, y);
+
+        if (this.checkOutOfBounds(coords[0], coords[1])) {
+            return this.cellFactory.createWall();
+        }
+
+        return this.cells[coords[0]][coords[1]];
     }
 
     find(id: number): AbstractCell {
@@ -96,5 +109,39 @@ export class Grid {
 
     serialize(): CellType[][] {
         return this.toArray().map((l) => l.map(c => c.serialize()));
+    }
+
+    normalizeCoordinates(x: number, y: number): [number, number] {
+        const loopX = this.loop === GridLoopType.TORUS || this.loop === GridLoopType.HORIZONTAL;
+        const loopY = this.loop === GridLoopType.TORUS || this.loop === GridLoopType.VERTICAL;
+
+        let resultX = x;
+        let resultY = y;
+
+        if (loopX) {
+            while (resultX < 0) {
+                resultX += this.width;
+            }
+
+            if (resultX >= this.width) {
+                resultX %= this.width;
+            }
+        }
+
+        if (loopY) {
+            while (resultY < 0) {
+                resultY += this.height;
+            }
+
+            if (resultY >= this.height) {
+                resultY %= this.height;
+            }
+        }
+
+        return [resultX, resultY];
+    }
+
+    private checkOutOfBounds(x: number, y: number): boolean {
+        return x < 0 || x >= this.width || y < 0 || y >= this.height;
     }
 }

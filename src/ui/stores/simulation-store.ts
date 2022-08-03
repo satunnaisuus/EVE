@@ -1,6 +1,7 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
+import { PayloadData } from "../../simulation/data";
 import { createSimulation } from "../../simulation/factory";
-import { CellPayload, Simulation, StepData } from "../../simulation/simulation";
+import { Simulation, StepData } from "../../simulation/simulation";
 import { CellType } from "../../simulation/types/cells";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
@@ -101,7 +102,7 @@ export class SimulationStore {
         })
     }
 
-    getState(payload: CellPayload): Promise<StepData> {
+    getState(payload: PayloadData): Promise<StepData> {
         return this.simulation.getState(payload);
     }
 

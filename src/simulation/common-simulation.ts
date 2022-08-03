@@ -1,9 +1,10 @@
 import { shuffle } from "../common/array-utils";
+import { Color } from "../common/color";
 import { CellFactory } from "./cell/cell-factory";
 import { randomDirection } from "./cell/type/organism/direction";
 import { Genome } from "./cell/type/organism/genome";
-import { Data } from "./data";
-import { CellPayload, Parameters, Simulation, StepData } from "./simulation";
+import { Data, PayloadData } from "./data";
+import { Parameters, Simulation, StepData } from "./simulation";
 import { SimulationParameters } from "./simulation-parameters";
 import { State } from "./state";
 import { CellType } from "./types/cells";
@@ -58,7 +59,7 @@ export class CommonSimulation extends Simulation {
         });
     }
 
-    getState(payload: CellPayload): Promise<StepData> {
+    getState(payload: PayloadData): Promise<StepData> {
         return new Promise((resolve) => {
             const data = Data.create(this.state, payload);
 
@@ -115,7 +116,8 @@ export class CommonSimulation extends Simulation {
             this.state.getGrid().insert(x, y, this.cellFactory.createOrganism(
                 Genome.createRandom(),
                 initialEnergy,
-                randomDirection()
+                randomDirection(),
+                new Color(0, 255, 0),
             ));
         }
     }

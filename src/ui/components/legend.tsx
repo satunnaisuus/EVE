@@ -35,14 +35,9 @@ const data: {[Property in RenderMode]: {label: string, color: Color}[]} = {
         {label: 'Organism', color: Colors.organism}
     ],
 
-    children: [
-        {label: 'Less children', color: Colors.childrenMin},
-        {label: 'More children', color: Colors.childrenMax},
-    ],
-
     lifetime: [
-        {label: 'More children', color: Colors.lifetimeMin},
-        {label: 'More children', color: Colors.lifetimeMax},
+        {label: 'Older', color: Colors.lifetimeMin},
+        {label: 'Younger', color: Colors.lifetimeMax},
     ],
 
     energy: [
@@ -50,32 +45,10 @@ const data: {[Property in RenderMode]: {label: string, color: Color}[]} = {
         {label: 'More energy', color: Colors.energyMax},
     ],
 
-    action: [
-        {label: 'Nothing', color: Colors.actions[0]},
-        {label: 'Rotate left', color: Colors.actions[1]},
-        {label: 'Rotate right', color: Colors.actions[2]},
-        {label: 'Step', color: Colors.actions[3]},
-        {label: 'Attack', color: Colors.actions[4]},
-        {label: 'Eat', color: Colors.actions[5]},
-        {label: 'Divide', color: Colors.actions[6]},
-        {label: 'Photosynthesis', color: Colors.actions[8]},
-        {label: 'Chemosynthesis', color: Colors.actions[9]},
-    ],
-
     supply: [
         {label: 'Uses organic', color: Colors.supplyOrganic},
         {label: 'Uses photosynthesis', color: Colors.supplyPhotosynthesis},
         {label: 'Uses chemosynthesis', color: Colors.supplyChemosynthesis},
-    ],
-
-    attack: [
-        {label: 'Less aggressive', color: Colors.aggressionMin},
-        {label: 'More aggressive', color: Colors.aggressionMax},
-    ],
-
-    step: [
-        {label: 'Less movement', color: Colors.stepMin},
-        {label: 'More movement', color: Colors.stepMax},
     ],
 
     genesis: [],

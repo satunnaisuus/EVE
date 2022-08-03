@@ -1,14 +1,27 @@
 import { randomInt } from "../../../../common/random";
 
 export enum Direction {
-    NORTH = 'NORTH',
-    NORTH_EAST = 'NORTH_EAST',
-    NORTH_WEST = 'NORTH_WEST',
-    SOUTH = 'SOUTH',
-    SOUTH_EAST = 'SOUTH_EAST',
-    SOUTH_WEST = 'SOUTH_WEST',
-    EAST = 'EAST',
-    WEST = 'WEST'
+    NORTH = 0,
+    NORTH_EAST = 1,
+    EAST = 2,
+    SOUTH_EAST = 3,
+    SOUTH = 4,
+    SOUTH_WEST = 5,
+    WEST = 6,
+    NORTH_WEST = 7
+}
+
+export function directionsList(): [Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST] {
+    return [
+        Direction.NORTH,
+        Direction.NORTH_EAST,
+        Direction.EAST,
+        Direction.SOUTH_EAST,
+        Direction.SOUTH,
+        Direction.SOUTH_WEST,
+        Direction.WEST,
+        Direction.NORTH_WEST
+    ];
 }
 
 export function getOffset(direction: Direction): [number, number] {
@@ -25,31 +38,35 @@ export function getOffset(direction: Direction): [number, number] {
 }
 
 export function randomDirection(): Direction {
-    return Direction[Object.keys(Direction)[randomInt(0, 7)] as keyof typeof Direction];
+    return randomInt(0, 7);
 }
 
 export function rotateLeft(direction: Direction): Direction {
-    switch (direction) {
-        case Direction.NORTH: return Direction.NORTH_WEST;
-        case Direction.NORTH_EAST: return Direction.NORTH;
-        case Direction.NORTH_WEST: return Direction.WEST;
-        case Direction.SOUTH: return Direction.SOUTH_EAST;
-        case Direction.SOUTH_EAST: return Direction.EAST;
-        case Direction.SOUTH_WEST: return Direction.SOUTH;
-        case Direction.EAST: return Direction.NORTH_EAST;
-        case Direction.WEST: return Direction.SOUTH_WEST;
+    if (direction === Direction.NORTH) {
+        return Direction.NORTH_WEST;
     }
+
+    return direction - 1;
 }
 
 export function rotateRight(direction: Direction): Direction {
-    switch (direction) {
-        case Direction.NORTH: return Direction.NORTH_EAST;
-        case Direction.NORTH_EAST: return Direction.EAST;
-        case Direction.NORTH_WEST: return Direction.NORTH;
-        case Direction.SOUTH: return Direction.SOUTH_WEST;
-        case Direction.SOUTH_EAST: return Direction.SOUTH;
-        case Direction.SOUTH_WEST: return Direction.WEST;
-        case Direction.EAST: return Direction.SOUTH_EAST;
-        case Direction.WEST: return Direction.NORTH_WEST;
+    if (direction === Direction.NORTH_WEST) {
+        return Direction.NORTH;
     }
+
+    return direction + 1;
+}
+
+export function rotateOnOffset(direction: Direction, offset: number): Direction {
+    let index = direction + offset;
+
+    if (index < 0) {
+        index -= 8 * Math.floor(index / 8)
+    }
+
+    return index % 8;
+}
+
+export function reverseDirection(direction: Direction): Direction {
+    return rotateOnOffset(direction, 4);
 }

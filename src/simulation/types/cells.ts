@@ -1,33 +1,22 @@
+import { Organ } from '../cell/type/organism/genome';
+import { Direction } from '../cell/type/organism/direction';
+
+export { Organ };
+
+export { Direction };
+
 export interface CellOrganism {
-    id: number;
     type: 'organism';
+    id: number;
     energy: number;
     direction: Direction;
     lifetime: number;
     genome: {
         color: string;
         divideLimit: number;
-        program: number[];
+        organs: Organ[];
     }
 }
-
-export type Direction = 'NORTH_WEST'
-    | 'NORTH'
-    | 'NORTH_EAST'
-    | 'SOUTH'
-    | 'SOUTH_EAST'
-    | 'SOUTH_WEST'
-    | 'EAST'
-    | 'WEST';
-
-export type OrganismAction = 'ROTATE_LEFT'
-    | 'ROTATE_RIGHT'
-    | 'STEP'
-    | 'ATTACK'
-    | 'EAT'
-    | 'DIVIDE'
-    | 'NOTHING'
-    | 'PHOTOSYNTHESIS';
 
 export interface CellWall {
     type: 'wall';

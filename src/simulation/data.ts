@@ -1,8 +1,7 @@
 import { OrganismCell } from "./cell/type/organism-cell";
-import { OrganismAction } from "./cell/type/organism/action";
 import { State } from "./state";
 
-export type PayloadData = 'direction' | 'energy' | 'lifetime' | 'genesis' | 'supply' | 'attack' | 'step' | 'children' | 'action';
+export type PayloadData = 'energy' | 'lifetime' | 'genesis' | 'supply';
 
 const CELL_TYPE_MAP: {[key: string]: number} = {
     empty: 0,
@@ -22,29 +21,6 @@ const PAYLOAD_SIZE_MAP = {
     children: 1,
     action: 1,
 }
-
-const DIRECTION_MAP: any = {
-    NORTH: 0,
-    NORTH_EAST: 1,
-    NORTH_WEST: 2,
-    SOUTH: 3,
-    SOUTH_EAST: 4,
-    SOUTH_WEST: 5,
-    EAST: 6,
-    WEST: 7
-};
-
-const ACTION_MAP: any = {
-    [OrganismAction.ROTATE_LEFT]: 1,
-    [OrganismAction.ROTATE_RIGHT]: 2,
-    [OrganismAction.STEP]: 3,
-    [OrganismAction.ATTACK]: 4,
-    [OrganismAction.EAT]: 5,
-    [OrganismAction.DIVIDE]: 6,
-    [OrganismAction.NOTHING]: 7,
-    [OrganismAction.PHOTOSYNTHESIS]: 8,
-    [OrganismAction.CHEMOSYNTHESIS]: 9,
-};
 
 export class Data {
     private readonly itemLength;
@@ -74,10 +50,6 @@ export class Data {
 
                 if (cell instanceof OrganismCell) {
                     switch (payload) {
-                        case 'direction':
-                            array[i] = DIRECTION_MAP[cell.getDirection()];
-                            break;
-
                         case 'energy':
                             array[i] = cell.getEnergy();
                             break;
@@ -94,27 +66,10 @@ export class Data {
                             break;
 
                         case 'supply':
-                            const supplyColor = cell.getGenome().getSupplyColor().toArray();
+                            const supplyColor = cell.getSupplyColor().toArray();
                             array[i] = supplyColor[0];
                             array[i + 1] = supplyColor[1];
                             array[i + 2] = supplyColor[2];
-                            break;
-
-                        case 'attack':
-                            array[i] = cell.getAttackCount();
-                            break;
-
-                        case 'step':
-                            array[i] = cell.getStepCount();
-                            break;
-
-                        case 'children':
-                            array[i] = cell.getChildrenCount();
-                            break;
-
-                        case 'action':
-                            const action = cell.getLastAction();
-                            array[i] = action === null ? 0 : ACTION_MAP[action];
                             break;
                     }
                 }

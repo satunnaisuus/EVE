@@ -1,8 +1,8 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { RenderMode } from "../../renderer/renderer";
 import { WorkerRenderer } from "../../renderer/worker-renderer";
-import { Data } from "../../simulation/data";
-import { CellPayload, StepData } from "../../simulation/simulation";
+import { Data, PayloadData } from "../../simulation/data";
+import { StepData } from "../../simulation/simulation";
 import { initMouseInteractions } from "../interactions/mouse";
 import { initTouchInteractions } from "../interactions/touch";
 import { PaintMode } from "./paint-mode";
@@ -11,16 +11,12 @@ import { SimulationStore } from "./simulation-store";
 const SCALE_FACTOR = 2;
 const MAX_SCALE = 64;
 
-const RenderModePayloadMap: {[Property in RenderMode]: CellPayload|null} = {
+const RenderModePayloadMap: {[Property in RenderMode]: PayloadData|null} = {
     default: null,
     energy: 'energy',
     lifetime: 'lifetime',
     supply: 'supply',
     genesis: 'genesis',
-    children: 'children',
-    attack: 'attack',
-    step: 'step',
-    action: 'action',
 }
 
 export class CanvasRenderer {

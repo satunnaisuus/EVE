@@ -1,4 +1,4 @@
-import { CellPayload, Parameters } from "../simulation";
+import { PayloadData } from "../data";
 import { CellType } from "./cells";
 
 export interface ResponseInit {
@@ -15,7 +15,7 @@ export interface ResponseState {
     id: number;
     type: 'state';
     step: number;
-    payload: CellPayload;
+    payload: PayloadData;
     buffer: ArrayBufferLike;
 }
 

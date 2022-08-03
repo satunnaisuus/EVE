@@ -4,24 +4,36 @@ import { Program } from "./program";
 
 const SIMILARITY_LIMIT = 1;
 
+export enum Organ {
+    NONE = 0,
+    CHLOROPLAST = 1,
+    OXIDIZER = 2,
+    EYE = 3,
+    MOUTH = 4,
+    ARMOUR = 5,
+    FIN = 6,
+    SPINE = 7,
+}
+
+const primitiveOrgans: Organ[] = [Organ.CHLOROPLAST].concat(Array(15).fill(null));
+
 export class Genome {
     constructor(
         private program: Program,
         private color: Color,
         private divideLimit: number,
-        private supplyColor: Color,
+        private organs: Organ[],
     ) {
         
     }
 
     isSimilar(genome: Genome): boolean {
-        const otherInstructions = genome.getProgram().getInstructions();
-        const selfInstructions = this.getProgram().getInstructions();
-        
+        const otherOragans = genome.getOrgans();
+
         let differences = 0;
 
-        for (let i = 0; i < selfInstructions.length; i++) {
-            if (selfInstructions[i] !== otherInstructions[i]) {
+        for (let i = 0; i < 16; i++) {
+            if (this.organs[i] !== otherOragans[i]) {
                 differences++;
             }
         }
@@ -54,40 +66,88 @@ export class Genome {
             divideLimit--;
         }
 
-        const instructions = this.program.getInstructions().slice();
-
-        instructions[randomInt(0, instructions.length - 1)] = randomInt(0, instructions.length - 1);
-
         const color = new Color(
             this.color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
             this.color.getGreen() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
             this.color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
         );
 
-        return new Genome(new Program(instructions), color, divideLimit, this.supplyColor);
+        const program = this.program.clone();
+        const instruction = program.get(randomInt(0, program.getLength() - 1));
+        const organs = this.organs.slice();
+
+        switch (randomInt(0, 4)) {
+            case 0:
+                instruction.code = randomInt(0, program.getHandlersCount() - 1);
+                const handler = program.getHandler(instruction.code);
+
+                if (instruction.args.length > handler.getArgsCount()) {
+                    instruction.args.splice(handler.getArgsCount());
+                } else {
+                    while (instruction.args.length < handler.getArgsCount()) {
+                        instruction.args.push(Math.random());
+                    }
+                }
+
+                if (instruction.branches.length > handler.getBranchesCount()) {
+                    instruction.branches.splice(handler.getBranchesCount());
+                } else {
+                    while (instruction.branches.length < handler.getBranchesCount()) {
+                        instruction.branches.push(randomInt(0, program.getLength() - 1));
+                    }
+                }
+
+                break;
+            
+            case 1:
+                instruction.args[randomInt(0, instruction.args.length - 1)] = Math.random();
+                break;
+
+            case 2:
+                instruction.branches[randomInt(0, instruction.branches.length - 1)] = randomInt(0, program.getLength() - 1);
+                break;
+            
+            case 3:
+                organs[randomInt(0, 7)] = randomInt(0, 3);
+                break;
+            
+            case 4:
+                const i = randomInt(0, 4);
+                organs[randomInt(8, 15)] = i === 0 ? 0 : i + 3;
+                break;
+
+        }
+
+        return new Genome(program, color, divideLimit, organs);
     }
 
     getDivideEnergyLimit(): number {
         return this.divideLimit;
     }
 
+    getProgramLength(): number {
+        return this.program.getLength();
+    }
+
+    getOrgans(): Organ[] {
+        return this.organs;
+    }
+
     serialize() {
         return {
             color: this.color.toHexFormat(),
-            program: this.program.getInstructions(),
+            program: this.program,
             divideLimit: this.divideLimit,
+            organs: this.organs,
         };
     }
 
-    getSupplyColor(): Color {
-        return this.supplyColor;
-    }
-
-    setSupplyColor(color: Color): void {
-        this.supplyColor = color;
-    }
-
     static createRandom(): Genome {
-        return new Genome(Program.createPrimitive(64), Color.random(), randomInt(100, 255), new Color(255, 255, 255));
+        return new Genome(
+            Program.createPrimitive(8),
+            Color.random(),
+            randomInt(100, 255),
+            primitiveOrgans
+        );
     }
 }

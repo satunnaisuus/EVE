@@ -1,3 +1,4 @@
+import { PayloadData } from "./data";
 import { CellType } from "./types/cells";
 import { SimulationOptions } from "./types/simulation-options";
 
@@ -5,12 +6,10 @@ export class StepData {
     constructor(
         public readonly step: number,
         public readonly buffer: ArrayBufferLike,
-        public readonly payload: CellPayload,
+        public readonly payload: PayloadData,
     ) {
     }
 }
-
-export type CellPayload = 'energy' | 'lifetime' | 'direction' | 'genesis' | 'supply' | 'attack' | 'children' | 'action' | 'step';
 
 export type Parameters = 'organismMaxLifetime' | 'photosynthesisEnergy' | 'chemosynthesisEnergy' | 'mutationChance';
 
@@ -19,7 +18,7 @@ export abstract class Simulation {
         
     }
 
-    abstract getState(payload: CellPayload): Promise<StepData>;
+    abstract getState(payload: PayloadData): Promise<StepData>;
 
     abstract step(): Promise<number>;
 

@@ -2,38 +2,76 @@ import { Color } from "../../../common/color";
 import { AbstractCell } from "../abstract-cell";
 import { CellContext } from "../cell-context";
 import { CellFactory } from "../cell-factory";
-import { Direction, getOffset, randomDirection, rotateLeft, rotateRight } from "./organism/direction";
-import { Genome } from "./organism/genome";
-import { OrganicCell } from "./organic-cell";
-import { OrganismAction } from "./organism/action";
+import { Direction, directionsList, getOffset, randomDirection, rotateOnOffset } from "./organism/direction";
+import { Genome, Organ } from "./organism/genome";
 import { SimulationParameters } from "../../simulation-parameters";
 import { shuffle } from "../../../common/array-utils";
 import { CellOrganism } from "../../types/cells";
+import { AbstractOrgan } from "./organism/abstract-organ";
+import { Armour } from "./organism/organ/armour";
+import { Spine } from "./organism/organ/spine";
+import { Eye } from "./organism/organ/eye";
+import { Chloroplast } from "./organism/organ/chloroplast";
+import { Oxidizer } from "./organism/organ/oxidizer";
+import { Fin } from "./organism/organ/fin";
+import { Mouth } from "./organism/organ/mouth";
 
-const MAX_ENERGY = 255;
+export const MAX_ENERGY = 255;
+export const ORGANS_COUNT = 16;
 
 export class OrganismCell extends AbstractCell {
-    private lifetime: number = 0;
-
-    private lastAction: OrganismAction = null;
-
-    private energyBuffer = 0;
-
-    private childrenCount = 0;
-
-    private stepCount = 0;
-
-    private attackCount = 0;
+    private lifetime = 0;
 
     private programCounter = 0;
+
+    private organs: AbstractOrgan[] = [];
+
+    private oxidizersCount = 0;
+
+    private chloroplastsCount = 0;
 
     constructor(
         private id: number,
         private genome: Genome,
         private energy: number,
-        private direction: Direction
+        private direction: Direction,
+        private supplyColor: Color
     ) {
         super();
+
+        for (const [i, organ] of genome.getOrgans().entries()) {
+            switch (organ) {
+                case Organ.EYE:
+                    this.organs.push(new Eye(this, i));
+                    break;
+                
+                case Organ.CHLOROPLAST:
+                    this.organs.push(new Chloroplast(this, i));
+                    this.chloroplastsCount++;
+                    break;
+                
+                case Organ.OXIDIZER:
+                    this.organs.push(new Oxidizer(this, i));
+                    this.oxidizersCount++;
+                    break;
+
+                case Organ.ARMOUR:
+                    this.organs.push(new Armour(this, i));
+                    break;
+                
+                case Organ.SPINE:
+                    this.organs.push(new Spine(this, i));
+                    break;
+                
+                case Organ.FIN:
+                    this.organs.push(new Fin(this, i));
+                    break;
+                
+                case Organ.MOUTH:
+                    this.organs.push(new Mouth(this, i));
+                    break;
+            }
+        }
     }
 
     getId(): number {
@@ -61,13 +99,8 @@ export class OrganismCell extends AbstractCell {
     }
 
     update(context: CellContext, parameters: SimulationParameters): void {
-        if (this.energy <= 0) {
-            if (this.energyBuffer === 0) {
-                context.replace((factory: CellFactory) => factory.createEmpty());
-            } else {
-                context.replace((factory: CellFactory) => factory.createOrganic(this.energyBuffer));
-            }
-            
+        if (this.energy === 0) {
+            context.replace((factory: CellFactory) => factory.createEmpty());
             return;
         }
 
@@ -85,23 +118,13 @@ export class OrganismCell extends AbstractCell {
         }
     }
 
-    rotateLeft(): void {
-        this.direction = rotateLeft(this.direction);
-    }
-
-    rotateRight(): void {
-        this.direction = rotateRight(this.direction);
-    }
-
-    makeStep(context: CellContext): void {
-        const offset = getOffset(this.direction);
-        context.moveByOffest(offset[0], offset[1]);
-        this.stepCount++;
+    setDirection(direction: Direction): void {
+        this.direction = direction;
     }
 
     divide(context: CellContext): void {
-        for (const direction of shuffle(Object.keys(Direction))) {
-            const offset = getOffset(Direction[direction as keyof typeof Direction]);
+        for (const direction of shuffle(directionsList())) {
+            const offset = getOffset(direction);
             if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
                 context.moveByOffest(offset[0], offset[1]);
                 this.changeEnergy(Math.floor(this.energy / -2));
@@ -111,10 +134,10 @@ export class OrganismCell extends AbstractCell {
                         return factory.createOrganism(
                             this.genome.clone(context.getSimulationParameters().mutationChance),
                             this.energy,
-                            randomDirection()
+                            randomDirection(),
+                            this.supplyColor
                         );
                     });
-                    this.childrenCount++;
                 }
                 
                 return;
@@ -124,62 +147,18 @@ export class OrganismCell extends AbstractCell {
         context.replace((factory: CellFactory) => factory.createEmpty());
     }
 
-    attact(context: CellContext): void {
-        const offset = getOffset(this.direction);
-        const victim = context.getByOffest(offset[0], offset[1]);
+    changeEnergy(value: number): number {
+        const oldValue = this.energy;
 
-        if (victim instanceof OrganismCell) {
-            victim.kill();
-        }
-
-        this.attackCount++;
-    }
-
-    eat(context: CellContext): void {
-        const offset = getOffset(this.direction);
-        const food = context.getByOffest(offset[0], offset[1]);
-
-        if (food instanceof OrganicCell) {
-            context.deleteByOffset(offset[0], offset[1]);
-            context.moveByOffest(offset[0], offset[1]);
-            this.changeEnergy(food.getEnergy());
-
-            const supplyColor = this.genome.getSupplyColor();
-            this.genome.setSupplyColor(new Color(supplyColor.getRed() + 10, supplyColor.getGreen() - 5, supplyColor.getBlue() - 5));
-        }
-    }
-
-    photosynthesis(energy: number): void {
-        this.changeEnergy(energy);
-        const supplyColor = this.genome.getSupplyColor();
-        this.genome.setSupplyColor(new Color(supplyColor.getRed() - 5, supplyColor.getGreen() + 10, supplyColor.getBlue() - 5));
-    }
-
-    chemosynthesis(energy: number): void {
-        
-        this.changeEnergy(energy);
-
-        const supplyColor = this.genome.getSupplyColor();
-        this.genome.setSupplyColor(new Color(supplyColor.getRed() - 5, supplyColor.getGreen() - 5, supplyColor.getBlue() + 10));
-    }
-
-    changeEnergy(value: number) {
-        this.energy += value;
+        this.energy += Math.round(value);
 
         if (this.energy > MAX_ENERGY) {
             this.energy = MAX_ENERGY;
         } else if (this.energy < 0) {
             this.energy = 0;
         }
-    }
 
-    kill() {
-        if (this.energy === 0) {
-            return;
-        }
-
-        this.energyBuffer = this.energy;
-        this.energy = 0;
+        return this.energy - oldValue;
     }
 
     isStatic(): boolean {
@@ -194,28 +173,12 @@ export class OrganismCell extends AbstractCell {
         return this.genome.getColor();
     }
 
-    getChildrenCount(): number {
-        return this.childrenCount;
-    }
-
-    getAttackCount(): number {
-        return this.attackCount;
-    }
-
-    getStepCount(): number {
-        return this.stepCount;
-    }
-
-    getLastAction(): OrganismAction {
-        return this.lastAction;
-    }
-
     getProgramCounter(): number {
         return this.programCounter;
     }
 
     setProgramCounter(value: number): void {
-        if (this.genome.getProgram().getLength() > value) {
+        if (this.genome.getProgramLength() > value) {
             this.programCounter = value;
         } else {
             this.programCounter = 0;
@@ -225,19 +188,73 @@ export class OrganismCell extends AbstractCell {
     addProgramCounterRelative(value: number): void {
         this.programCounter += value;
 
-        const length = this.genome.getProgram().getLength();
+        const length = this.genome.getProgramLength();
 
         if (this.programCounter >= length) {
             this.programCounter -= length;
         }
     }
 
-    getArgument(n: number): number {
-        return this.getGenome().getProgram().get(1 + n + this.programCounter);
+    getSupplyColor(): Color {
+        return this.supplyColor;
     }
 
-    getInstruction(): number {
-        return this.getGenome().getProgram().get(this.programCounter);
+    getOrgan(id: number): AbstractOrgan {
+        return this.organs[id];
+    }
+
+    getChloroplastsCount(): number {
+        return this.chloroplastsCount;
+    }
+
+    getOxidizersCount(): number {
+        return this.oxidizersCount;
+    }
+
+    onAttack(power: number, enemy: OrganismCell, direction: Direction): number {
+        if (this.energy === 0) {
+            return 0;
+        }
+
+        const limb = this.organs[8 + rotateOnOffset(this.direction, direction)];
+
+        if (limb === null) {
+            return this.changeEnergy(- power);
+        }
+
+        if (limb instanceof Armour) {
+            return limb.onAttack(power);
+        }
+
+        if (limb instanceof Spine) {
+            return limb.onAttack(power, enemy);
+        }
+
+        return 0;
+    }
+
+    makeMoreRed(): void {
+        this.supplyColor = new Color(
+            this.supplyColor.getRed() + 50,
+            this.supplyColor.getGreen() - 50,
+            this.supplyColor.getBlue() - 50
+        );
+    }
+
+    makeMoreGreen(): void {
+        this.supplyColor = new Color(
+            this.supplyColor.getRed() - 50,
+            this.supplyColor.getGreen() + 50,
+            this.supplyColor.getBlue() - 50
+        );
+    }
+
+    makeMoreBlue(): void {
+        this.supplyColor = new Color(
+            this.supplyColor.getRed() - 50,
+            this.supplyColor.getGreen() - 50,
+            this.supplyColor.getBlue() + 50
+        );
     }
     
     serialize(): CellOrganism {

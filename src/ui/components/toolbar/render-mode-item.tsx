@@ -26,10 +26,6 @@ const rendererOptions = [
     {label: 'Lifetime', value: 'lifetime'},
     {label: 'Genesis', value: 'genesis'},
     {label: 'Supply', value: 'supply'},
-    {label: 'Aggression', value: 'attack'},
-    {label: 'Movement', value: 'step'},
-    {label: 'Children count', value: 'children'},
-    {label: 'Last action', value: 'action'},
 ];
 
 export const RenderModeItem = observer(({}: Props) => {

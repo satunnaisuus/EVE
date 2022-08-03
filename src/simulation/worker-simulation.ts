@@ -1,8 +1,9 @@
-import { CellPayload, Parameters, Simulation, StepData } from "./simulation";
+import { Parameters, Simulation, StepData } from "./simulation";
 import { SimulationOptions } from "./types/simulation-options";
 import { WorkerResponse } from "./types/worker-response";
 import SimulationWorker from './simulation.worker.ts';
 import { CellType } from "./types/cells";
+import { PayloadData } from "./data";
 
 export class WorkerSimulation extends Simulation {
     private worker: SimulationWorker;
@@ -95,7 +96,7 @@ export class WorkerSimulation extends Simulation {
         });
     }
 
-    getState(payload: CellPayload): Promise<StepData> {
+    getState(payload: PayloadData): Promise<StepData> {
         return new Promise((resolve) => {
             const id = this.nextId();
             this.messageListeners.state[id] = resolve;

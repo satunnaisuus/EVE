@@ -107,7 +107,7 @@ export class CommonRenderer implements Renderer {
 
         let maxPayloadValue = 0;
         let i = 0;
-        if (mode === 'children' || mode === 'step' || mode === 'attack' ||  mode === 'lifetime' || mode === 'energy') {
+        if (mode === 'lifetime' || mode === 'energy') {
             for (let x = 0; x < data.getWidth(); x++) {
                 for (let y = 0; y < data.getHeight(); y++) {
                     if (array[i] === 1 && maxPayloadValue < array[i + 1]) {
@@ -148,14 +148,6 @@ export class CommonRenderer implements Renderer {
                             color = OrganismColor.genesis(array[i + 1], array[i + 2], array[i + 3]);
                         } else if (mode === 'supply') {
                             color = OrganismColor.supply(array[i + 1], array[i + 2], array[i + 3]);
-                        } else if (mode === 'action') {
-                            color = OrganismColor.action(array[i + 1]);
-                        } else if (mode === 'children') {
-                            color = OrganismColor.children(array[i + 1], maxPayloadValue);
-                        } else if (mode === 'attack') {
-                            color = OrganismColor.attack(array[i + 1], maxPayloadValue);
-                        } else if (mode === 'step') {
-                            color = OrganismColor.step(array[i + 1], maxPayloadValue);
                         } else {
                             color = OrganismColor.default();
                         }

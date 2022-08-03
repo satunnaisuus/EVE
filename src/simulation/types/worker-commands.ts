@@ -1,4 +1,5 @@
-import { CellPayload, Parameters } from "../simulation";
+import { PayloadData } from "../data";
+import { Parameters } from "../simulation";
 import { SimulationOptions } from "./simulation-options";
 
 export interface CommandInit {
@@ -14,7 +15,7 @@ export interface CommandStep {
 export interface CommandRequestState {
     id: number;
     type: 'requestState';
-    payload: CellPayload;
+    payload: PayloadData;
 }
 
 export interface CommandSetParameter {

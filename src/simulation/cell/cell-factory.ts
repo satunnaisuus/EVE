@@ -5,6 +5,7 @@ import { OrganismCell } from "./type/organism-cell";
 import { WallCell } from "./type/wall-cell";
 import { AbstractCell } from "./abstract-cell";
 import { Direction, randomDirection } from "./type/organism/direction";
+import { Color } from "../../common/color";
 
 export class CellFactory {
     private wall: WallCell;
@@ -20,7 +21,7 @@ export class CellFactory {
             case 'empty':
                 return this.createEmpty();
             case 'organism':
-                return this.createOrganism(Genome.createRandom(), 255, randomDirection());
+                return this.createOrganism(Genome.createRandom(), 255, randomDirection(), new Color(255, 255, 255));
             case 'organic':
                 return this.createOrganic(255);
         }
@@ -44,8 +45,8 @@ export class CellFactory {
         return this.empty = new EmptyCell();
     }
 
-    createOrganism(genome: Genome, energy: number, direction: Direction): OrganismCell {
-        return new OrganismCell(++this.id, genome, energy, direction);
+    createOrganism(genome: Genome, energy: number, direction: Direction, supplyColor: Color): OrganismCell {
+        return new OrganismCell(++this.id, genome, energy, direction, supplyColor);
     }
 
     createOrganic(energy: number): OrganicCell {
