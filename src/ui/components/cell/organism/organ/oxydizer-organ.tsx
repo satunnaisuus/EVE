@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
-import Oxidizer from '../../../../../../assets/images/organism/organ/oxidizer.svg';
+import Oxidizer from '/src/assets/images/organism/organ/oxidizer.svg';
 
 const OxidizerOrganStyled = styled.div<{direction: number}>`
     width: 22px;

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
-import Spine from '../../../../../../assets/images/organism/organ/spine.svg';
+import Spine from '/src/assets/images/organism/organ/spine.svg';
 
 const SpineOrganStyled = styled.div<{direction: number}>`
     width: 46px;

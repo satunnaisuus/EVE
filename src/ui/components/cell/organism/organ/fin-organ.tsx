@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
-import Fin from '../../../../../../assets/images/organism/organ/fin.svg';
+import Fin from '/src/assets/images/organism/organ/fin.svg';
 
 const FinOrganStyled = styled.div<{direction: number}>`
     width: 60px;

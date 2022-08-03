@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
-import Chloroplast from '../../../../../../assets/images/organism/organ/chloroplast.svg';
+import Chloroplast from '/src/assets/images/organism/organ/chloroplast.svg';
 
 const ChloroplastOrganStyled = styled.div<{direction: number}>`
     width: 22px;

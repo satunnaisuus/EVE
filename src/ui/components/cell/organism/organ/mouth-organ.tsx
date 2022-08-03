@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
-import Mouth from '../../../../../../assets/images/organism/organ/mouth.svg';
+import Mouth from '/src/assets/images/organism/organ/mouth.svg';
 
 const MouthOrganStyled = styled.div<{direction: number}>`
     width: 42px;

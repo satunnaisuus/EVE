@@ -1,4 +1,6 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -59,4 +61,10 @@ module.exports = {
     compress: true,
     port: 9000,
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+        template: './src/assets/templates/index.html',
+    }),
+    new CleanWebpackPlugin(),
+],
 };

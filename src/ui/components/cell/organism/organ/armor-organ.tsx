@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
-import Armor from '../../../../../../assets/images/organism/organ/armor.svg';
+import Armor from '/src/assets/images/organism/organ/armor.svg';
 
 const ArmorOrganStyled = styled.div<{direction: number}>`
     width: 56px;
