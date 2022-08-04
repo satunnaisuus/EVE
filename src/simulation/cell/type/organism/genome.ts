@@ -27,6 +27,15 @@ export class Genome {
         
     }
 
+    static createRandom(): Genome {
+        return new Genome(
+            Program.createPrimitive(16),
+            Color.random(),
+            randomInt(100, 255),
+            primitiveOrgans
+        );
+    }
+
     isSimilar(genome: Genome): boolean {
         const otherOragans = genome.getOrgans();
 
@@ -100,11 +109,15 @@ export class Genome {
                 break;
             
             case 1:
-                instruction.args[randomInt(0, instruction.args.length - 1)] = Math.random();
+                if (instruction.args.length > 0) {
+                    instruction.args[randomInt(0, instruction.args.length - 1)] = Math.random();
+                }
                 break;
 
             case 2:
-                instruction.branches[randomInt(0, instruction.branches.length - 1)] = randomInt(0, program.getLength() - 1);
+                if (instruction.branches.length > 0) {
+                    instruction.branches[randomInt(0, instruction.branches.length - 1)] = randomInt(0, program.getLength() - 1);
+                }
                 break;
             
             case 3:
@@ -136,18 +149,9 @@ export class Genome {
     serialize() {
         return {
             color: this.color.toHexFormat(),
-            program: this.program,
+            program: this.program.serialize(),
             divideLimit: this.divideLimit,
             organs: this.organs,
         };
-    }
-
-    static createRandom(): Genome {
-        return new Genome(
-            Program.createPrimitive(8),
-            Color.random(),
-            randomInt(100, 255),
-            primitiveOrgans
-        );
     }
 }

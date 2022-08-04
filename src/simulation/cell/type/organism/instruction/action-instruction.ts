@@ -8,13 +8,12 @@ export class ActionInstruction extends AbstractInstruction {
         const organ = organism.getOrgan(organIndex);
 
         if (! organ) {
+            organism.addProgramCounterRelative(1);
             return false;
         }
 
         organ.use(args[1], context);
-
         organism.addProgramCounterRelative(1);
-        
         return true;
     }
 

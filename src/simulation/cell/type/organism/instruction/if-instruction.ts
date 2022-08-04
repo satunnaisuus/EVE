@@ -8,6 +8,7 @@ export class IfInstruction extends AbstractInstruction {
         const organ = organism.getOrgan(organIndex);
 
         if (! organ) {
+            organism.addProgramCounterRelative(1);
             return false;
         }
 

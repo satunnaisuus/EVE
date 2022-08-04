@@ -4,6 +4,8 @@ import { observer } from "mobx-react-lite";
 import { SimulationContext } from "../../context";
 import { useContext } from "react";
 import { Visualization } from "./organism/visualization";
+import { Command } from "../../../simulation/types/cells";
+import { Program } from "./organism/program";
 
 const Row = styled.div`
     display: flex;
@@ -56,6 +58,7 @@ export const OrganismCell = observer(() => {
                         <span>Divide limit</span>
                         <span>{cell.genome.divideLimit}</span>
                     </Row>
+                    <Program organism={cell} />
                 </div>
             </Container>
         </>

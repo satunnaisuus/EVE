@@ -186,13 +186,7 @@ export class OrganismCell extends AbstractCell {
     }
 
     addProgramCounterRelative(value: number): void {
-        this.programCounter += value;
-
-        const length = this.genome.getProgramLength();
-
-        if (this.programCounter >= length) {
-            this.programCounter -= length;
-        }
+        this.setProgramCounter(this.programCounter += value);
     }
 
     getSupplyColor(): Color {
@@ -265,6 +259,7 @@ export class OrganismCell extends AbstractCell {
             energy: this.energy,
             direction: this.direction,
             genome: this.genome.serialize(),
+            programCounter: this.programCounter,
         }
     }
 }

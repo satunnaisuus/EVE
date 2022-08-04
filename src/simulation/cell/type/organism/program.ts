@@ -6,24 +6,26 @@ import { IfInstruction } from "./instruction/if-instruction";
 import { JumpInstruction } from "./instruction/jump-instruction";
 import { NothingInstruction } from "./instruction/nothing-instruction";
 
-const INSTRUCTIONS_PER_STEP_LIMIT = 8;
-
-const CMD_NOTHING = 0;
-const CMD_JUMP = 1;
-const CMD_IF = 2;
-const CMD_ACTION = 3;
-
-const handlers: {[key: number]: AbstractInstruction} = {
-    [CMD_NOTHING]: new NothingInstruction(),
-    [CMD_JUMP]: new JumpInstruction(),
-    [CMD_IF]: new IfInstruction(),
-    [CMD_ACTION]: new ActionInstruction(),
+export enum Command {
+    NOTHING = 0,
+    JUMP = 1,
+    IF = 2,
+    ACTION = 3,
 }
 
 export interface InstructionConfig {
-    code: number;
+    code: Command;
     args: number[];
     branches: number[];
+}
+
+const INSTRUCTIONS_PER_STEP_LIMIT = 8;
+
+const handlers: {[key: number]: AbstractInstruction} = {
+    [Command.NOTHING]: new NothingInstruction(),
+    [Command.JUMP]: new JumpInstruction(),
+    [Command.IF]: new IfInstruction(),
+    [Command.ACTION]: new ActionInstruction(),
 }
 
 export class Program {
@@ -36,7 +38,7 @@ export class Program {
 
         for (let i = 0; i < size; i++) {
             instructions.push({
-                code: CMD_ACTION,
+                code: Command.ACTION,
                 args: [0, 0],
                 branches: [],
             });
@@ -89,5 +91,9 @@ export class Program {
                 branches: i.branches.slice(),
             };
         }));
+    }
+
+    serialize() {
+        return this.instructions;
     }
 }
