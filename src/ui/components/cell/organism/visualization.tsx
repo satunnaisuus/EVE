@@ -10,6 +10,7 @@ import { OxidizerOrgan } from "./organ/oxydizer-organ";
 import { SpineOrgan } from "./organ/spine-organ";
 import { ChloroplastOrgan } from "./organ/chloroplast-organ";
 import { EyeOrgan } from "./organ/eye-organ";
+import { Genome } from "../../../../simulation/types/cells";
 
 const Container = styled.div`
     width: 200px;
@@ -18,10 +19,10 @@ const Container = styled.div`
     margin: 0 auto;
 `;
 
-export const Visualization = observer(({organism}: {organism: CellOrganism}) => (
+export const Visualization = observer(({genome}: {genome: Genome}) => (
     <Container>
-        <Body color={organism.genome.color} />
-        {organism.genome.organs.map((organ, i) => {
+        <Body color={genome.color} />
+        {genome.organs.map((organ, i) => {
             switch (organ) {
                 case Organ.ARMOUR:
                     return <ArmorOrgan key={i} direction={i} />;

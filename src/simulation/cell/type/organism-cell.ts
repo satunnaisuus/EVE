@@ -144,7 +144,7 @@ export class OrganismCell extends AbstractCell {
             }
         }
 
-        context.replace((factory: CellFactory) => factory.createEmpty());
+        context.replace((factory: CellFactory) => factory.createOrganic(this.energy));
     }
 
     changeEnergy(value: number): number {
@@ -229,25 +229,25 @@ export class OrganismCell extends AbstractCell {
 
     makeMoreRed(): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() + 50,
-            this.supplyColor.getGreen() - 50,
-            this.supplyColor.getBlue() - 50
+            this.supplyColor.getRed() + 10,
+            this.supplyColor.getGreen() - 5,
+            this.supplyColor.getBlue() - 5
         );
     }
 
     makeMoreGreen(): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() - 50,
-            this.supplyColor.getGreen() + 50,
-            this.supplyColor.getBlue() - 50
+            this.supplyColor.getRed() - 5,
+            this.supplyColor.getGreen() + 10,
+            this.supplyColor.getBlue() - 5
         );
     }
 
     makeMoreBlue(): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() - 50,
-            this.supplyColor.getGreen() - 50,
-            this.supplyColor.getBlue() + 50
+            this.supplyColor.getRed() - 5,
+            this.supplyColor.getGreen() - 5,
+            this.supplyColor.getBlue() + 10
         );
     }
     

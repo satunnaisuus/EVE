@@ -17,6 +17,8 @@ export enum Organ {
 
 const primitiveOrgans: Organ[] = [Organ.CHLOROPLAST].concat(Array(15).fill(null));
 
+export const CURRENT_VERSION: 1 = 1;
+
 export class Genome {
     constructor(
         private program: Program,
@@ -152,6 +154,7 @@ export class Genome {
             program: this.program.serialize(),
             divideLimit: this.divideLimit,
             organs: this.organs,
+            version: CURRENT_VERSION,
         };
     }
 }

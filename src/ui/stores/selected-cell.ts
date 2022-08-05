@@ -1,6 +1,7 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
 import { CellType } from "../../simulation/types/cells";
 import { SimulationStore } from "./simulation-store";
+import { SidebarTab } from "./simulation-ui";
 
 export class SelectedCell {
     @observable
@@ -30,7 +31,7 @@ export class SelectedCell {
                 }
             });
 
-            this.simulation.getUI().setActiveTab('cell');
+            this.simulation.getUI().setActiveTab(SidebarTab.CELL);
         });
     }
 

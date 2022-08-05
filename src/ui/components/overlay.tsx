@@ -6,6 +6,8 @@ import { useContext } from "react";
 import { SimulationContext } from "../context";
 import { Info } from "./info";
 import { SelectedCell } from "./selected-cell";
+import { SidebarTab } from "../stores/simulation-ui";
+import { Genomes } from "./genomes";
 
 const Container = styled.div`
     position: absolute;
@@ -41,7 +43,6 @@ const StyledSidebar = styled.div`
     width: 320px;
 `;
 
-
 interface Props {
     
 }
@@ -58,15 +59,21 @@ export const Overlay = observer(({}: Props) => {
                 </StyledBox>
             )}
 
-            {ui.isTabActive('parameters') && (
+            {ui.isTabActive(SidebarTab.PARAMERS) && (
                 <StyledSidebar>
                     <Parameters />
                 </StyledSidebar>
             )}
 
-            {ui.isTabActive('cell') && (
+            {ui.isTabActive(SidebarTab.CELL) && (
                 <StyledSidebar>
                     <SelectedCell />
+                </StyledSidebar>
+            )}
+
+            {ui.isTabActive(SidebarTab.GENOMES) && (
+                <StyledSidebar>
+                    <Genomes />
                 </StyledSidebar>
             )}
         </Container>

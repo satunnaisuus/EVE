@@ -1,6 +1,10 @@
 import { makeObservable, observable, action } from "mobx";
 
-export type SidebarTab = 'cell' | 'parameters';
+export enum SidebarTab {
+    CELL = 'CELL',
+    PARAMERS = 'PARAMETERS',
+    GENOMES = 'GENOMES',
+};
 
 export class SimulationUI {
     @observable

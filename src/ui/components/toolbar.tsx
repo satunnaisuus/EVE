@@ -9,6 +9,7 @@ import { PaintModeItem } from "./toolbar/paint-mode-item";
 import { ParametersItem } from "./toolbar/parameters-item";
 import { InfoItem } from "./toolbar/info-item";
 import { CellItem } from "./toolbar/cell-item";
+import { GenomesItem } from "./toolbar/genomes-item";
 
 const StyledToolbar = styled.div`
     display: flex;
@@ -42,6 +43,7 @@ export const Toolbar = observer(({}: Props) => {
             <StyledGroup justify="flex-start">
                 <ParametersItem />
                 <CellItem />
+                <GenomesItem />
             </StyledGroup>
 
             <StyledGroup justify="center">
