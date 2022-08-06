@@ -1,11 +1,21 @@
 import { EmptyCell } from "./type/empty-cell";
-import { Genome } from "./type/organism/genome";
+import { Genome, Organ } from "./type/organism/genome";
 import { OrganicCell } from "./type/organic-cell";
 import { OrganismCell } from "./type/organism-cell";
 import { WallCell } from "./type/wall-cell";
 import { AbstractCell } from "./abstract-cell";
 import { Direction, randomDirection } from "./type/organism/direction";
 import { Color } from "../../common/color";
+import { InstructionConfig, Program } from "./type/organism/program";
+
+export interface CreateOptions {
+    genome?: {
+        color: string;
+        divideLimit: number;
+        organs: Organ[];
+        program: InstructionConfig[];
+    } 
+}
 
 export class CellFactory {
     private wall: WallCell;
@@ -14,14 +24,27 @@ export class CellFactory {
 
     private id: number = 0;
 
-    create(type: string): AbstractCell {
+    create(type: string, options: CreateOptions): AbstractCell {
         switch (type) {
             case 'wall':
                 return this.createWall();
             case 'empty':
                 return this.createEmpty();
             case 'organism':
-                return this.createOrganism(Genome.createRandom(), 255, randomDirection(), new Color(255, 255, 255));
+                let genome;
+
+                if (options.genome) {
+                    genome = new Genome(
+                        new Program(options.genome.program),
+                        Color.fromHex(options.genome.color),
+                        options.genome.divideLimit,
+                        options.genome.organs
+                    );
+                } else {
+                    genome = Genome.createRandom();
+                }
+
+                return this.createOrganism(genome, 255, randomDirection(), new Color(255, 255, 255));
             case 'organic':
                 return this.createOrganic(255);
         }

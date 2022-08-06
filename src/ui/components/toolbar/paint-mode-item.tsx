@@ -13,6 +13,7 @@ import { RadioGroup } from "../form/radio-group";
 import { FormRow } from "../form/form-row";
 import { RangeRow } from "../form/range-row";
 import { Checkbox } from "../form/checkbox";
+import { Button } from "../button";
 
 interface Props {
     
@@ -90,6 +91,7 @@ export const PaintModeItem = observer(({}: Props) => {
                         ))}
                     </FormRow>
                     <RangeRow label="Brush size" min={1} max={20} step={1} onChange={(v) => paintMode.setSize(v)} value={paintMode.getSize()} />
+                    <Button onClick={() => paintMode.clearClipboard()}>Reset clipboard</Button>
                 </ContextMenu>
             </Overflow>}
         </div>

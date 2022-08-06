@@ -1,5 +1,5 @@
 import { CellContext } from "./cell/cell-context";
-import { CellFactory } from "./cell/cell-factory";
+import { CellFactory, CreateOptions } from "./cell/cell-factory";
 import { SimulationParameters } from "./simulation-parameters";
 import { Grid } from "./grid";
 import { GridLoopType } from "./types/grid-loop-type";
@@ -68,12 +68,12 @@ export class State {
         return result;
     }
 
-    replace(coords: [number, number][], type: string, ignore: string[]): void {
+    replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): void {
         for (const [x, y] of coords) {
             const cell = this.getGrid().getCell(x, y);
 
             if (! ignore.includes(cell.getType())) {
-                this.getGrid().insert(x, y, this.cellFactory.create(type));
+                this.getGrid().insert(x, y, this.cellFactory.create(type, options));
             }
         }
     }

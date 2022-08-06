@@ -76,7 +76,7 @@ const handlers = {
     },
 
     replace: (request: CommandReplace) => {
-        simulation.replace(request.coords, request.cellType, request.ignore).then(() => {
+        simulation.replace(request.coords, request.cellType, request.ignore, request.options).then(() => {
             ctx.postMessage({
                 id: request.id,
                 type: 'replace',

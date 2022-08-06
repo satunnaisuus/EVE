@@ -1,3 +1,4 @@
+import { CreateOptions } from "../cell/cell-factory";
 import { PayloadData } from "../data";
 import { Parameters } from "../simulation";
 import { SimulationOptions } from "./simulation-options";
@@ -49,6 +50,7 @@ export interface CommandReplace {
     coords: [number, number][],
     cellType: string;
     ignore: string[];
+    options: CreateOptions;
 }
 
 export type WorkerCommand =

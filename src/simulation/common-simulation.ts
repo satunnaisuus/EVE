@@ -1,6 +1,6 @@
 import { shuffle } from "../common/array-utils";
 import { Color } from "../common/color";
-import { CellFactory } from "./cell/cell-factory";
+import { CellFactory, CreateOptions } from "./cell/cell-factory";
 import { randomDirection } from "./cell/type/organism/direction";
 import { Genome } from "./cell/type/organism/genome";
 import { Data, PayloadData } from "./data";
@@ -94,8 +94,8 @@ export class CommonSimulation extends Simulation {
         return this.state.getGrid().getCell(x, y).serialize();
     }
 
-    async replace(coords: [number, number][], type: string, ignore: string[]): Promise<void> {
-        this.state.replace(coords, type, ignore);
+    async replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): Promise<void> {
+        this.state.replace(coords, type, ignore, options);
     }
 
     private spawnOrganisms(count: number, initialEnergy: number): void {

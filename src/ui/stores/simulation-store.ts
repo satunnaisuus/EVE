@@ -1,4 +1,5 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
+import { CreateOptions } from "../../simulation/cell/cell-factory";
 import { PayloadData } from "../../simulation/data";
 import { createSimulation } from "../../simulation/factory";
 import { Simulation, StepData } from "../../simulation/simulation";
@@ -163,8 +164,8 @@ export class SimulationStore {
         return this.selectedCell;
     }
 
-    replace(coords: [number, number][], type: string, ignore: string[]): Promise<void> {
-        return this.simulation.replace(coords, type, ignore);
+    replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): Promise<void> {
+        return this.simulation.replace(coords, type, ignore, options);
     }
 
     private async step(): Promise<void> {

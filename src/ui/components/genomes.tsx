@@ -4,7 +4,7 @@ import { GenomeBankContext, SimulationContext } from "../context";
 import { useContext, useState } from "react";
 import { faDownload } from "@fortawesome/free-solid-svg-icons/faDownload";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
-import { faPen } from "@fortawesome/free-solid-svg-icons/faPen";
+import { faEyeDropper } from "@fortawesome/free-solid-svg-icons/faEyeDropper";
 import { faRotate } from "@fortawesome/free-solid-svg-icons/faRotate";
 import { faUpload } from "@fortawesome/free-solid-svg-icons/faUpload";
 import styled from "styled-components";
@@ -122,6 +122,14 @@ const ItemNameForm = observer(({value, onSave, onCancel}: {value: string, onSave
 
 export const Item = observer(({item}: {item: GenomeItem}) => {
     const genomeBank = useContext(GenomeBankContext);
+    const simulation = useContext(SimulationContext);
+    const paintMode = simulation.getRenderer().getPaintMode();
+
+    const paint = () => {
+        paintMode.setClipboard(item.getGenome());
+        paintMode.setType('organism');
+        paintMode.setEnabled(true);
+    }
 
     return (
         <ItemStyled>
@@ -130,6 +138,9 @@ export const Item = observer(({item}: {item: GenomeItem}) => {
                     <Visualization genome={item.getGenome()} />
                 </VisualizationWrapper>
                 <ButtonsWrapper>
+                    <ActionButton onClick={paint}>
+                        <FontAwesomeIcon icon={faEyeDropper} />
+                    </ActionButton>
                     <ActionButton onClick={() => {download(item)}}>
                         <FontAwesomeIcon icon={faDownload} />
                     </ActionButton>

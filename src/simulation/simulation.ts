@@ -1,3 +1,4 @@
+import { CreateOptions } from "./cell/cell-factory";
 import { PayloadData } from "./data";
 import { CellType } from "./types/cells";
 import { SimulationOptions } from "./types/simulation-options";
@@ -30,7 +31,7 @@ export abstract class Simulation {
 
     abstract getCell(x: number, y: number): Promise<CellType>;
 
-    abstract replace(coords: [number, number][], type: string, ignore: string[]): Promise<void>;
+    abstract replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): Promise<void>;
 
     terminate(): void {
 

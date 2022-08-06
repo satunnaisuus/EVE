@@ -1,4 +1,6 @@
 import { makeObservable, observable, action, toJS } from "mobx";
+import { CreateOptions } from "../../simulation/cell/cell-factory";
+import { Genome } from "../../simulation/types/cells";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SimulationStore } from "./simulation-store";
 
@@ -22,6 +24,9 @@ export class PaintMode {
 
     @observable
     private ignore: string[] = [];
+
+    @observable
+    private genome: Genome = null;
 
     private lastPainted: {[key: string]: number} = {};
 
@@ -80,6 +85,16 @@ export class PaintMode {
     @action
     removeIgnore(type: string): void {
         this.ignore = this.ignore.filter(i => i !== type);
+    }
+
+    @action
+    setClipboard(genome: Genome): void {
+        this.genome = genome
+    }
+
+    @action
+    clearClipboard(): void {
+        this.genome = null;
     }
 
     isIgnore(type: string): boolean {
@@ -155,7 +170,13 @@ export class PaintMode {
             return;
         }
 
-        this.simulation.replace(cells, this.getType(), toJS(this.ignore)).then(() => {
+        const options: CreateOptions = {};
+
+        if (this.genome) {
+            options['genome'] = toJS(this.genome);
+        }
+
+        this.simulation.replace(cells, this.getType(), toJS(this.ignore), options).then(() => {
             this.canvasRenderer.update();
         });
     }

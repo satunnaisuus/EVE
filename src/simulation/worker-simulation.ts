@@ -4,6 +4,7 @@ import { WorkerResponse } from "./types/worker-response";
 import SimulationWorker from './simulation.worker.ts';
 import { CellType } from "./types/cells";
 import { PayloadData } from "./data";
+import { CreateOptions } from "./cell/cell-factory";
 
 export class WorkerSimulation extends Simulation {
     private worker: SimulationWorker;
@@ -136,11 +137,11 @@ export class WorkerSimulation extends Simulation {
         });
     }
 
-    replace(coords: [number, number][], type: string, ignore: string[]): Promise<void> {
+    replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): Promise<void> {
         return new Promise((resolve) => {
             const id = this.nextId();
             this.messageListeners.replace[id] = resolve;
-            this.worker.postMessage({id: id, type: 'replace', coords: coords, cellType: type, ignore: ignore});
+            this.worker.postMessage({id: id, type: 'replace', coords: coords, cellType: type, ignore: ignore, options: options});
         });
     }
 
