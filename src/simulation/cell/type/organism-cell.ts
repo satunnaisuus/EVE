@@ -260,6 +260,7 @@ export class OrganismCell extends AbstractCell {
             direction: this.direction,
             genome: this.genome.serialize(),
             programCounter: this.programCounter,
+            supplyColor: this.supplyColor.toHexFormat(),
         }
     }
 }

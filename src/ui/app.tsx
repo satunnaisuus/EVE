@@ -7,6 +7,7 @@ import { AppContext } from "./context";
 import { CreateSimulationForm } from "./components/create-simulation-form";
 import { loadOptions } from "./storage";
 import { THEME } from "./theme";
+import { MainMenu } from "./components/main-menu";
 
 const StyledApp = styled.div`
     height: 100vh;
@@ -23,7 +24,7 @@ const View = observer(() => {
         return <Simulation simulation={simulation} />;
     }
 
-    return <CreateSimulationForm options={loadOptions()} onCreate={(options) => store.newSimulation(options)} />;
+    return <MainMenu />;
 });
 
 export const App = observer(() => {

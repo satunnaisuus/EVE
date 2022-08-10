@@ -7,6 +7,7 @@ import { AbstractCell } from "./abstract-cell";
 import { Direction, randomDirection } from "./type/organism/direction";
 import { Color } from "../../common/color";
 import { InstructionConfig, Program } from "./type/organism/program";
+import { CellType } from "../types/cells";
 
 export interface CreateOptions {
     genome?: {
@@ -50,6 +51,30 @@ export class CellFactory {
         }
 
         throw new Error();
+    }
+
+    deserialize(cell: CellType): AbstractCell {
+        switch (cell.type) {
+            case 'empty':
+                return this.createEmpty();
+            case 'organic':
+                return this.createOrganic(cell.energy);
+            case 'wall':
+                return this.createWall();
+            case 'organism':
+                return new OrganismCell(
+                    cell.id,
+                    new Genome(
+                        new Program(cell.genome.program),
+                        Color.fromHex(cell.genome.color),
+                        cell.genome.divideLimit,
+                        cell.genome.organs
+                    ),
+                    cell.energy,
+                    cell.direction,
+                    Color.fromHex(cell.supplyColor)
+                );
+        }
     }
 
     createWall(): WallCell {

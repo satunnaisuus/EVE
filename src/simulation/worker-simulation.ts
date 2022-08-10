@@ -1,10 +1,11 @@
-import { Parameters, Simulation, StepData } from "./simulation";
+import { Parameters, Dump, Simulation, StepData } from "./simulation";
 import { SimulationOptions } from "./types/simulation-options";
 import { WorkerResponse } from "./types/worker-response";
 import SimulationWorker from './simulation.worker.ts';
 import { CellType } from "./types/cells";
 import { PayloadData } from "./data";
 import { CreateOptions } from "./cell/cell-factory";
+import { SimulationParameters } from "./types/simulation-parameters";
 
 export class WorkerSimulation extends Simulation {
     private worker: SimulationWorker;
@@ -12,36 +13,42 @@ export class WorkerSimulation extends Simulation {
     private lastRequestId = 0;
 
     private messageListeners: {
-        step: {[key: number]: (step: number) => void},
+        makeStep: {[key: number]: (step: number) => void},
         state: {[key: number]: (data: StepData) => void},
         setParameter: {[key: number]: (value: any) => void},
         getOrganismsCount: {[key: number]: (count: number) => void},
         getCell: {[key: number]: (cell: CellType) => void},
         findCellById: {[key: number]: (cell: CellType) => void},
         replace: {[key: number]: () => void},
+        dump: {[key: number]: (dump: Dump) => void},
+        getParameters: {[key: number]: (parameters: SimulationParameters) => void},
     } = {
-        step: {},
+        makeStep: {},
         state: {},
         setParameter: {},
         getOrganismsCount: {},
         getCell: {},
         findCellById: {},
         replace: {},
+        dump: {},
+        getParameters: {},
     };
 
-    private constructor(options: SimulationOptions, onInit: (simulation: WorkerSimulation) => any) {
-        super(options);
+    private constructor(onInit: (simulation: WorkerSimulation) => any, options?: SimulationOptions, dump?: Dump) {
+        super(options || dump.options);
 
         this.worker = new SimulationWorker();
-        this.worker.postMessage({type: 'init', options: options});
+
+        this.worker.postMessage({type: 'init', options: options, dump: dump});
+        
         this.worker.addEventListener('message', (ev: MessageEvent<WorkerResponse>) => {
             switch (ev.data.type) {
                 case 'init':
                     return onInit(this);
 
-                case 'step':
-                    this.messageListeners.step[ev.data.id](ev.data.step);
-                    delete this.messageListeners.step[ev.data.id];
+                case 'makeStep':
+                    this.messageListeners.makeStep[ev.data.id](ev.data.step);
+                    delete this.messageListeners.makeStep[ev.data.id];
                     return;
 
                 case 'state':
@@ -75,13 +82,29 @@ export class WorkerSimulation extends Simulation {
                     this.messageListeners.replace[ev.data.id]();
                     delete this.messageListeners.replace[ev.data.id];
                     return;
+                
+                case 'dump':
+                    this.messageListeners.dump[ev.data.id](ev.data.dump);
+                    delete this.messageListeners.dump[ev.data.id];
+                    return;
+            
+                case 'getParameters':
+                    this.messageListeners.getParameters[ev.data.id](ev.data.parameters);
+                    delete this.messageListeners.getParameters[ev.data.id];
+                    return;
             }
+        });
+    }
+
+    static createFromDump(dump: Dump): Promise<WorkerSimulation> {
+        return new Promise((resolve) => {
+            new WorkerSimulation((simulation) => resolve(simulation), null, dump);
         });
     }
 
     static create(options: SimulationOptions): Promise<WorkerSimulation> {
         return new Promise((resolve) => {
-            new WorkerSimulation(options, (simulation) => resolve(simulation));
+            new WorkerSimulation((simulation) => resolve(simulation), options, null);
         });
     }
 
@@ -89,11 +112,11 @@ export class WorkerSimulation extends Simulation {
         this.worker.terminate();
     }
 
-    step(): Promise<number> {
+    makeStep(): Promise<number> {
         return new Promise((resolve) => {
             const id = this.nextId();
-            this.messageListeners.step[id] = resolve;
-            this.worker.postMessage({id: id, type: 'step'});
+            this.messageListeners.makeStep[id] = resolve;
+            this.worker.postMessage({id: id, type: 'makeStep'});
         });
     }
 
@@ -142,6 +165,22 @@ export class WorkerSimulation extends Simulation {
             const id = this.nextId();
             this.messageListeners.replace[id] = resolve;
             this.worker.postMessage({id: id, type: 'replace', coords: coords, cellType: type, ignore: ignore, options: options});
+        });
+    }
+
+    dump(): Promise<Dump> {
+        return new Promise((resolve) => {
+            const id = this.nextId();
+            this.messageListeners.dump[id] = resolve;
+            this.worker.postMessage({id: id, type: 'dump'});
+        });
+    }
+
+    getParameters(): Promise<SimulationParameters> {
+        return new Promise((resolve) => {
+            const id = this.nextId();
+            this.messageListeners.getParameters[id] = resolve;
+            this.worker.postMessage({id: id, type: 'getParameters'});
         });
     }
 

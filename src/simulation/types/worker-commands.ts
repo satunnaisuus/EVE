@@ -1,16 +1,17 @@
 import { CreateOptions } from "../cell/cell-factory";
 import { PayloadData } from "../data";
-import { Parameters } from "../simulation";
+import { Parameters, Dump } from "../simulation";
 import { SimulationOptions } from "./simulation-options";
 
 export interface CommandInit {
     type: 'init';
-    options: SimulationOptions;
+    options?: SimulationOptions;
+    dump?: Dump;
 }
 
-export interface CommandStep {
+export interface CommandMakeStep {
     id: number;
-    type: 'step';
+    type: 'makeStep';
 }
 
 export interface CommandRequestState {
@@ -53,12 +54,24 @@ export interface CommandReplace {
     options: CreateOptions;
 }
 
+export interface CommandDump {
+    id: number;
+    type: 'dump';
+}
+
+export interface CommandGetParameters {
+    id: number;
+    type: 'getParameters';
+}
+
 export type WorkerCommand =
     | CommandInit
-    | CommandStep
+    | CommandMakeStep
     | CommandRequestState
     | CommandSetParameter
     | CommandGetOrganismsCount
     | CommandGetCell
     | CommandFindCellById
-    | CommandReplace;
+    | CommandReplace
+    | CommandDump
+    | CommandGetParameters;

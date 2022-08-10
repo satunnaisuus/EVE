@@ -1,13 +1,15 @@
 import { PayloadData } from "../data";
+import { Dump } from "../simulation";
+import { SimulationParameters } from "../simulation-parameters";
 import { CellType } from "./cells";
 
 export interface ResponseInit {
     type: 'init';
 }
 
-export interface ResponseStep {
+export interface ResponseMakeStep {
     id: number;
-    type: 'step';
+    type: 'makeStep';
     step: number;
 }
 
@@ -48,12 +50,26 @@ export interface ResponseReplace {
     type: 'replace';
 }
 
+export interface ResponseDump {
+    id: number;
+    type: 'dump';
+    dump: Dump;
+}
+
+export interface ResponseGetParameters {
+    id: number;
+    type: 'getParameters';
+    parameters: SimulationParameters;
+}
+
 export type WorkerResponse =
-    | ResponseStep
+    | ResponseMakeStep
     | ResponseState
     | ResponseInit
     | ResponseSetParameter
     | ResponseGetOrganismsCount
     | ResponseGetCell
     | ResponseFindCellById
-    | ResponseReplace;
+    | ResponseReplace
+    | ResponseDump
+    | ResponseGetParameters;

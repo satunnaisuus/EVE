@@ -6,8 +6,9 @@ import { Simulation, StepData } from "../../simulation/simulation";
 import { CellType } from "../../simulation/types/cells";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
+import { SaveStore } from "./save-store";
 import { SelectedCell } from "./selected-cell";
-import { SimulationParameters } from "./simulation-parameters";
+import { SimulationParametersStore } from "./simulation-parameters-store";
 import { SimulationUI } from "./simulation-ui";
 
 export class SimulationStore {
@@ -26,40 +27,40 @@ export class SimulationStore {
     @observable
     private organismsCount: number = 0;
 
-    private simulation: Simulation;
-
     private canvasRenderer: CanvasRenderer;
 
     private timeoutId: ReturnType<typeof setTimeout>;
 
-    private parameters: SimulationParameters;
+    private parameters: SimulationParametersStore;
 
     private ui: SimulationUI;
 
     private selectedCell: SelectedCell;
 
+    private options: SimulationOptions;
+
     constructor(
-        private options: SimulationOptions
+        private simulation: Simulation,
+        private saveStore: SaveStore
     ) {
         makeObservable(this);
 
+        this.options = this.simulation.getOptions();
         this.canvasRenderer = new CanvasRenderer(this);
-        this.parameters = new SimulationParameters(this);
+        this.parameters = new SimulationParametersStore(this);
         this.ui = new SimulationUI();
         this.selectedCell = new SelectedCell(this);
 
-        createSimulation(options).then((simulation) => {
-            this.simulation = simulation;
+        simulation.getParameters().then((parameters) => {
+            this.parameters.init(parameters);
+        });
 
-            this.canvasRenderer.update(() => {
-                runInAction(() => this.ready = true);
-            });
+        this.canvasRenderer.update(() => {
+            runInAction(() => this.ready = true);
+        });
 
-            this.simulation.getOrganismsCount().then((count) => {
-                runInAction(() => {
-                    this.organismsCount = count;
-                });
-            });
+        this.simulation.getOrganismsCount().then((count) => {
+            runInAction(() => this.organismsCount = count);
         });
     }
 
@@ -120,7 +121,7 @@ export class SimulationStore {
         this.canvasRenderer && this.canvasRenderer.terminate();
     }
 
-    getParameters(): SimulationParameters {
+    getParameters(): SimulationParametersStore {
         return this.parameters;
     }
 
@@ -168,9 +169,18 @@ export class SimulationStore {
         return this.simulation.replace(coords, type, ignore, options);
     }
 
+    async save(): Promise<void> {
+        const dump = await this.simulation.dump();
+
+        await this.saveStore.addSave(
+            this.saveStore.createItem(dump),
+            dump
+        );
+    }
+
     private async step(): Promise<void> {
         const stepStartTime = Date.now();
-        const step = await this.simulation.step();
+        const step = await this.simulation.makeStep();
         const organismsCount = await this.simulation.getOrganismsCount();
         this.selectedCell.update();
 

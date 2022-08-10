@@ -4,6 +4,7 @@ export enum SidebarTab {
     CELL = 'CELL',
     PARAMERS = 'PARAMETERS',
     GENOMES = 'GENOMES',
+    SAVES = 'SAVES',
 };
 
 export class SimulationUI {

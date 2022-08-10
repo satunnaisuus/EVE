@@ -1,6 +1,6 @@
 import { CommonSimulation } from "./common-simulation";
 import { Simulation } from "./simulation";
-import { CommandFindCellById, CommandGetCell, CommandGetOrganismsCount, CommandInit, CommandReplace, CommandRequestState, CommandSetParameter, CommandStep, WorkerCommand } from "./types/worker-commands";
+import { CommandFindCellById, CommandGetCell, CommandGetOrganismsCount, CommandInit, CommandReplace, CommandRequestState, CommandSetParameter, CommandMakeStep, WorkerCommand, CommandDump, CommandGetParameters } from "./types/worker-commands";
 
 const ctx: Worker = self as any;
 
@@ -12,14 +12,20 @@ const handlers = {
             return;
         }
 
-        simulation = new CommonSimulation(request.options);
+        if (request.dump) {
+            simulation = CommonSimulation.createFromDump(request.dump);
+        } else {
+            simulation = CommonSimulation.create(request.options);
+        }
+
+        
 
         ctx.postMessage({type: 'init'});
     },
 
-    step: (request: CommandStep) => {
-        simulation.step().then((step) => {
-            ctx.postMessage({type: 'step', step: step, id: request.id})
+    makeStep: (request: CommandMakeStep) => {
+        simulation.makeStep().then((step) => {
+            ctx.postMessage({type: 'makeStep', step: step, id: request.id})
         });
     },
 
@@ -80,6 +86,26 @@ const handlers = {
             ctx.postMessage({
                 id: request.id,
                 type: 'replace',
+            });
+        });
+    },
+
+    dump: (request: CommandDump) => {
+        simulation.dump().then((dump) => {
+            ctx.postMessage({
+                id: request.id,
+                type: 'dump',
+                dump: dump,
+            });
+        });
+    },
+
+    getParameters: (request: CommandGetParameters) => {
+        simulation.getParameters().then((parameters) => {
+            ctx.postMessage({
+                id: request.id,
+                type: 'getParameters',
+                parameters: parameters,
             });
         });
     },

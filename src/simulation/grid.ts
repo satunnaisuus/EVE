@@ -3,6 +3,7 @@ import { AbstractCell } from "./cell/abstract-cell";
 import { CellFactory } from "./cell/cell-factory";
 import { CellType } from "./types/cells";
 import { GridLoopType } from "./types/grid-loop-type";
+import { SimulationOptions } from "./types/simulation-options";
 
 export class Grid {
     private cells: AbstractCell[][] = [];
@@ -14,20 +15,18 @@ export class Grid {
     private light: number[][] = [];
 
     constructor(
-        private width: number,
-        private height: number,
-        private loop: GridLoopType,
+        private options: SimulationOptions,
         private cellFactory: CellFactory
     ) {
-        assertGreaterThan(width, 0);
-        assertGreaterThan(height, 0);
+        assertGreaterThan(options.width, 0);
+        assertGreaterThan(options.height, 0);
 
-        for (let x = 0; x < width; x++) {
+        for (let x = 0; x < options.width; x++) {
             this.cells[x] = [];
             this.minerals[x] = [];
             this.light[x] = [];
 
-            for (let y = 0; y < height; y++) {
+            for (let y = 0; y < options.height; y++) {
                 this.cells[x][y] = cellFactory.createEmpty();
                 this.minerals[x][y] = 100;
                 this.light[x][y] = 100;
@@ -92,15 +91,15 @@ export class Grid {
     }
 
     getLoopMode(): GridLoopType {
-        return this.loop;
+        return this.options.loop;
     }
 
     getWidth(): number {
-        return this.width;
+        return this.options.width;
     }
 
     getHeight(): number {
-        return this.height;
+        return this.options.height;
     }
 
     toArray(): AbstractCell[][] {
@@ -112,29 +111,29 @@ export class Grid {
     }
 
     normalizeCoordinates(x: number, y: number): [number, number] {
-        const loopX = this.loop === GridLoopType.TORUS || this.loop === GridLoopType.HORIZONTAL;
-        const loopY = this.loop === GridLoopType.TORUS || this.loop === GridLoopType.VERTICAL;
+        const loopX = this.options.loop === GridLoopType.TORUS || this.options.loop === GridLoopType.HORIZONTAL;
+        const loopY = this.options.loop === GridLoopType.TORUS || this.options.loop === GridLoopType.VERTICAL;
 
         let resultX = x;
         let resultY = y;
 
         if (loopX) {
             while (resultX < 0) {
-                resultX += this.width;
+                resultX += this.options.width;
             }
 
-            if (resultX >= this.width) {
-                resultX %= this.width;
+            if (resultX >= this.options.width) {
+                resultX %= this.options.width;
             }
         }
 
         if (loopY) {
             while (resultY < 0) {
-                resultY += this.height;
+                resultY += this.options.height;
             }
 
-            if (resultY >= this.height) {
-                resultY %= this.height;
+            if (resultY >= this.options.height) {
+                resultY %= this.options.height;
             }
         }
 
@@ -142,6 +141,6 @@ export class Grid {
     }
 
     private checkOutOfBounds(x: number, y: number): boolean {
-        return x < 0 || x >= this.width || y < 0 || y >= this.height;
+        return x < 0 || x >= this.options.width || y < 0 || y >= this.options.height;
     }
 }

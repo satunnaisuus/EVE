@@ -1,5 +1,5 @@
 import { OrganismCell } from "./cell/type/organism-cell";
-import { State } from "./state";
+import { Grid } from "./grid";
 
 export type PayloadData = 'energy' | 'lifetime' | 'genesis' | 'supply';
 
@@ -34,8 +34,7 @@ export class Data {
         this.itemLength = ! this.payload ? 1 : (PAYLOAD_SIZE_MAP[this.payload] + 1);
     }
 
-    static create(state: State, payload: PayloadData): Data {
-        const grid = state.getGrid();
+    static create(grid: Grid, payload: PayloadData): Data {
         const width = grid.getWidth();
         const height = grid.getHeight();
         const payloadSize = ! payload ? 0 : PAYLOAD_SIZE_MAP[payload];

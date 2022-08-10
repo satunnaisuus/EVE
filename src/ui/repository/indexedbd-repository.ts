@@ -1,9 +1,13 @@
 const DB_NAME = 'eve';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 const MIGRATIONS: {[key: number]: (db: IDBDatabase) => void} = {
     1: function (db: IDBDatabase) {
         db.createObjectStore('genomes', {keyPath: 'id'});
+    },
+    2: function (db: IDBDatabase) {
+        db.createObjectStore('save', {keyPath: 'id'});
+        db.createObjectStore('save_dump', {keyPath: 'id'});
     },
 }
 

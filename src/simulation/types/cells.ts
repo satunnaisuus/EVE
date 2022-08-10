@@ -20,6 +20,7 @@ export interface CellOrganism {
     lifetime: number;
     programCounter: number;
     genome: Genome;
+    supplyColor: string;
 }
 
 export interface CellWall {
@@ -28,6 +29,7 @@ export interface CellWall {
 
 export interface CellOrganic {
     type: 'organic';
+    energy: number;
 }
 
 export interface CellEmpty {

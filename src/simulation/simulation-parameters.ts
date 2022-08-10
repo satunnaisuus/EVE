@@ -1,5 +1,5 @@
 export class SimulationParameters {
-    private organismMaxLifetimeValue: number = 100;
+    private organismMaxLifetimeValue: number = 255;
 
     private photosynthesisEnergyValue: number = 5;
 
@@ -62,6 +62,7 @@ export class SimulationParameters {
             photosynthesisEnergy: this.photosynthesisEnergy,
             chemosynthesisEnergy: this.chemosynthesisEnergy,
             organismMaxLifetime: this.organismMaxLifetime,
+            mutationChance: this.mutationChance
         };
     }
 

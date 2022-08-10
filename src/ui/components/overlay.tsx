@@ -1,6 +1,6 @@
 import * as React from "react";
-import { observer } from "mobx-react-lite";
 import styled from "styled-components";
+import { observer } from "mobx-react-lite";
 import { Parameters } from "./parameters";
 import { useContext } from "react";
 import { SimulationContext } from "../context";
@@ -8,6 +8,7 @@ import { Info } from "./info";
 import { SelectedCell } from "./selected-cell";
 import { SidebarTab } from "../stores/simulation-ui";
 import { Genomes } from "./genomes";
+import { Saves } from "./saves";
 
 const Container = styled.div`
     position: absolute;
@@ -74,6 +75,12 @@ export const Overlay = observer(({}: Props) => {
             {ui.isTabActive(SidebarTab.GENOMES) && (
                 <StyledSidebar>
                     <Genomes />
+                </StyledSidebar>
+            )}
+
+            {ui.isTabActive(SidebarTab.SAVES) && (
+                <StyledSidebar>
+                    <Saves />
                 </StyledSidebar>
             )}
         </Container>

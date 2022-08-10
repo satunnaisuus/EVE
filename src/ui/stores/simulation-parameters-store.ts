@@ -1,7 +1,8 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
+import { SimulationParameters } from "../../simulation/types/simulation-parameters";
 import { SimulationStore } from "./simulation-store";
 
-export class SimulationParameters {
+export class SimulationParametersStore {
     @observable
     private organismMaxLifetime: number = 100;
 
@@ -16,6 +17,14 @@ export class SimulationParameters {
 
     constructor(private store: SimulationStore) {
         makeObservable(this);
+    }
+
+    @action
+    init(parameters: SimulationParameters) {
+        this.organismMaxLifetime = parameters.organismMaxLifetime;
+        this.photosynthesisEnergy = parameters.photosynthesisEnergy;
+        this.chemosynthesisEnergy = parameters.chemosynthesisEnergy;
+        this.mutationChance = parameters.mutationChance;
     }
 
     @action
