@@ -5,7 +5,7 @@ import { CellType } from '../cell/abstract-cell';
 
 export { CellType, Organ, Direction, Command, GENOME_VERSION };
 
-export interface Genome {
+export interface GenomeSerialized {
     color: string;
     divideLimit: number;
     organs: Organ[];
@@ -20,7 +20,7 @@ export interface CellOrganism {
     direction: Direction;
     lifetime: number;
     programCounter: number;
-    genome: Genome;
+    genome: GenomeSerialized;
     supplyColor: string;
 }
 

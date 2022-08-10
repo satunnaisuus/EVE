@@ -23,7 +23,7 @@ export class CellFactory {
 
     private empty: EmptyCell;
 
-    private id: number = 0;
+    private id = 0;
 
     create(type: CellType, options: CreateOptions): AbstractCell {
         switch (type) {
@@ -32,25 +32,20 @@ export class CellFactory {
             case CellType.EMPTY:
                 return this.createEmpty();
             case CellType.ORGANISM:
-                let genome;
-
-                if (options.genome) {
-                    genome = new Genome(
+                return this.createOrganism(
+                    options.genome ? new Genome(
                         new Program(options.genome.program),
                         Color.fromHex(options.genome.color),
                         options.genome.divideLimit,
                         options.genome.organs
-                    );
-                } else {
-                    genome = Genome.createRandom();
-                }
-
-                return this.createOrganism(genome, 255, randomDirection(), new Color(255, 255, 255));
+                    ) : Genome.createRandom(),
+                    255,
+                    randomDirection(),
+                    new Color(255, 255, 255)
+                );
             case CellType.ORGANIC:
                 return this.createOrganic(255);
         }
-
-        throw new Error();
     }
 
     deserialize(cell: Cell): AbstractCell {

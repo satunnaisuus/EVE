@@ -4,7 +4,6 @@ import { useState } from "react";
 import styled from "styled-components";
 import { loadOptions } from "../storage";
 import { CreateSimulationForm } from "./create-simulation-form";
-import { Flex } from "./flex";
 import { Saves } from "./saves";
 
 type Tab = 'new' | 'load';

@@ -7,7 +7,7 @@ import { RangeInput } from "./range-input";
 type Props = {
     label?: string;
     postfix?: string
-    onChange: (value: number) => any;
+    onChange: (value: number) => void;
     min: number,
     max: number,
     step: number,

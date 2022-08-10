@@ -1,5 +1,5 @@
 import { Dump, DUMP_VERSION } from "../../simulation/simulation";
-import { SaveItem } from "../stores/save/save-item";
+import { SaveItem, SaveItemSerialized } from "../stores/save/save-item";
 import { SaveRepository } from "../stores/save/save-repository";
 import { IndexedBdRepository } from "./indexedbd-repository";
 import { IndexedBdSaveDumpRepository } from "./indexedbd-save-dump-repository";
@@ -15,41 +15,24 @@ export class IndexedBdSaveRepository extends IndexedBdRepository implements Save
         this.dataRepository = new IndexedBdSaveDumpRepository();
     }
 
-    add(item: SaveItem, data: Dump): Promise<void> {
-        return new Promise(async (resolve, reject) => {
-            const store = await this.getStore('readwrite');
-            const request = store.put(item.serialize());
-            request.onsuccess = () => {
-                this.dataRepository.add(item.getId(), data).then(() => resolve());
-            };
-            request.onerror = () => reject();
-        });
+    async add(item: SaveItem, data: Dump): Promise<void> {
+        const store = await this.getStore('readwrite');
+        await store.put(item.serialize());
+        await this.dataRepository.add(item.getId(), data);
     }
 
-    findAll(): Promise<SaveItem[]> {
-        return new Promise(async (resolve, reject) => {
-            const store = await this.getStore('readonly');
-            const request = store.getAll();
-            request.onsuccess = () => resolve(
-                request.result
-                    .filter((i) => i.version === DUMP_VERSION)
-                    .map((i) => new SaveItem(i.id, i.createdAt, i.step, i.renderMode, i.version))
-            );
-            request.onerror = () => reject();
-        });
+    async findAll(): Promise<SaveItem[]> {
+        const store = await this.getStore('readonly');
+        const items = await store.getAll<SaveItemSerialized>();
+        return items
+            .filter((i) => i.version === DUMP_VERSION)
+            .map((i) => new SaveItem(i.id, i.createdAt, i.step, i.renderMode, i.version));
     }
 
-    delete(item: SaveItem): Promise<void> {
-        return new Promise(async (resolve, reject) => {
-            const store = await this.getStore('readwrite');
-            const request = store.delete(item.getId());
-            request.onsuccess = () => {
-                this.dataRepository
-                    .delete(item.getId())
-                    .then(() => resolve());
-            };
-            request.onerror = () => reject();
-        });
+    async delete(item: SaveItem): Promise<void> {
+        const store = await this.getStore('readwrite');
+        await store.delete(item.getId());
+        await this.dataRepository.delete(item.getId());
     }
 
     getDump(item: SaveItem): Promise<Dump> {

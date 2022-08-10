@@ -44,7 +44,7 @@ export class CommonRenderer implements Renderer {
     private empty: ImageData;
 
     render(
-        done: (data: ImageData) => any,
+        done: (data: ImageData) => void,
         width: number,
         height: number,
         offsetX: number,
@@ -134,21 +134,34 @@ export class CommonRenderer implements Renderer {
                     case CellType.EMPTY:
                         break;
                     case CellType.ORGANISM:
-                        let color: Color;
-
                         if (mode === 'energy') {
-                            color = OrganismColor.energy(array[i + 1], maxPayloadValue);
+                            renderCell(
+                                cursorX,
+                                cursorY,
+                                OrganismColor.energy(array[i + 1], maxPayloadValue)
+                            );
                         } else if (mode === 'lifetime') {
-                            color = OrganismColor.lifetime(array[i + 1], maxPayloadValue);
+                            renderCell(
+                                cursorX,
+                                cursorY,
+                                OrganismColor.lifetime(array[i + 1], maxPayloadValue)
+                            );
                         } else if (mode === 'genesis') {
-                            color = OrganismColor.genesis(array[i + 1], array[i + 2], array[i + 3]);
+                            renderCell(
+                                cursorX,
+                                cursorY,
+                                OrganismColor.genesis(array[i + 1], array[i + 2], array[i + 3])
+                            );
                         } else if (mode === 'supply') {
-                            color = OrganismColor.supply(array[i + 1], array[i + 2], array[i + 3]);
+                            renderCell(
+                                cursorX,
+                                cursorY,
+                                OrganismColor.supply(array[i + 1], array[i + 2], array[i + 3])
+                            );
                         } else {
-                            color = OrganismColor.default();
+                            renderCell(cursorX, cursorY, OrganismColor.default());
                         }
 
-                        renderCell(cursorX, cursorY, color);
                         break;
                     case CellType.ORGANIC:
                         renderCell(cursorX, cursorY, Colors.organic);

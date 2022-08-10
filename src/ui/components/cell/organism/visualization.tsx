@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react-lite";
-import { CellOrganism, Organ } from "../../../../simulation/types/cells";
+import { Organ } from "../../../../simulation/types/cells";
 import { Body } from "./body";
 import { ArmorOrgan } from "./organ/armor-organ";
 import { FinOrgan } from "./organ/fin-organ";
@@ -10,7 +10,7 @@ import { OxidizerOrgan } from "./organ/oxydizer-organ";
 import { SpineOrgan } from "./organ/spine-organ";
 import { ChloroplastOrgan } from "./organ/chloroplast-organ";
 import { EyeOrgan } from "./organ/eye-organ";
-import { Genome } from "../../../../simulation/types/cells";
+import { GenomeSerialized } from "../../../../simulation/types/cells";
 
 const Container = styled.div`
     width: 200px;
@@ -19,7 +19,7 @@ const Container = styled.div`
     margin: 0 auto;
 `;
 
-export const Visualization = observer(({genome}: {genome: Genome}) => (
+export const Visualization = observer(({genome}: {genome: GenomeSerialized}) => (
     <Container>
         <Body color={genome.color} />
         {genome.organs.map((organ, i) => {

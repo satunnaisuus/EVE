@@ -3,15 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import styled from "styled-components";
 
-interface Choice {
-    value: any;
+interface Choice<T> {
+    value: T;
     label: string;
 }
 
-type Props = {
-    choices: Choice[];
-    value?: any;
-    onChange: (value: any) => any;
+interface Props<T> {
+    choices: Choice<T>[];
+    value?: T;
+    onChange: (value: T) => void;
 }
 
 const StyledRadioGroup = styled.div`
@@ -27,7 +27,7 @@ const CheckWrapper = styled.div`
     width: 20px;
 `;
 
-export const RadioGroup = ({choices, value, onChange}: Props) => (
+export const RadioGroup = <T, >({choices, value, onChange}: Props<T>) => (
     <StyledRadioGroup>
         {choices.map((item, index) => (
             <StyledRadioGroupItem key={index} onClick={() => onChange(item.value)}>

@@ -4,11 +4,7 @@ import { SimulationContext } from "../context";
 import { useContext } from "react";
 import { RangeRow } from "./form/range-row";
 
-interface Props {
-    
-}
-
-export const Parameters = observer(({}: Props) => {
+export const Parameters = observer(() => {
     const simulation = useContext(SimulationContext);
     const parameters = simulation.getParameters();
 

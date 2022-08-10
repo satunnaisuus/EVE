@@ -12,19 +12,19 @@ import { SimulationUI } from "./simulation-ui";
 
 export class SimulationStore {
     @observable
-    private paused: boolean = true;
+    private paused = true;
 
     @observable
-    private ready: boolean = false;
+    private ready = false;
 
     @observable
-    private currentStep: number = 0;
+    private currentStep = 0;
 
     @observable
-    private stepTime: number = 0;
+    private stepTime = 0;
 
     @observable
-    private organismsCount: number = 0;
+    private organismsCount = 0;
 
     private canvasRenderer: CanvasRenderer;
 

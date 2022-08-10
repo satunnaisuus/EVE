@@ -5,7 +5,7 @@ import RendererWorker from './renderer.worker.ts';
 export class WorkerRenderer implements Renderer {
     private worker: RendererWorker;
 
-    private listeners: {[key: number]: (data: ImageData) => any} = {};
+    private listeners: {[key: number]: (data: ImageData) => void} = {};
 
     private lastId = 0;
 
@@ -19,7 +19,7 @@ export class WorkerRenderer implements Renderer {
     }
 
     render(
-        done: (data: ImageData) => any,
+        done: (data: ImageData) => void,
         width: number,
         height: number,
         offsetX: number,

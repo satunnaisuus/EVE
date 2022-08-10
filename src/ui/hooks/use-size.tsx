@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 export function useSize(): [number, number, (node: HTMLElement) => void] {
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
-    const [unobserve, setUnobserve] = useState<() => any>();
+    const [unobserve, setUnobserve] = useState<() => void>();
 
     const ref = useCallback((node: HTMLElement) => {
         if (node) {
@@ -11,7 +11,7 @@ export function useSize(): [number, number, (node: HTMLElement) => void] {
             setHeight(Math.trunc(node.getBoundingClientRect().height));
 
             const resizeObserver = new ResizeObserver((entries) => {
-                for (let entry of entries) {
+                for (const entry of entries) {
                     setWidth(Math.trunc(entry.contentRect.width));
                     setHeight(Math.trunc(entry.contentRect.height));
 

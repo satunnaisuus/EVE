@@ -53,7 +53,7 @@ export abstract class Simulation {
     abstract getParameters(): Promise<SimulationParameters>
 
     terminate(): void {
-
+        return;
     }
 
     getOptions(): SimulationOptions {

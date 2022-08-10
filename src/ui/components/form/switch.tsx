@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 type Props = {
-    onChange: (value: boolean) => any;
+    onChange: (value: boolean) => void;
     value?: boolean;
     label: string;
 }

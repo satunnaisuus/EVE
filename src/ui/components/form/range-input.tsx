@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 type Props = {
-    onChange: (value: number) => any;
+    onChange: (value: number) => void;
     min: number,
     max: number,
     step: number,

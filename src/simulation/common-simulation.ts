@@ -13,7 +13,7 @@ import { SimulationOptions } from "./types/simulation-options";
 import { SimulationParameters as SimulationParametersDto } from "./types/simulation-parameters";
 
 export class CommonSimulation extends Simulation {
-    private step: number = 0;
+    private step = 0;
 
     private grid: Grid;
 

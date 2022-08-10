@@ -22,7 +22,7 @@ export function saveOptions(options: SimulationOptions): void {
 }
 
 function loadObject(key: string) {
-    let json = localStorage.getItem(key);
+    const json = localStorage.getItem(key);
     let result = {};
 
     if (typeof json === 'string') {
@@ -36,6 +36,6 @@ function loadObject(key: string) {
     return result;
 }
 
-function saveObject(key: string, object: any) {
+function saveObject(key: string, object: unknown) {
     localStorage.setItem(key, JSON.stringify(object));
 }

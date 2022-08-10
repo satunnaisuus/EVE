@@ -4,16 +4,16 @@ import { SimulationStore } from "./simulation-store";
 
 export class SimulationParametersStore {
     @observable
-    private organismMaxLifetime: number = 100;
+    private organismMaxLifetime = 100;
 
     @observable
-    private photosynthesisEnergy: number = 5;
+    private photosynthesisEnergy = 5;
 
     @observable
-    private chemosynthesisEnergy: number = 5;
+    private chemosynthesisEnergy = 5;
 
     @observable
-    private mutationChance: number = 25;
+    private mutationChance = 25;
 
     constructor(private store: SimulationStore) {
         makeObservable(this);

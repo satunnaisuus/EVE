@@ -44,11 +44,7 @@ const StyledSidebar = styled.div`
     width: 320px;
 `;
 
-interface Props {
-    
-}
-
-export const Overlay = observer(({}: Props) => {
+export const Overlay = observer(() => {
     const simulation = useContext(SimulationContext);
     const ui = simulation.getUI();
 

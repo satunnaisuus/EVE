@@ -1,8 +1,13 @@
+import { Cell } from "../../types/cells";
 import { AbstractCell, CellType } from "../abstract-cell";
 
 export class OrganicCell extends AbstractCell {
     constructor(private energy: number) {
         super();
+    }
+
+    update(): void {
+        return;
     }
 
     getEnergy(): number {
@@ -13,10 +18,10 @@ export class OrganicCell extends AbstractCell {
         return CellType.ORGANIC;
     }
     
-    serialize() {
+    serialize(): Cell {
         return {
-            type: this.getType(),
+            type: CellType.ORGANIC,
             energy: this.energy,
-        }
+        };
     }
 }

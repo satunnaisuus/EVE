@@ -14,8 +14,7 @@ export class Fin extends AbstractOrgan {
                 this.organism.setDirection(rotateRight(this.organism.getDirection()));
                 return true;
             case 2:
-                const offset = getOffset(this.organism.getDirection());
-                return context.moveByOffest(offset[0], offset[1]);
+                return context.moveByOffest(...getOffset(this.organism.getDirection()));
         }
 
         return false;

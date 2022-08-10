@@ -48,7 +48,7 @@ export interface CommandFindCellById {
 
 export interface CommandReplace {
     id: number;
-    type: 'replce';
+    type: 'replace';
     coords: [number, number][],
     cellType: CellType;
     ignore: CellType[];

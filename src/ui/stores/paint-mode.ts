@@ -1,31 +1,34 @@
 import { makeObservable, observable, action, toJS } from "mobx";
 import { CreateOptions } from "../../simulation/cell/cell-factory";
-import { CellType, Genome } from "../../simulation/types/cells";
+import { CellType, GenomeSerialized } from "../../simulation/types/cells";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SimulationStore } from "./simulation-store";
 
-export type BrushType = 'square' | 'circle';
+export enum BrushType {
+    SQUARE = 'SQUARE',
+    CIRCLE = 'CIRCLE'
+}
 
 const HISTORY_CLEAR_TIMEOUT = 1000;
 
 export class PaintMode {
     @observable
-    private enabled: boolean = false;
+    private enabled = false;
 
     @observable
     private type: CellType = CellType.ORGANIC;
 
     @observable
-    private brush: BrushType = 'square';
+    private brush: BrushType = BrushType.SQUARE;
 
     @observable
-    private size: number = 1;
+    private size = 1;
 
     @observable
     private ignore: CellType[] = [];
 
     @observable
-    private genome: Genome = null;
+    private genome: GenomeSerialized = null;
 
     private lastPainted: {[key: string]: number} = {};
 
@@ -87,7 +90,7 @@ export class PaintMode {
     }
 
     @action
-    setClipboard(genome: Genome): void {
+    setClipboard(genome: GenomeSerialized): void {
         this.genome = genome
     }
 
@@ -108,7 +111,7 @@ export class PaintMode {
 
         const size = this.getSize() - 1;
 
-        let cells: [number, number][] = [];
+        const cells: [number, number][] = [];
 
         const now = +Date.now();
 
@@ -126,13 +129,13 @@ export class PaintMode {
             this.lastPainted[key] = now;
         }
         
-        if (this.getBrush() === 'square') {
+        if (this.getBrush() === BrushType.SQUARE) {
             for (let xi = 0; xi < 1 + size * 2; xi++) {
                 for (let yi = 0; yi < 1 + size * 2; yi++) {
                     putPixel(centerX - size + xi, centerY - size + yi);
                 }
             }
-        } else if (this.getBrush() === 'circle') {
+        } else if (this.getBrush() === BrushType.CIRCLE) {
             let IG = size * 2 - 3;
             let IDGR = -6;
             let IDGD = size * 4 - 10;

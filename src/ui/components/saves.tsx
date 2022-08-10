@@ -9,7 +9,7 @@ import { faRotate } from "@fortawesome/free-solid-svg-icons/faRotate";
 import { faUpload } from "@fortawesome/free-solid-svg-icons/faUpload";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "./button";
-import { SaveItem } from "../stores/save/save-item";
+import { SaveItem, SaveItemSerialized } from "../stores/save/save-item";
 import { SaveStore } from "../stores/save-store";
 
 const ListHeader = styled.div`
@@ -102,11 +102,11 @@ export const Saves = observer(() => {
         const input = document.createElement('input');
         input.type = 'file';
 
-        input.addEventListener('change', (e) => {
+        input.addEventListener('change', () => {
             for (const file of input.files) {
                 file.text().then((value) => {
                     try {
-                        const data = JSON.parse(value) as any;
+                        const data = JSON.parse(value) as SaveItemSerialized;
 
                         saveStore.addSave(new SaveItem(
                             data.id,
@@ -114,7 +114,7 @@ export const Saves = observer(() => {
                             data.step,
                             data.renderMode,
                             data.version
-                        ), data.data);
+                        ), data.dump);
                     } catch (e) {
                         alert('File parsing error');
                     }

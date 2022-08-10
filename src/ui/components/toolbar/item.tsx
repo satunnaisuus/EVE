@@ -7,7 +7,7 @@ interface Props {
     enabled?: boolean;
     disabled?: boolean;
     children?: React.ReactNode;
-    onClick?: () => any;
+    onClick?: () => void;
 }
 
 const StyledToolbarItem = styled.div<Props>`

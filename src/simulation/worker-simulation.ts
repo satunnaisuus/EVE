@@ -1,7 +1,7 @@
+import SimulationWorker from './simulation.worker.ts';
 import { Parameters, Dump, Simulation, StepData } from "./simulation";
 import { SimulationOptions } from "./types/simulation-options";
 import { WorkerResponse } from "./types/worker-response";
-import SimulationWorker from './simulation.worker.ts';
 import { Cell, CellType } from "./types/cells";
 import { PayloadData } from "./data";
 import { CreateOptions } from "./cell/cell-factory";
@@ -34,7 +34,7 @@ export class WorkerSimulation extends Simulation {
         getParameters: {},
     };
 
-    private constructor(onInit: (simulation: WorkerSimulation) => any, options?: SimulationOptions, dump?: Dump) {
+    private constructor(onInit: (simulation: WorkerSimulation) => void, options?: SimulationOptions, dump?: Dump) {
         super(options || dump.options);
 
         this.worker = new SimulationWorker();

@@ -5,14 +5,14 @@ export enum SidebarTab {
     PARAMERS = 'PARAMETERS',
     GENOMES = 'GENOMES',
     SAVES = 'SAVES',
-};
+}
 
 export class SimulationUI {
     @observable
     private activeTab: SidebarTab = null;
 
     @observable
-    private infoOpened: boolean = false;
+    private infoOpened = false;
 
     constructor() {
         makeObservable(this);

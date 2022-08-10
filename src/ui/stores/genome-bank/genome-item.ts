@@ -1,5 +1,12 @@
 import { makeObservable, observable, toJS } from "mobx";
-import { Genome, GENOME_VERSION } from "../../../simulation/types/cells";
+import { GenomeSerialized, GENOME_VERSION } from "../../../simulation/types/cells";
+
+export interface GenomeItemSerialized {
+    id: string;
+    name: string;
+    createdAt: number;
+    genome: GenomeSerialized;
+}
 
 export class GenomeItem {
     @observable private name: string;
@@ -7,7 +14,7 @@ export class GenomeItem {
     constructor(
         name: string,
         private id: string,
-        private genome: Genome,
+        private genome: GenomeSerialized,
         private createdAt: number
     ) {
         makeObservable(this);
@@ -31,7 +38,7 @@ export class GenomeItem {
         this.name = name;
     }
 
-    getGenome(): Genome {
+    getGenome(): GenomeSerialized {
         return this.genome;
     }
 
@@ -43,7 +50,7 @@ export class GenomeItem {
         return this.id === item.getId();
     }
 
-    serialize() {
+    serialize(): GenomeItemSerialized {
         return {
             id: this.id,
             name: this.name,

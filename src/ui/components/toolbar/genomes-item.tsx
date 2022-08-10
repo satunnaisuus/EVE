@@ -7,11 +7,7 @@ import { SimulationContext } from "../../context";
 import { ToolbarItem } from "./item";
 import { SidebarTab } from "../../stores/simulation-ui";
 
-interface Props {
-    
-}
-
-export const GenomesItem = observer(({}: Props) => {
+export const GenomesItem = observer(() => {
     const simulation = useContext(SimulationContext);
     const ui = simulation.getUI();
 

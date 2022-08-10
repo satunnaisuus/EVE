@@ -7,7 +7,7 @@ type MenuProps = {
 
 type MunuItemProps = {
     children: React.ReactNode;
-    onClick: () => any;
+    onClick: () => void;
 }
 
 const StyledContextMenu = styled.div<MenuProps>`

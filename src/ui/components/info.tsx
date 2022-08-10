@@ -5,17 +5,13 @@ import { useContext } from "react";
 import styled from "styled-components";
 import { Legend } from "./legend";
 
-interface Props {
-    
-}
-
 const Row = styled.div`
     display: flex;
     justify-content: space-between;
     margin-bottom: 6px;
 `;
 
-export const Info = observer(({}: Props) => {
+export const Info = observer(() => {
     const simulation = useContext(SimulationContext);
 
     return (

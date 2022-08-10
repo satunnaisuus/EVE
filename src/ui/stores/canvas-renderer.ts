@@ -24,7 +24,7 @@ export class CanvasRenderer {
     private renderMode: RenderMode = 'default';
 
     @observable
-    private renderTime: number = 0;
+    private renderTime = 0;
 
     private paintMode: PaintMode;
 
@@ -32,7 +32,7 @@ export class CanvasRenderer {
 
     private context: CanvasRenderingContext2D;
 
-    private scale: number = 1;
+    private scale = 1;
 
     private offset: [number, number] = [0, 0];
 
@@ -42,15 +42,15 @@ export class CanvasRenderer {
 
     private renderer: WorkerRenderer;
 
-    private canvasDestroyListeners: (() => any)[] = [];
+    private canvasDestroyListeners: (() => void)[] = [];
 
-    private needRender: boolean = false;
+    private needRender = false;
 
-    private rendering: boolean = false;
+    private rendering = false;
 
     private updatingState = false;
 
-    private updateListeners: (() => any)[] = [];
+    private updateListeners: (() => void)[] = [];
 
     private needUpdate = false;
 
@@ -114,7 +114,7 @@ export class CanvasRenderer {
         this.update(null, mode);
     }
 
-    update(ready?: () => any, mode = this.renderMode): void {
+    update(ready?: () => void, mode = this.renderMode): void {
         if (this.updatingState) {
             this.needUpdate = true;
             
@@ -256,7 +256,7 @@ export class CanvasRenderer {
         return this.paintMode;
     }
 
-    private render(done: (data: ImageData) => any): void {
+    private render(done: (data: ImageData) => void): void {
         if (
             ! this.element
             || ! this.state

@@ -8,4 +8,8 @@ export class Spine extends AbstractOrgan {
         enemy.changeEnergy(- SPINE_DAMAGE);
         return this.organism.changeEnergy(- power);
     }
+
+    use(): boolean {
+        return true;
+    }
 }

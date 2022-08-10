@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Visualization } from "./cell/organism/visualization";
 import { Button } from "./button";
 import { Textarea } from "./form/textarea";
-import { GenomeItem } from "../stores/genome-bank/genome-item";
+import { GenomeItem, GenomeItemSerialized } from "../stores/genome-bank/genome-item";
 import { CellType } from "../../simulation/types/cells";
 
 const ListHeader = styled.div`
@@ -107,7 +107,7 @@ const ItemName = observer(({item}: {item: GenomeItem}) => {
     }
 });
 
-const ItemNameForm = observer(({value, onSave, onCancel}: {value: string, onSave: (value: string) => any, onCancel: () => any}) => {
+const ItemNameForm = observer(({value, onSave, onCancel}: {value: string, onSave: (value: string) => void, onCancel: () => void}) => {
     const [name, setName] = useState(value);
 
     return (
@@ -157,18 +157,17 @@ export const Item = observer(({item}: {item: GenomeItem}) => {
 });
 
 export const Genomes = observer(() => {
-    const simulation = useContext(SimulationContext);
     const genomeBank = useContext(GenomeBankContext);
 
     const upload = () => {
         const input = document.createElement('input');
         input.type = 'file';
 
-        input.addEventListener('change', (e) => {
+        input.addEventListener('change', () => {
             for (const file of input.files) {
                 file.text().then((value) => {
                     try {
-                        const data = JSON.parse(value) as any;
+                        const data = JSON.parse(value) as GenomeItemSerialized;
 
                         genomeBank.put(new GenomeItem(
                             data.name,

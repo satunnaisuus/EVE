@@ -1,4 +1,5 @@
 import { SimulationParameters } from "../simulation-parameters";
+import { Cell } from "../types/cells";
 import { CellContext } from "./cell-context";
 
 export enum CellType {
@@ -9,9 +10,7 @@ export enum CellType {
 }
 
 export abstract class AbstractCell {
-    update(context: CellContext, parameters: SimulationParameters): void {
-        
-    }
+    abstract update(context: CellContext, parameters: SimulationParameters): void;
 
     isStatic(): boolean {
         return true;
@@ -27,5 +26,5 @@ export abstract class AbstractCell {
 
     abstract getType(): CellType;
 
-    abstract serialize(): any;
+    abstract serialize(): Cell;
 }

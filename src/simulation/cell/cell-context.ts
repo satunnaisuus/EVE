@@ -1,12 +1,7 @@
 import { AbstractCell } from "./abstract-cell";
 import { CellFactory } from "./cell-factory";
 import { Grid } from "../grid";
-import { GridLoopType } from "../types/grid-loop-type";
 import { SimulationParameters } from "../simulation-parameters";
-
-class OutofBoundsError extends Error {
-
-}
 
 export class CellContext {
     constructor(

@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 type Props = {
-    onChange: (value: string) => any;
+    onChange: (value: string) => void;
     value?: string;
     placeholder?: string;
 }

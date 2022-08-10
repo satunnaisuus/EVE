@@ -1,5 +1,5 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { Genome } from "../../simulation/types/cells";
+import { GenomeSerialized } from "../../simulation/types/cells";
 import { GenomeItem } from "./genome-bank/genome-item";
 import { GenomeRepository } from "./genome-bank/genome-repository";
 
@@ -13,7 +13,7 @@ export class GenomeBankStore {
         this.refresh();
     }
 
-    addGenome(genome: Genome, name: string = ''): Promise<void> {
+    addGenome(genome: GenomeSerialized, name = ''): Promise<void> {
         return this.put(
             new GenomeItem(
                 name,

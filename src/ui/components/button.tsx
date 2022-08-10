@@ -23,7 +23,7 @@ const Apperance = {
 
 type Props = {
     children?: React.ReactNode;
-    onClick: () => any;
+    onClick: () => void;
     width?: string;
     apperance?: keyof typeof Apperance;
 }

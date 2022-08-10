@@ -4,8 +4,6 @@ import { useContext } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { Simulation } from "./components/simulation";
 import { AppContext } from "./context";
-import { CreateSimulationForm } from "./components/create-simulation-form";
-import { loadOptions } from "./storage";
 import { THEME } from "./theme";
 import { MainMenu } from "./components/main-menu";
 

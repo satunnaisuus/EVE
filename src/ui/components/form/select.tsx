@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 type Props = {
     children?: React.ReactNode;
-    onSelect: (value: string) => any;
+    onSelect: (value: string) => void;
     options: {label: string; value: string}[];
     value?: string;
 }

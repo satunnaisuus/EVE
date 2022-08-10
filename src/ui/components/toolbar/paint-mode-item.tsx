@@ -15,10 +15,7 @@ import { RangeRow } from "../form/range-row";
 import { Checkbox } from "../form/checkbox";
 import { Button } from "../button";
 import { CellType } from "../../../simulation/types/cells";
-
-interface Props {
-    
-}
+import { BrushType } from "../../stores/paint-mode";
 
 const Caret = styled.div`
     display: flex;
@@ -44,8 +41,8 @@ const StyledToolbarItem = styled(ToolbarItem)`
 `;
 
 const paintBrushOptions = [
-    {label: 'Square', value: 'square'},
-    {label: 'Circle', value: 'circle'},
+    {label: 'Square', value: BrushType.SQUARE},
+    {label: 'Circle', value: BrushType.CIRCLE},
 ];
 
 const paintTypeOptions = [
@@ -55,7 +52,7 @@ const paintTypeOptions = [
     {label: 'Organism', value: CellType.ORGANISM},
 ];
 
-export const PaintModeItem = observer(({}: Props) => {
+export const PaintModeItem = observer(() => {
     const simulation = useContext(SimulationContext);
     const renderer = simulation.getRenderer();
     const paintMode = renderer.getPaintMode();
@@ -76,10 +73,10 @@ export const PaintModeItem = observer(({}: Props) => {
             {contextMenuOpened && <Overflow root={renderModeButtonRef.current} onLoseFocus={() => setContextMenuOpened(false)}>
                 <ContextMenu>
                     <FormRow label="Type of paint">
-                        <RadioGroup choices={paintTypeOptions} value={paintMode.getType()} onChange={(v) => paintMode.setType(v as any)} />
+                        <RadioGroup choices={paintTypeOptions} value={paintMode.getType()} onChange={(v) => paintMode.setType(v)} />
                     </FormRow>
                     <FormRow label="Brush shape">
-                        <RadioGroup choices={paintBrushOptions} value={paintMode.getBrush()} onChange={(v) => paintMode.setBrush(v as any)} />
+                        <RadioGroup<BrushType> choices={paintBrushOptions} value={paintMode.getBrush()} onChange={(v) => paintMode.setBrush(v)} />
                     </FormRow>
                     <FormRow label="Ignore">
                         {paintTypeOptions.map((option, i) => (

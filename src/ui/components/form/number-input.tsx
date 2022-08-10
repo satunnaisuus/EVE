@@ -5,7 +5,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = {
-    onChange: (value: number) => any;
+    onChange: (value: number) => void;
     value?: number;
     min?: number;
     max?: number;

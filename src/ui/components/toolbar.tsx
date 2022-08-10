@@ -34,11 +34,7 @@ const StyledGroup = styled.div<{justify: string}>`
     justify-content: ${props => props.justify};
 `;
 
-interface Props {
-    
-}
-
-export const Toolbar = observer(({}: Props) => {
+export const Toolbar = observer(() => {
     return (
         <StyledToolbar>
             <StyledGroup justify="flex-start">

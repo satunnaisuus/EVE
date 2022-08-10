@@ -18,9 +18,9 @@ interface RenderCommand {
     }
 }
 
-const ctx: Worker = self as any;
+const ctx: Worker = self as unknown as Worker;
 const renderer = new CommonRenderer();
-let queue: RenderCommand[] = [];
+const queue: RenderCommand[] = [];
 
 setTimeout(function run () {
     if (queue.length) {

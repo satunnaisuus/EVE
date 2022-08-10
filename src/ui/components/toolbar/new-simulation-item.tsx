@@ -6,11 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AppContext } from "../../context";
 import { ToolbarItem } from "./item";
 
-interface Props {
-    
-}
-
-export const NewSimulationItem = observer(({}: Props) => {
+export const NewSimulationItem = observer(() => {
     const app = useContext(AppContext);
 
     return (

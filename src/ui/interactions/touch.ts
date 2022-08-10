@@ -114,8 +114,8 @@ export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: Canva
             const [offsetX, offsetY] = renderer.getOffset();
             const [k1, k2] = Object.keys(activeTouches);
 
-            let cx = (activeTouches[k1][0] + activeTouches[k2][0]) / 2;
-            let cy = (activeTouches[k1][1] + activeTouches[k2][1]) / 2;
+            const cx = (activeTouches[k1][0] + activeTouches[k2][0]) / 2;
+            const cy = (activeTouches[k1][1] + activeTouches[k2][1]) / 2;
 
             const xs = Math.round((cx - offsetX) / renderer.getScale());
             const ys = Math.round((cy - offsetY) / renderer.getScale());

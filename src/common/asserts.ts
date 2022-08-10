@@ -1,28 +1,28 @@
-export function assertInteger(value: any): void {
+export function assertInteger(value: number): void {
     if (! Number.isInteger(value)) {
         throw new AssertIntegerError;
     }
 }
 
-export function assertGreaterThan(value: any, comparedValue: any): void {
+export function assertGreaterThan(value: number, comparedValue: number): void {
     if (value <= comparedValue) {
         throw new AssertGreaterThanError;
     }
 }
 
-export function assertGreaterOrEqualThan(value: any, comparedValue: any): void {
+export function assertGreaterOrEqualThan(value: number, comparedValue: number): void {
     if (value < comparedValue) {
         throw new AssertGreaterOrEqualThanError;
     }
 }
 
-export function assertLessThan(value: any, comparedValue: any): void {
+export function assertLessThan(value: number, comparedValue: number): void {
     if (value >= comparedValue) {
         throw new AssertLessThanError;
     }
 }
 
-export function assertLessOrEqualThan(value: any, comparedValue: any): void {
+export function assertLessOrEqualThan(value: number, comparedValue: number): void {
     if (value > comparedValue) {
         throw new AssertLessOrEqualThanError;
     }

@@ -1,6 +1,7 @@
 import { randomInt } from "../../../../common/random";
 import { Color } from "../../../../common/color";
 import { Program } from "./program";
+import { GenomeSerialized } from "../../../types/cells";
 
 const SIMILARITY_LIMIT = 1;
 
@@ -17,7 +18,7 @@ export enum Organ {
 
 const primitiveOrgans: Organ[] = [Organ.CHLOROPLAST].concat(Array(15).fill(null));
 
-export const CURRENT_VERSION: 1 = 1;
+export const CURRENT_VERSION = 1;
 
 export class Genome {
     constructor(
@@ -86,11 +87,11 @@ export class Genome {
         const program = this.program.clone();
         const instruction = program.get(randomInt(0, program.getLength() - 1));
         const organs = this.organs.slice();
+        const handler = program.getHandler(instruction.code);
 
-        switch (randomInt(0, 4)) {
+        switch (randomInt(0, 5)) {
             case 0:
                 instruction.code = randomInt(0, program.getHandlersCount() - 1);
-                const handler = program.getHandler(instruction.code);
 
                 if (instruction.args.length > handler.getArgsCount()) {
                     instruction.args.splice(handler.getArgsCount());
@@ -123,12 +124,15 @@ export class Genome {
                 break;
             
             case 3:
-                organs[randomInt(0, 7)] = randomInt(0, 3);
+                organs[randomInt(0, 7)] = randomInt(1, 3);
                 break;
             
             case 4:
-                const i = randomInt(0, 4);
-                organs[randomInt(8, 15)] = i === 0 ? 0 : i + 3;
+                organs[randomInt(8, 15)] = randomInt(4, 7);
+                break;
+
+            case 5:
+                organs[randomInt(0, 15)] = 0;
                 break;
 
         }
@@ -148,7 +152,7 @@ export class Genome {
         return this.organs;
     }
 
-    serialize() {
+    serialize(): GenomeSerialized {
         return {
             color: this.color.toHexFormat(),
             program: this.program.serialize(),

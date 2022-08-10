@@ -14,6 +14,7 @@ import { Chloroplast } from "./organism/organ/chloroplast";
 import { Oxidizer } from "./organism/organ/oxidizer";
 import { Fin } from "./organism/organ/fin";
 import { Mouth } from "./organism/organ/mouth";
+import { Cell } from "../../types/cells";
 
 export const MAX_ENERGY = 255;
 export const ORGANS_COUNT = 16;
@@ -250,10 +251,10 @@ export class OrganismCell extends AbstractCell {
         );
     }
     
-    serialize() {
+    serialize(): Cell {
         return {
             id: this.id,
-            type: this.getType(),
+            type: CellType.ORGANISM,
             lifetime: this.lifetime,
             energy: this.energy,
             direction: this.direction,

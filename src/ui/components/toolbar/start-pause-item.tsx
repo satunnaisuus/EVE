@@ -7,11 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SimulationContext } from "../../context";
 import { ToolbarItem } from "./item";
 
-interface Props {
-    
-}
-
-export const StartPauseItem = observer(({}: Props) => {
+export const StartPauseItem = observer(() => {
     const simulation = useContext(SimulationContext);
 
     if (simulation.isPaused()) {

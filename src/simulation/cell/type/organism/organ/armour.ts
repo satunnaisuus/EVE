@@ -6,4 +6,8 @@ export class Armour extends AbstractOrgan {
     onAttack(power: number): number {
         return this.organism.changeEnergy(power * ARMOR_FACTOR);
     }
+
+    use(): boolean {
+        return true;
+    }
 }

@@ -1,24 +1,24 @@
 {
-  "name": "evo",
+  "name": "eve",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=production",
     "watch": "webpack --watch --mode=development",
-    "serve": "webpack serve --mode=development"
+    "serve": "webpack serve --mode=development",
+    "lint": "eslint --fix \"src/**/*.{ts,tsx}\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/satunnaisuus/evo.git"
+    "url": "git+https://github.com/satunnaisuus/eve.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/satunnaisuus/evo/issues"
+    "url": "https://github.com/satunnaisuus/eve/issues"
   },
-  "homepage": "https://github.com/satunnaisuus/evo#readme",
+  "homepage": "https://github.com/satunnaisuus/eve#readme",
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "6.1.1",
     "@fortawesome/free-solid-svg-icons": "6.1.1",
@@ -26,7 +26,12 @@
     "@types/react": "18.0.8",
     "@types/react-dom": "18.0.3",
     "@types/styled-components": "5.1.25",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "eslint": "^8.21.0",
     "file-loader": "6.2.0",
+    "html-webpack-plugin": "^5.5.0",
     "mobx": "6.5.0",
     "mobx-react-lite": "3.4.0",
     "react": "18.1.0",
@@ -37,8 +42,6 @@
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.9.0",
-    "worker-loader": "3.0.8",
-    "html-webpack-plugin": "^5.5.0",
-    "clean-webpack-plugin": "^4.0.0"
+    "worker-loader": "3.0.8"
   }
 }

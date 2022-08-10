@@ -6,7 +6,7 @@ import styled from "styled-components";
 type Props = {
     label: string;
     checked?: boolean;
-    onChange: (checked: boolean) => any;
+    onChange: (checked: boolean) => void;
 }
 
 const StyledCheckbox = styled.div`

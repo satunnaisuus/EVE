@@ -1,6 +1,15 @@
 import { RenderMode } from "../../../renderer/renderer";
 import { Dump } from "../../../simulation/simulation";
 
+export interface SaveItemSerialized {
+    id: string;
+    createdAt: number;
+    step: number;
+    renderMode: RenderMode;
+    version: number;
+    dump?: Dump;
+}
+
 export class SaveItem {
     constructor(
         private id: string,
@@ -31,7 +40,7 @@ export class SaveItem {
         return this.id === item.getId();
     }
 
-    serialize(dump: Dump = null) {
+    serialize(dump: Dump = null): SaveItemSerialized {
         return {
             id: this.id,
             createdAt: this.createdAt,

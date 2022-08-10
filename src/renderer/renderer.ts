@@ -4,7 +4,7 @@ export type RenderMode = 'default' | 'energy' | 'lifetime' | 'genesis' | 'supply
 
 export interface Renderer {
     render(
-        done: (data: ImageData) => any,
+        done: (data: ImageData) => void,
         width: number,
         height: number,
         offsetX: number,

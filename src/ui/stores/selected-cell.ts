@@ -11,7 +11,7 @@ export class SelectedCell {
     private cell: Cell = null;
 
     @observable
-    private alive: boolean = true;
+    private alive = true;
 
     constructor(private simulation: SimulationStore) {
         makeObservable(this);

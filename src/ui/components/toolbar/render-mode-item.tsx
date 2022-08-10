@@ -12,10 +12,6 @@ import { Overflow } from "../overflow";
 import { ContextMenu } from "../context-menu";
 import { RadioGroup } from "../form/radio-group";
 
-interface Props {
-    
-}
-
 const Caret = styled.div`
     margin-left: 5px;
 `;
@@ -28,7 +24,7 @@ const rendererOptions = [
     {label: 'Supply', value: 'supply'},
 ];
 
-export const RenderModeItem = observer(({}: Props) => {
+export const RenderModeItem = observer(() => {
     const simulation = useContext(SimulationContext);
     const renderer = simulation.getRenderer();
 

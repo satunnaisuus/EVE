@@ -5,7 +5,7 @@ import styled from "styled-components";
 type Props = {
     children?: React.ReactNode;
     root: HTMLElement;
-    onLoseFocus?: () => any;
+    onLoseFocus?: () => void;
 }
 
 const OverflowStyled = styled.div`
@@ -16,7 +16,7 @@ export const Overflow = ({root, children, onLoseFocus}: Props) => {
     const [left, setLeft] = useState(0);
     const [top, setTop] = useState(0);
     const [ready, setReady] = useState(false);
-    const overflowRef = useRef<any>();
+    const overflowRef = useRef<HTMLDivElement>();
 
     useEffect(() => {
         if (root && overflowRef.current) {

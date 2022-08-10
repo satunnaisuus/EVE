@@ -9,7 +9,5 @@ export abstract class AbstractOrgan {
 
     }
 
-    use(parameter: number, context: CellContext): boolean {
-        return true;
-    }
+    abstract use(parameter: number, context: CellContext): boolean;
 }
