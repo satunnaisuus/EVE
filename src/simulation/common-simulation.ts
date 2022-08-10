@@ -8,7 +8,7 @@ import { Data, PayloadData } from "./data";
 import { Grid } from "./grid";
 import { Parameters, Dump, DUMP_VERSION, Simulation, StepData } from "./simulation";
 import { SimulationParameters } from "./simulation-parameters";
-import { CellType } from "./types/cells";
+import { Cell, CellType } from "./types/cells";
 import { SimulationOptions } from "./types/simulation-options";
 import { SimulationParameters as SimulationParametersDto } from "./types/simulation-parameters";
 
@@ -100,7 +100,7 @@ export class CommonSimulation extends Simulation {
             for (let y = 0; y < this.grid.getHeight(); y++) {
                 const cell = this.grid.getCell(x, y);
 
-                if (cell.getType() === 'organism') {
+                if (cell.getType() === CellType.ORGANISM) {
                     result++;
                 }
             }
@@ -109,7 +109,7 @@ export class CommonSimulation extends Simulation {
         return result;
     }
 
-    async findCellById(id: number): Promise<CellType> {
+    async findCellById(id: number): Promise<Cell> {
         const cell = this.grid.find(id);
 
         if (cell) {
@@ -119,11 +119,11 @@ export class CommonSimulation extends Simulation {
         return null;
     }
 
-    async getCell(x: number, y: number): Promise<CellType> {
+    async getCell(x: number, y: number): Promise<Cell> {
         return this.grid.getCell(x, y).serialize();
     }
 
-    async replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): Promise<void> {
+    async replace(coords: [number, number][], type: CellType, ignore: CellType[], options: CreateOptions): Promise<void> {
         for (const [x, y] of coords) {
             const cell = this.grid.getCell(x, y);
 

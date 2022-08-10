@@ -1,9 +1,8 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
 import { CreateOptions } from "../../simulation/cell/cell-factory";
 import { PayloadData } from "../../simulation/data";
-import { createSimulation } from "../../simulation/factory";
 import { Simulation, StepData } from "../../simulation/simulation";
-import { CellType } from "../../simulation/types/cells";
+import { Cell, CellType } from "../../simulation/types/cells";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SaveStore } from "./save-store";
@@ -153,11 +152,11 @@ export class SimulationStore {
         return this.simulation.getOptions().height;
     }
 
-    getCell(x: number, y: number): Promise<CellType> {
+    getCell(x: number, y: number): Promise<Cell> {
         return this.simulation.getCell(x, y);
     }
 
-    findCellById(id: number): Promise<CellType> {
+    findCellById(id: number): Promise<Cell> {
         return this.simulation.findCellById(id);
     }
 
@@ -165,7 +164,7 @@ export class SimulationStore {
         return this.selectedCell;
     }
 
-    replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): Promise<void> {
+    replace(coords: [number, number][], type: CellType, ignore: CellType[], options: CreateOptions): Promise<void> {
         return this.simulation.replace(coords, type, ignore, options);
     }
 

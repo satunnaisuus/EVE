@@ -1,5 +1,5 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
-import { CellType } from "../../simulation/types/cells";
+import { Cell, CellType } from "../../simulation/types/cells";
 import { SimulationStore } from "./simulation-store";
 import { SidebarTab } from "./simulation-ui";
 
@@ -8,7 +8,7 @@ export class SelectedCell {
     private coords: [number, number] = null;
 
     @observable
-    private cell: CellType = null;
+    private cell: Cell = null;
 
     @observable
     private alive: boolean = true;
@@ -24,7 +24,7 @@ export class SelectedCell {
 
         this.simulation.getCell(x, y).then((cell) => {
             runInAction(() => {
-                if (cell && cell.type === 'organism') {
+                if (cell && cell.type === CellType.ORGANISM) {
                     runInAction(() => this.cell = cell);
                 } else {
                     runInAction(() => this.cell = null);
@@ -36,9 +36,9 @@ export class SelectedCell {
     }
 
     update(): void {
-        if (this.cell && this.alive && this.cell.type === 'organism') {
+        if (this.cell && this.alive && this.cell.type === CellType.ORGANISM) {
             this.simulation.findCellById(this.cell.id).then((cell) => {
-                if (cell && cell.type === 'organism') {
+                if (cell && cell.type === CellType.ORGANISM) {
                     runInAction(() => this.cell = cell);
                 } else {
                     runInAction(() => this.alive = false);
@@ -51,7 +51,7 @@ export class SelectedCell {
         return this.coords;
     }
 
-    getCell(): CellType {
+    getCell(): Cell {
         return this.cell;
     }
 

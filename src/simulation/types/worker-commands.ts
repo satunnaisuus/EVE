@@ -1,6 +1,7 @@
 import { CreateOptions } from "../cell/cell-factory";
 import { PayloadData } from "../data";
 import { Parameters, Dump } from "../simulation";
+import { CellType } from "./cells";
 import { SimulationOptions } from "./simulation-options";
 
 export interface CommandInit {
@@ -49,8 +50,8 @@ export interface CommandReplace {
     id: number;
     type: 'replce';
     coords: [number, number][],
-    cellType: string;
-    ignore: string[];
+    cellType: CellType;
+    ignore: CellType[];
     options: CreateOptions;
 }
 

@@ -1,12 +1,8 @@
 import { Color } from "../common/color";
 import { Data } from "../simulation/data";
+import { CellType } from "../simulation/types/cells";
 import { Colors } from "./colors";
 import { Renderer, RenderMode } from "./renderer";
-
-const CELL_TYPE_EMPTY = 0;
-const CELL_TYPE_ORGANISM = 1;
-const CELL_TYPE_ORGANIC = 2;
-const CELL_TYPE_WALL = 3;
 
 const OrganismColor = {
     default: () => Colors.organism,
@@ -57,8 +53,6 @@ export class CommonRenderer implements Renderer {
         mode: RenderMode,
         data: Data
     ): void {
-        const array = data.getArray();
-
         if (! this.empty || this.empty.width !== width || this.empty.height !== height) {
             this.createEmpty(width, height);
         }
@@ -105,6 +99,8 @@ export class CommonRenderer implements Renderer {
             }
         }
 
+        const array = data.getArray();
+
         let maxPayloadValue = 0;
         let i = 0;
         if (mode === 'lifetime' || mode === 'energy') {
@@ -114,7 +110,7 @@ export class CommonRenderer implements Renderer {
                         maxPayloadValue = array[i + 1];
                     }
                     
-                    i += data.getItemLength();
+                    i += data.getItemLength(array[i]);
                 }
             }
         }
@@ -124,20 +120,20 @@ export class CommonRenderer implements Renderer {
             for (let y = 0; y < data.getHeight(); y++) {
                 const cursorX = offsetX + x * scale;
                 if (cursorX + scale < 0 || cursorX >= imageData.width) {
-                    i += data.getItemLength();
+                    i += data.getItemLength(array[i]);
                     continue;
                 }
 
                 const cursorY = offsetY + y * scale;
                 if (cursorY + scale < 0 || cursorY >= imageData.height) {
-                    i += data.getItemLength();
+                    i += data.getItemLength(array[i]);
                     continue;
                 }
 
                 switch (array[i]) {
-                    case CELL_TYPE_EMPTY:
+                    case CellType.EMPTY:
                         break;
-                    case CELL_TYPE_ORGANISM:
+                    case CellType.ORGANISM:
                         let color: Color;
 
                         if (mode === 'energy') {
@@ -154,15 +150,15 @@ export class CommonRenderer implements Renderer {
 
                         renderCell(cursorX, cursorY, color);
                         break;
-                    case CELL_TYPE_ORGANIC:
+                    case CellType.ORGANIC:
                         renderCell(cursorX, cursorY, Colors.organic);
                         break;
-                    case CELL_TYPE_WALL:
+                    case CellType.WALL:
                         renderCell(cursorX, cursorY, Colors.wall);
                         break;
                 }
 
-                i += data.getItemLength();
+                i += data.getItemLength(array[i]);
             }
         }
 

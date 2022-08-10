@@ -1,13 +1,13 @@
-import { AbstractCell } from "../abstract-cell";
+import { AbstractCell, CellType } from "../abstract-cell";
 
 export class WallCell extends AbstractCell {
-    getType(): string {
-        return 'wall';
+    getType(): CellType {
+        return CellType.WALL;
     }
     
     serialize() {
         return {
-            type: 'wall',
+            type: this.getType(),
         }
     }
 }

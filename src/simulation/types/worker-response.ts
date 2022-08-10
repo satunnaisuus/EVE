@@ -1,7 +1,7 @@
 import { PayloadData } from "../data";
 import { Dump } from "../simulation";
 import { SimulationParameters } from "../simulation-parameters";
-import { CellType } from "./cells";
+import { Cell } from "./cells";
 
 export interface ResponseInit {
     type: 'init';
@@ -36,13 +36,13 @@ export interface ResponseGetOrganismsCount {
 export interface ResponseGetCell {
     id: number;
     type: 'getCell';
-    cell: CellType;
+    cell: Cell;
 }
 
 export interface ResponseFindCellById {
     id: number;
     type: 'findCellById';
-    cell: CellType;
+    cell: Cell;
 }
 
 export interface ResponseReplace {

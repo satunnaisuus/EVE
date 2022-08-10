@@ -2,7 +2,7 @@ import { Parameters, Dump, Simulation, StepData } from "./simulation";
 import { SimulationOptions } from "./types/simulation-options";
 import { WorkerResponse } from "./types/worker-response";
 import SimulationWorker from './simulation.worker.ts';
-import { CellType } from "./types/cells";
+import { Cell, CellType } from "./types/cells";
 import { PayloadData } from "./data";
 import { CreateOptions } from "./cell/cell-factory";
 import { SimulationParameters } from "./types/simulation-parameters";
@@ -17,8 +17,8 @@ export class WorkerSimulation extends Simulation {
         state: {[key: number]: (data: StepData) => void},
         setParameter: {[key: number]: (value: any) => void},
         getOrganismsCount: {[key: number]: (count: number) => void},
-        getCell: {[key: number]: (cell: CellType) => void},
-        findCellById: {[key: number]: (cell: CellType) => void},
+        getCell: {[key: number]: (cell: Cell) => void},
+        findCellById: {[key: number]: (cell: Cell) => void},
         replace: {[key: number]: () => void},
         dump: {[key: number]: (dump: Dump) => void},
         getParameters: {[key: number]: (parameters: SimulationParameters) => void},
@@ -144,7 +144,7 @@ export class WorkerSimulation extends Simulation {
         });
     }
 
-    findCellById(cellId: number): Promise<CellType> {
+    findCellById(cellId: number): Promise<Cell> {
         return new Promise((resolve) => {
             const id = this.nextId();
             this.messageListeners.findCellById[id] = resolve;
@@ -152,7 +152,7 @@ export class WorkerSimulation extends Simulation {
         });
     }
 
-    getCell(x: number, y: number): Promise<CellType> {
+    getCell(x: number, y: number): Promise<Cell> {
         return new Promise((resolve) => {
             const id = this.nextId();
             this.messageListeners.getCell[id] = resolve;
@@ -160,7 +160,7 @@ export class WorkerSimulation extends Simulation {
         });
     }
 
-    replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): Promise<void> {
+    replace(coords: [number, number][], type: CellType, ignore: CellType[], options: CreateOptions): Promise<void> {
         return new Promise((resolve) => {
             const id = this.nextId();
             this.messageListeners.replace[id] = resolve;

@@ -1,10 +1,9 @@
 import { makeObservable, observable, action, toJS } from "mobx";
 import { CreateOptions } from "../../simulation/cell/cell-factory";
-import { Genome } from "../../simulation/types/cells";
+import { CellType, Genome } from "../../simulation/types/cells";
 import { CanvasRenderer } from "./canvas-renderer";
 import { SimulationStore } from "./simulation-store";
 
-export type PaintingType = 'wall' | 'empty' | 'organic' | 'organism';
 export type BrushType = 'square' | 'circle';
 
 const HISTORY_CLEAR_TIMEOUT = 1000;
@@ -14,16 +13,16 @@ export class PaintMode {
     private enabled: boolean = false;
 
     @observable
-    private type: PaintingType = 'organic';
+    private type: CellType = CellType.ORGANIC;
 
     @observable
     private brush: BrushType = 'square';
 
     @observable
-    private size: number = 2;
+    private size: number = 1;
 
     @observable
-    private ignore: string[] = [];
+    private ignore: CellType[] = [];
 
     @observable
     private genome: Genome = null;
@@ -46,12 +45,12 @@ export class PaintMode {
         this.enabled = enabled;
     }
 
-    getType(): PaintingType {
+    getType(): CellType {
         return this.type;
     }
 
     @action
-    setType(type: PaintingType): void {
+    setType(type: CellType): void {
         this.type = type;
     }
 
@@ -73,17 +72,17 @@ export class PaintMode {
         this.size = size;
     }
 
-    getIgnore(): string[] {
+    getIgnore(): CellType[] {
         return this.ignore;
     }
 
     @action
-    addIgnore(type: string): void {
+    addIgnore(type: CellType): void {
         this.ignore.push(type);
     }
 
     @action
-    removeIgnore(type: string): void {
+    removeIgnore(type: CellType): void {
         this.ignore = this.ignore.filter(i => i !== type);
     }
 
@@ -97,7 +96,7 @@ export class PaintMode {
         this.genome = null;
     }
 
-    isIgnore(type: string): boolean {
+    isIgnore(type: CellType): boolean {
         return this.ignore.includes(type);
     }
 

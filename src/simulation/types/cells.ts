@@ -1,8 +1,9 @@
 import { Organ, CURRENT_VERSION as GENOME_VERSION } from '../cell/type/organism/genome';
 import { Direction } from '../cell/type/organism/direction';
 import { InstructionConfig, Command } from '../cell/type/organism/program';
+import { CellType } from '../cell/abstract-cell';
 
-export { Organ, Direction, Command, GENOME_VERSION };
+export { CellType, Organ, Direction, Command, GENOME_VERSION };
 
 export interface Genome {
     color: string;
@@ -13,7 +14,7 @@ export interface Genome {
 }
 
 export interface CellOrganism {
-    type: 'organism';
+    type: CellType.ORGANISM;
     id: number;
     energy: number;
     direction: Direction;
@@ -24,19 +25,19 @@ export interface CellOrganism {
 }
 
 export interface CellWall {
-    type: 'wall';
+    type: CellType.WALL;
 }
 
 export interface CellOrganic {
-    type: 'organic';
+    type: CellType.ORGANIC;
     energy: number;
 }
 
 export interface CellEmpty {
-    type: 'empty';
+    type: CellType.EMPTY;
 }
 
-export type CellType =
+export type Cell =
     | CellOrganism
     | CellWall
     | CellOrganic

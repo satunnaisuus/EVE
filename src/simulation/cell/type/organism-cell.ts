@@ -1,12 +1,11 @@
 import { Color } from "../../../common/color";
-import { AbstractCell } from "../abstract-cell";
+import { AbstractCell, CellType } from "../abstract-cell";
 import { CellContext } from "../cell-context";
 import { CellFactory } from "../cell-factory";
 import { Direction, directionsList, getOffset, randomDirection, rotateOnOffset } from "./organism/direction";
 import { Genome, Organ } from "./organism/genome";
 import { SimulationParameters } from "../../simulation-parameters";
 import { shuffle } from "../../../common/array-utils";
-import { CellOrganism } from "../../types/cells";
 import { AbstractOrgan } from "./organism/abstract-organ";
 import { Armour } from "./organism/organ/armour";
 import { Spine } from "./organism/organ/spine";
@@ -78,8 +77,8 @@ export class OrganismCell extends AbstractCell {
         return this.id;
     }
 
-    getType(): string {
-        return 'organism';
+    getType(): CellType {
+        return CellType.ORGANISM;
     }
 
     getLifetime(): number {
@@ -251,10 +250,10 @@ export class OrganismCell extends AbstractCell {
         );
     }
     
-    serialize(): CellOrganism {
+    serialize() {
         return {
             id: this.id,
-            type: 'organism',
+            type: this.getType(),
             lifetime: this.lifetime,
             energy: this.energy,
             direction: this.direction,

@@ -14,6 +14,7 @@ import { FormRow } from "../form/form-row";
 import { RangeRow } from "../form/range-row";
 import { Checkbox } from "../form/checkbox";
 import { Button } from "../button";
+import { CellType } from "../../../simulation/types/cells";
 
 interface Props {
     
@@ -48,10 +49,10 @@ const paintBrushOptions = [
 ];
 
 const paintTypeOptions = [
-    {label: 'Empty', value: 'empty'},
-    {label: 'Wall', value: 'wall'},
-    {label: 'Organic', value: 'organic'},
-    {label: 'Organism', value: 'organism'},
+    {label: 'Empty', value: CellType.EMPTY},
+    {label: 'Wall', value: CellType.WALL},
+    {label: 'Organic', value: CellType.ORGANIC},
+    {label: 'Organism', value: CellType.ORGANISM},
 ];
 
 export const PaintModeItem = observer(({}: Props) => {

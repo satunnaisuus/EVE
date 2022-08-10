@@ -7,7 +7,7 @@ import { AbstractCell } from "./abstract-cell";
 import { Direction, randomDirection } from "./type/organism/direction";
 import { Color } from "../../common/color";
 import { InstructionConfig, Program } from "./type/organism/program";
-import { CellType } from "../types/cells";
+import { Cell, CellType } from "../types/cells";
 
 export interface CreateOptions {
     genome?: {
@@ -25,13 +25,13 @@ export class CellFactory {
 
     private id: number = 0;
 
-    create(type: string, options: CreateOptions): AbstractCell {
+    create(type: CellType, options: CreateOptions): AbstractCell {
         switch (type) {
-            case 'wall':
+            case CellType.WALL:
                 return this.createWall();
-            case 'empty':
+            case CellType.EMPTY:
                 return this.createEmpty();
-            case 'organism':
+            case CellType.ORGANISM:
                 let genome;
 
                 if (options.genome) {
@@ -46,22 +46,22 @@ export class CellFactory {
                 }
 
                 return this.createOrganism(genome, 255, randomDirection(), new Color(255, 255, 255));
-            case 'organic':
+            case CellType.ORGANIC:
                 return this.createOrganic(255);
         }
 
         throw new Error();
     }
 
-    deserialize(cell: CellType): AbstractCell {
+    deserialize(cell: Cell): AbstractCell {
         switch (cell.type) {
-            case 'empty':
+            case CellType.EMPTY:
                 return this.createEmpty();
-            case 'organic':
+            case CellType.ORGANIC:
                 return this.createOrganic(cell.energy);
-            case 'wall':
+            case CellType.WALL:
                 return this.createWall();
-            case 'organism':
+            case CellType.ORGANISM:
                 return new OrganismCell(
                     cell.id,
                     new Genome(

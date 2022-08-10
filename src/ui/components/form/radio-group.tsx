@@ -4,14 +4,14 @@ import * as React from "react";
 import styled from "styled-components";
 
 interface Choice {
-    value: string;
+    value: any;
     label: string;
 }
 
 type Props = {
     choices: Choice[];
-    value?: string;
-    onChange: (value: string) => any;
+    value?: any;
+    onChange: (value: any) => any;
 }
 
 const StyledRadioGroup = styled.div`

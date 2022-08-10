@@ -1,6 +1,6 @@
 import { CreateOptions } from "./cell/cell-factory";
 import { PayloadData } from "./data";
-import { CellType } from "./types/cells";
+import { Cell, CellType } from "./types/cells";
 import { SimulationOptions } from "./types/simulation-options";
 import { SimulationParameters } from "./types/simulation-parameters";
 
@@ -23,7 +23,7 @@ export interface Dump {
         organismMaxLifetime: number,
     };
     step: number;
-    grid: CellType[][];
+    grid: Cell[][];
     version: number;
 }
 
@@ -42,11 +42,11 @@ export abstract class Simulation {
 
     abstract getOrganismsCount(): Promise<number>;
 
-    abstract findCellById(id: number): Promise<CellType>;
+    abstract findCellById(id: number): Promise<Cell>;
 
-    abstract getCell(x: number, y: number): Promise<CellType>;
+    abstract getCell(x: number, y: number): Promise<Cell>;
 
-    abstract replace(coords: [number, number][], type: string, ignore: string[], options: CreateOptions): Promise<void>;
+    abstract replace(coords: [number, number][], type: CellType, ignore: CellType[], options: CreateOptions): Promise<void>;
 
     abstract dump(): Promise<Dump>;
 

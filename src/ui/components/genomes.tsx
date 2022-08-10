@@ -13,6 +13,7 @@ import { Visualization } from "./cell/organism/visualization";
 import { Button } from "./button";
 import { Textarea } from "./form/textarea";
 import { GenomeItem } from "../stores/genome-bank/genome-item";
+import { CellType } from "../../simulation/types/cells";
 
 const ListHeader = styled.div`
     display: flex;
@@ -127,7 +128,7 @@ export const Item = observer(({item}: {item: GenomeItem}) => {
 
     const paint = () => {
         paintMode.setClipboard(item.getGenome());
-        paintMode.setType('organism');
+        paintMode.setType(CellType.ORGANISM);
         paintMode.setEnabled(true);
     }
 

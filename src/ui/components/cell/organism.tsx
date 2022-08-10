@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 import { GenomeBankContext, SimulationContext } from "../../context";
 import { useContext } from "react";
 import { Visualization } from "./organism/visualization";
-import { Command } from "../../../simulation/types/cells";
+import { CellType } from "../../../simulation/types/cells";
 import { Program } from "./organism/program";
 import { Button } from "../button";
 import { SidebarTab } from "../../stores/simulation-ui";
@@ -42,7 +42,7 @@ export const OrganismCell = observer(() => {
     const selectedCell = simulation.getSelectedCell();
     const cell = selectedCell.getCell();
 
-    if (cell.type !== 'organism') {
+    if (cell.type !== CellType.ORGANISM) {
         return;
     }
 

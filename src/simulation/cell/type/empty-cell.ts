@@ -1,8 +1,8 @@
-import { AbstractCell } from "../abstract-cell";
+import { AbstractCell, CellType } from "../abstract-cell";
 
 export class EmptyCell extends AbstractCell {
-    getType(): string {
-        return 'empty';
+    getType(): CellType {
+        return CellType.EMPTY;
     }
 
     isEmpty(): boolean {
@@ -11,7 +11,7 @@ export class EmptyCell extends AbstractCell {
 
     serialize() {
         return {
-            type: 'empty',
+            type: this.getType(),
         }
     }
 }

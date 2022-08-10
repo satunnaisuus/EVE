@@ -1,7 +1,7 @@
 import { assertGreaterThan } from "../common/asserts";
 import { AbstractCell } from "./cell/abstract-cell";
 import { CellFactory } from "./cell/cell-factory";
-import { CellType } from "./types/cells";
+import { Cell } from "./types/cells";
 import { GridLoopType } from "./types/grid-loop-type";
 import { SimulationOptions } from "./types/simulation-options";
 
@@ -106,7 +106,7 @@ export class Grid {
         return this.cells.map(l => l.slice());
     }
 
-    serialize(): CellType[][] {
+    serialize(): Cell[][] {
         return this.toArray().map((l) => l.map(c => c.serialize()));
     }
 
