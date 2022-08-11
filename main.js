@@ -3,22 +3,24 @@
     background: #000;
     display: flex;
     color: #fff;
-`,h=(0,n.observer)((()=>{const e=(0,i.useContext)(u.RootStoreContext).getSimulationStore();return e?o.createElement(a.Simulation,{simulation:e}):o.createElement(c.MainMenu,null)}));t.App=(0,n.observer)((()=>o.createElement(s.ThemeProvider,{theme:l.THEME},o.createElement(d,null,o.createElement(h,null)))))},8360:(e,t,r)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.OrganismCell=void 0;const n=r(7294),o=r(8804),i=r(8977),s=r(2766),a=r(7294),l=r(5159),c=r(2841),u=r(5221),d=r(176),h=r(157),m=r(7625),p=r(7244),g=r(2718),f=o.default.div`
+`,h=(0,n.observer)((()=>{const e=(0,i.useContext)(u.RootStoreContext).getSimulationStore();return e?o.createElement(a.Simulation,{simulation:e}):o.createElement(c.MainMenu,null)}));t.App=(0,n.observer)((()=>o.createElement(s.ThemeProvider,{theme:l.THEME},o.createElement(d,null,o.createElement(h,null)))))},8360:(e,t,r)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.OrganismCell=void 0;const n=r(7294),o=r(8804),i=r(8977),s=r(9323),a=r(2766),l=r(7294),c=r(5159),u=r(2841),d=r(5221),h=r(176),m=r(157),p=r(7625),g=r(7244),f=r(2718),v=o.default.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 6px;
-`,v=o.default.div`
+`,y=o.default.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-`,y=o.default.span`
-    color: #ff0000;
 `,b=o.default.span`
+    color: #ff0000;
+`,E=o.default.span`
     color: #00ff00;
-`,E=(0,o.default)(d.Button)`
+`,C=(0,o.default)(h.Button)`
     margin-bottom: 10px;
-`;t.OrganismCell=(0,s.observer)((()=>{const e=(0,a.useContext)(g.RootStoreContext),{ui:t,selectedCell:r}=(0,a.useContext)(p.SimulationContext),o=e.getGenomeStore(),s=r.getCell();if(s.type===c.CellType.ORGANISM)return n.createElement(n.Fragment,null,n.createElement(v,null,n.createElement("div",null,n.createElement(E,{apperance:"primary",width:"100%",onClick:()=>{o.addGenome(s.genome).then((()=>{t.setActiveTab(h.SidebarTab.GENOMES)}))}},n.createElement(m.FontAwesomeIcon,{icon:i.faFloppyDisk})," Save genome"),n.createElement(l.Visualization,{genome:s.genome}),n.createElement(f,null,n.createElement("span",null,"Status"),r.isAlive()?n.createElement(b,null,"Alive"):n.createElement(y,null,"Dead")),n.createElement(f,null,n.createElement("span",null,"Energy"),n.createElement("span",null,s.energy)),n.createElement(f,null,n.createElement("span",null,"Lifetime"),n.createElement("span",null,s.lifetime)),n.createElement(f,null,n.createElement("span",null,"Divide limit"),n.createElement("span",null,s.genome.divideLimit)),n.createElement(u.Program,{organism:s}))))}))},346:(e,t,r)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Body=void 0;const n=r(7294),o=r(2766),i=r(8804).default.div`
+`,O=o.default.span`
+    transform: rotate(${({value:e})=>45*e}deg);
+`;t.OrganismCell=(0,a.observer)((()=>{const e=(0,l.useContext)(f.RootStoreContext),{ui:t,selectedCell:r}=(0,l.useContext)(g.SimulationContext),o=e.getGenomeStore(),a=r.getCell();if(a.type===u.CellType.ORGANISM)return n.createElement(n.Fragment,null,n.createElement(y,null,n.createElement("div",null,n.createElement(C,{apperance:"primary",width:"100%",onClick:()=>{o.addGenome(a.genome).then((()=>{t.setActiveTab(m.SidebarTab.GENOMES)}))}},n.createElement(p.FontAwesomeIcon,{icon:i.faFloppyDisk})," Save genome"),n.createElement(c.Visualization,{genome:a.genome}),n.createElement(v,null,n.createElement("span",null,"Status"),r.isAlive()?n.createElement(E,null,"Alive"):n.createElement(b,null,"Dead")),n.createElement(v,null,n.createElement("span",null,"Direction"),n.createElement(O,{value:a.direction},n.createElement(p.FontAwesomeIcon,{icon:s.faArrowUp}))),n.createElement(v,null,n.createElement("span",null,"Energy"),n.createElement("span",null,a.energy)),n.createElement(v,null,n.createElement("span",null,"Lifetime"),n.createElement("span",null,a.lifetime)),n.createElement(v,null,n.createElement("span",null,"Divide limit"),n.createElement("span",null,a.genome.divideLimit)),n.createElement(d.Program,{organism:a}))))}))},346:(e,t,r)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Body=void 0;const n=r(7294),o=r(2766),i=r(8804).default.div`
     width: 120px;
     height: 120px;
     background: ${({color:e})=>e};
