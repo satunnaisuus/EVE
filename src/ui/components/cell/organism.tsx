@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons/faFloppyDisk";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons/faArrowUp";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 import { Visualization } from "./organism/visualization";
@@ -37,6 +38,10 @@ const SaveButton = styled(Button)`
     margin-bottom: 10px;
 `;
 
+const Direction = styled.span<{value: number}>`
+    transform: rotate(${({value}) => value * 45}deg);
+`;
+
 export const OrganismCell = observer(() => {
     const rootStore = useContext(RootStoreContext);
     const {ui, selectedCell} = useContext(SimulationContext);
@@ -64,6 +69,12 @@ export const OrganismCell = observer(() => {
                     <Row>
                         <span>Status</span>
                         {selectedCell.isAlive() ? <SuccessText>Alive</SuccessText> : <DangerText>Dead</DangerText>}
+                    </Row>
+                    <Row>
+                        <span>Direction</span>
+                        <Direction value={cell.direction}>
+                            <FontAwesomeIcon icon={faArrowUp} />
+                        </Direction>
                     </Row>
                     <Row>
                         <span>Energy</span>
