@@ -16,7 +16,24 @@ export enum Organ {
     SPINE = 7,
 }
 
-const primitiveOrgans: Organ[] = [Organ.CHLOROPLAST].concat(Array(15).fill(null));
+const primitiveOrgans: Organ[] = [
+    Organ.CHLOROPLAST,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    Organ.MOUTH,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+];
 
 export const CURRENT_VERSION = 1;
 
@@ -87,11 +104,12 @@ export class Genome {
         const program = this.program.clone();
         const instruction = program.get(randomInt(0, program.getLength() - 1));
         const organs = this.organs.slice();
-        const handler = program.getHandler(instruction.code);
+        let handler = program.getHandler(instruction.code);
 
         switch (randomInt(0, 5)) {
             case 0:
                 instruction.code = randomInt(0, program.getHandlersCount() - 1);
+                handler = program.getHandler(instruction.code);
 
                 if (instruction.args.length > handler.getArgsCount()) {
                     instruction.args.splice(handler.getArgsCount());
