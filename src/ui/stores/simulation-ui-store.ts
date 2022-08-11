@@ -7,7 +7,7 @@ export enum SidebarTab {
     SAVES = 'SAVES',
 }
 
-export class SimulationUI {
+export class SimulationUIStore {
     @observable
     private activeTab: SidebarTab = null;
 

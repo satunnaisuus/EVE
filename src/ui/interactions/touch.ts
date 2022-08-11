@@ -1,8 +1,8 @@
-import { CanvasRenderer } from "../stores/canvas-renderer";
+import { RendererStore } from "../stores/renderer-store";
 
 const TOUCH_SCALE_BUFFER_LIMIT = 20;
 
-export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
+export function initTouchInteractions(canvas: HTMLCanvasElement, renderer: RendererStore): () => void {
     let activeTouches: {[key: string]: [number, number]} = {};
     let scaleBuffer = 0;
     let moving = false;

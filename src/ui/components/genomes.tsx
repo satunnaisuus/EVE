@@ -1,6 +1,5 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
-import { GenomeBankContext, SimulationContext } from "../context";
 import { useContext, useState } from "react";
 import { faDownload } from "@fortawesome/free-solid-svg-icons/faDownload";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
@@ -10,10 +9,11 @@ import { faUpload } from "@fortawesome/free-solid-svg-icons/faUpload";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Visualization } from "./cell/organism/visualization";
-import { Button } from "./button";
+import { Button } from "./form/button";
 import { Textarea } from "./form/textarea";
 import { GenomeItem, GenomeItemSerialized } from "../stores/genome-bank/genome-item";
 import { CellType } from "../../simulation/types/cells";
+import { RootStoreContext } from "../stores/root-store";
 
 const ListHeader = styled.div`
     display: flex;
@@ -88,12 +88,13 @@ function download(genome: GenomeItem): void {
 
 const ItemName = observer(({item}: {item: GenomeItem}) => {
     const [edit, setEdit] = useState(false);
-    const genomeBank = useContext(GenomeBankContext);
+    const rootStore = useContext(RootStoreContext);
+    const genomeStore = rootStore.getGenomeStore();
 
     if (edit) {
         const save = (value: string) => {
             item.setName(value);
-            genomeBank.put(item);
+            genomeStore.put(item);
             setEdit(false);
         };
 
@@ -122,9 +123,10 @@ const ItemNameForm = observer(({value, onSave, onCancel}: {value: string, onSave
 });
 
 export const Item = observer(({item}: {item: GenomeItem}) => {
-    const genomeBank = useContext(GenomeBankContext);
-    const simulation = useContext(SimulationContext);
-    const paintMode = simulation.getRenderer().getPaintMode();
+    const rootStore = useContext(RootStoreContext);
+    const genomeStore = rootStore.getGenomeStore();
+    const simulationStore = rootStore.getSimulationStore();
+    const paintMode = simulationStore.getRendererStore().getPaintMode();
 
     const paint = () => {
         paintMode.setClipboard(item.getGenome());
@@ -145,7 +147,7 @@ export const Item = observer(({item}: {item: GenomeItem}) => {
                     <ActionButton onClick={() => {download(item)}}>
                         <FontAwesomeIcon icon={faDownload} />
                     </ActionButton>
-                    <ActionButton onClick={() => {genomeBank.delete(item)}}>
+                    <ActionButton onClick={() => {genomeStore.delete(item)}}>
                         <FontAwesomeIcon icon={faTrash} />
                     </ActionButton>
                 </ButtonsWrapper>
@@ -157,7 +159,8 @@ export const Item = observer(({item}: {item: GenomeItem}) => {
 });
 
 export const Genomes = observer(() => {
-    const genomeBank = useContext(GenomeBankContext);
+    const rootStore = useContext(RootStoreContext);
+    const genomeStore = rootStore.getGenomeStore();
 
     const upload = () => {
         const input = document.createElement('input');
@@ -169,7 +172,7 @@ export const Genomes = observer(() => {
                     try {
                         const data = JSON.parse(value) as GenomeItemSerialized;
 
-                        genomeBank.put(new GenomeItem(
+                        genomeStore.put(new GenomeItem(
                             data.name,
                             data.id,
                             data.genome,
@@ -191,10 +194,10 @@ export const Genomes = observer(() => {
                 <ImportButton apperance='primary' onClick={() => upload()}>
                     <FontAwesomeIcon icon={faUpload} /> Import
                 </ImportButton>
-                <Button onClick={() => genomeBank.refresh()}><FontAwesomeIcon icon={faRotate} /></Button>
+                <Button onClick={() => genomeStore.refresh()}><FontAwesomeIcon icon={faRotate} /></Button>
             </ListHeader>
             <>
-                {genomeBank.getItems().map((item) => <Item item={item} key={item.getId()} />)}
+                {genomeStore.getItems().map((item) => <Item item={item} key={item.getId()} />)}
             </>
         </>
     );

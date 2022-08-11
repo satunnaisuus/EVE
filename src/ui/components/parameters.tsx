@@ -1,12 +1,11 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
-import { SimulationContext } from "../context";
 import { useContext } from "react";
 import { RangeRow } from "./form/range-row";
+import { SimulationContext } from "./simulation";
 
 export const Parameters = observer(() => {
-    const simulation = useContext(SimulationContext);
-    const parameters = simulation.getParameters();
+    const {parameters} = useContext(SimulationContext);
 
     return (
         <>

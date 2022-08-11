@@ -1,8 +1,8 @@
-import { CanvasRenderer } from "../stores/canvas-renderer";
+import { RendererStore } from "../stores/renderer-store";
 
 const SCALE_BUFFER_SIZE = 40;
 
-export function initMouseInteractions(canvasElement: HTMLCanvasElement, renderer: CanvasRenderer): () => void {
+export function initMouseInteractions(canvasElement: HTMLCanvasElement, renderer: RendererStore): () => void {
     let dragging = false;
     let moving = false;
 

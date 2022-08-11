@@ -3,7 +3,7 @@ import { GenomeSerialized } from "../../simulation/types/cells";
 import { GenomeItem } from "./genome-bank/genome-item";
 import { GenomeRepository } from "./genome-bank/genome-repository";
 
-export class GenomeBankStore {
+export class GenomeStore {
     @observable
     private items: GenomeItem[] = [];
 

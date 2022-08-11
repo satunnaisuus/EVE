@@ -4,13 +4,13 @@ import { observer } from "mobx-react-lite";
 import { useContext, useRef, useState } from "react";
 import { faEye } from "@fortawesome/free-solid-svg-icons/faEye";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SimulationContext } from "../../context";
 import { ToolbarItem } from "./item";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons/faCaretDown";
 import { RenderMode } from "../../../renderer/renderer";
 import { Overflow } from "../overflow";
 import { ContextMenu } from "../context-menu";
 import { RadioGroup } from "../form/radio-group";
+import { SimulationContext } from "../simulation";
 
 const Caret = styled.div`
     margin-left: 5px;
@@ -25,8 +25,7 @@ const rendererOptions = [
 ];
 
 export const RenderModeItem = observer(() => {
-    const simulation = useContext(SimulationContext);
-    const renderer = simulation.getRenderer();
+    const {renderer} = useContext(SimulationContext);
 
     const [renderModeOpened, setRendererModeOpened] = useState(false);
     const renderModeButtonRef = useRef();

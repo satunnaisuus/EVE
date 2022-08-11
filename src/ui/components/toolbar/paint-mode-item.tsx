@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import { useContext, useRef, useState } from "react";
 import { faPaintbrush } from "@fortawesome/free-solid-svg-icons/faPaintbrush";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SimulationContext } from "../../context";
 import { ToolbarItem } from "./item";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons/faCaretDown";
 import { Overflow } from "../overflow";
@@ -13,9 +12,10 @@ import { RadioGroup } from "../form/radio-group";
 import { FormRow } from "../form/form-row";
 import { RangeRow } from "../form/range-row";
 import { Checkbox } from "../form/checkbox";
-import { Button } from "../button";
+import { Button } from "../form/button";
 import { CellType } from "../../../simulation/types/cells";
 import { BrushType } from "../../stores/paint-mode";
+import { SimulationContext } from "../simulation";
 
 const Caret = styled.div`
     display: flex;
@@ -53,8 +53,7 @@ const paintTypeOptions = [
 ];
 
 export const PaintModeItem = observer(() => {
-    const simulation = useContext(SimulationContext);
-    const renderer = simulation.getRenderer();
+    const {renderer} = useContext(SimulationContext);
     const paintMode = renderer.getPaintMode();
 
     const [contextMenuOpened, setContextMenuOpened] = useState(false);

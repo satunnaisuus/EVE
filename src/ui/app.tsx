@@ -3,9 +3,9 @@ import * as React from "react";
 import { useContext } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { Simulation } from "./components/simulation";
-import { AppContext } from "./context";
 import { THEME } from "./theme";
 import { MainMenu } from "./components/main-menu";
+import { RootStoreContext } from "./stores/root-store";
 
 const StyledApp = styled.div`
     height: 100vh;
@@ -15,8 +15,8 @@ const StyledApp = styled.div`
 `;
 
 const View = observer(() => {
-    const store = useContext(AppContext);
-    const simulation = store.getSimulation();
+    const store = useContext(RootStoreContext);
+    const simulation = store.getSimulationStore();
 
     if (simulation) {
         return <Simulation simulation={simulation} />;

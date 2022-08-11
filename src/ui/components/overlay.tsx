@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { observer } from "mobx-react-lite";
 import { Parameters } from "./parameters";
 import { useContext } from "react";
-import { SimulationContext } from "../context";
 import { Info } from "./info";
 import { SelectedCell } from "./selected-cell";
-import { SidebarTab } from "../stores/simulation-ui";
+import { SidebarTab } from "../stores/simulation-ui-store";
 import { Genomes } from "./genomes";
 import { Saves } from "./saves";
+import { SimulationContext } from "./simulation";
 
 const Container = styled.div`
     position: absolute;
@@ -45,8 +45,7 @@ const StyledSidebar = styled.div`
 `;
 
 export const Overlay = observer(() => {
-    const simulation = useContext(SimulationContext);
-    const ui = simulation.getUI();
+    const {ui} = useContext(SimulationContext);
 
     return (
         <Container>

@@ -1,7 +1,7 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
 import { Cell, CellType } from "../../simulation/types/cells";
 import { SimulationStore } from "./simulation-store";
-import { SidebarTab } from "./simulation-ui";
+import { SidebarTab } from "./simulation-ui-store";
 
 export class SelectedCell {
     @observable

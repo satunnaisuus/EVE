@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import * as React from "react";
 import styled from "styled-components";
-import { THEME } from "../theme";
+import { THEME } from "../../theme";
 
 const Apperance = {
     primary: {

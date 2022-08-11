@@ -1,11 +1,11 @@
 import * as React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react-lite";
-import { SimulationContext } from "../context";
 import { useContext } from "react";
 import { Color } from "../../common/color";
 import { Colors } from "../../renderer/colors";
 import { RenderMode } from "../../renderer/renderer";
+import { SimulationContext } from "./simulation";
 
 const Row = styled.div`
     display: flex;
@@ -52,8 +52,8 @@ const data: {[Property in RenderMode]: {label: string, color: Color}[]} = {
 
 
 export const Legend = observer(() => {
-    const simulation = useContext(SimulationContext);
-    const mode = simulation.getRenderer().getRenderMode();
+    const {renderer} = useContext(SimulationContext);
+    const mode = renderer.getRenderMode();
 
     return (
         <>

@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef } from "react";
 import { observer } from "mobx-react-lite";
 import { useSize } from "../hooks/use-size";
 import styled from "styled-components";
-import { SimulationContext } from "../context";
+import { SimulationContext } from "./simulation";
 
 const StyledViewport = styled.div`
     overflow: hidden;
@@ -11,16 +11,16 @@ const StyledViewport = styled.div`
 `;
 
 export const Viewport = observer(() => {
-    const simulation = useContext(SimulationContext);
+    const {simulation} = useContext(SimulationContext);
     const canvasRef = useRef();
     const [width, height, containerRef] = useSize();
 
     useEffect(() => {
-        simulation.getRenderer().setElement(canvasRef.current);
+        simulation.getRendererStore().setElement(canvasRef.current);
     }, [canvasRef.current]);
 
     useEffect(() => {
-        simulation.getRenderer().requestRedraw();
+        simulation.getRendererStore().requestRedraw();
     }, [width, height]);
 
     return (

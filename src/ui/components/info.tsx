@@ -1,9 +1,9 @@
 import * as React from "react";
 import { observer } from "mobx-react-lite";
-import { SimulationContext } from "../context";
 import { useContext } from "react";
 import styled from "styled-components";
 import { Legend } from "./legend";
+import { SimulationContext } from "./simulation";
 
 const Row = styled.div`
     display: flex;
@@ -12,7 +12,7 @@ const Row = styled.div`
 `;
 
 export const Info = observer(() => {
-    const simulation = useContext(SimulationContext);
+    const {simulation} = useContext(SimulationContext);
 
     return (
         <>
@@ -30,7 +30,7 @@ export const Info = observer(() => {
             </Row>
             <Row>
                 <span>Render time</span>
-                <span>{simulation.getRenderer().getRenderTime()} ms</span>
+                <span>{simulation.getRendererStore().getRenderTime()} ms</span>
             </Row>
             <Row>
                 <span>Organisms count</span>

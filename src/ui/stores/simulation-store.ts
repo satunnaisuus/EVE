@@ -4,11 +4,11 @@ import { PayloadData } from "../../simulation/data";
 import { Simulation, StepData } from "../../simulation/simulation";
 import { Cell, CellType } from "../../simulation/types/cells";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
-import { CanvasRenderer } from "./canvas-renderer";
+import { RendererStore } from "./renderer-store";
 import { SaveStore } from "./save-store";
 import { SelectedCell } from "./selected-cell";
 import { SimulationParametersStore } from "./simulation-parameters-store";
-import { SimulationUI } from "./simulation-ui";
+import { SimulationUIStore } from "./simulation-ui-store";
 
 export class SimulationStore {
     @observable
@@ -26,13 +26,11 @@ export class SimulationStore {
     @observable
     private organismsCount = 0;
 
-    private canvasRenderer: CanvasRenderer;
-
-    private timeoutId: ReturnType<typeof setTimeout>;
+    private rendererStore: RendererStore;
 
     private parameters: SimulationParametersStore;
 
-    private ui: SimulationUI;
+    private ui: SimulationUIStore;
 
     private selectedCell: SelectedCell;
 
@@ -45,16 +43,16 @@ export class SimulationStore {
         makeObservable(this);
 
         this.options = this.simulation.getOptions();
-        this.canvasRenderer = new CanvasRenderer(this);
+        this.rendererStore = new RendererStore(this);
         this.parameters = new SimulationParametersStore(this);
-        this.ui = new SimulationUI();
+        this.ui = new SimulationUIStore();
         this.selectedCell = new SelectedCell(this);
 
         simulation.getParameters().then((parameters) => {
             this.parameters.init(parameters);
         });
 
-        this.canvasRenderer.update(() => {
+        this.rendererStore.update(() => {
             runInAction(() => this.ready = true);
         });
 
@@ -70,15 +68,11 @@ export class SimulationStore {
 
     @action
     start(): void {
-        if (this.timeoutId) {
-            return;
-        }
-
         this.paused = false;
 
         const tick = () => {
             this.step().then(() => {
-                this.canvasRenderer.update(() => {
+                this.rendererStore.update(() => {
                     if (! this.paused) {
                         tick();
                     }
@@ -99,7 +93,7 @@ export class SimulationStore {
 
     makeStep(): void {
         this.step().then(() => {
-            this.canvasRenderer.update();
+            this.rendererStore.update();
         })
     }
 
@@ -111,13 +105,13 @@ export class SimulationStore {
         return this.options;
     }
 
-    getRenderer(): CanvasRenderer {
-        return this.canvasRenderer;
+    getRendererStore(): RendererStore {
+        return this.rendererStore;
     }
 
     terminate(): void {
         this.simulation && this.simulation.terminate();
-        this.canvasRenderer && this.canvasRenderer.terminate();
+        this.rendererStore && this.rendererStore.terminate();
     }
 
     getParameters(): SimulationParametersStore {
@@ -128,7 +122,7 @@ export class SimulationStore {
         return this.simulation;
     }
 
-    getUI(): SimulationUI {
+    getUI(): SimulationUIStore {
         return this.ui;
     }
 

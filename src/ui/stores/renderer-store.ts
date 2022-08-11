@@ -19,7 +19,7 @@ const RenderModePayloadMap: {[Property in RenderMode]: PayloadData|null} = {
     genesis: 'genesis',
 }
 
-export class CanvasRenderer {
+export class RendererStore {
     @observable
     private renderMode: RenderMode = 'default';
 

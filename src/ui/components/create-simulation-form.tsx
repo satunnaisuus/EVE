@@ -2,8 +2,8 @@ import * as React from "react";
 import { useContext, useState } from "react";
 import { GridLoopType } from "../../simulation/types/grid-loop-type";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
-import { AppContext } from "../context";
-import { Button } from "./button";
+import { RootStoreContext } from "../stores/root-store";
+import { Button } from "./form/button";
 import { FormRow } from "./form/form-row";
 import { NumberInput } from "./form/number-input";
 import { RangeRow } from "./form/range-row";
@@ -22,7 +22,7 @@ const LoopTypes = [
 ];
 
 export const CreateSimulationForm = ({options}: Props) => {
-    const store = useContext(AppContext);
+    const store = useContext(RootStoreContext);
     
     const [loop, setLoop] = useState(options.loop);
     const [width, setWidth] = useState(options.width);

@@ -4,11 +4,11 @@ import { useContext } from "react";
 import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
 import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SimulationContext } from "../../context";
 import { ToolbarItem } from "./item";
+import { SimulationContext } from "../simulation";
 
 export const StartPauseItem = observer(() => {
-    const simulation = useContext(SimulationContext);
+    const {simulation} = useContext(SimulationContext);
 
     if (simulation.isPaused()) {
         return (

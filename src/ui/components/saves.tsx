@@ -1,16 +1,16 @@
 import * as React from "react";
 import styled from "styled-components";
 import { observer } from "mobx-react-lite";
-import { AppContext, SaveContext, SimulationContext } from "../context";
 import { useContext } from "react";
 import { faDownload } from "@fortawesome/free-solid-svg-icons/faDownload";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faRotate } from "@fortawesome/free-solid-svg-icons/faRotate";
 import { faUpload } from "@fortawesome/free-solid-svg-icons/faUpload";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "./button";
+import { Button } from "./form/button";
 import { SaveItem, SaveItemSerialized } from "../stores/save/save-item";
 import { SaveStore } from "../stores/save-store";
+import { RootStoreContext } from "../stores/root-store";
 
 const ListHeader = styled.div`
     display: flex;
@@ -65,11 +65,11 @@ async function download(item: SaveItem, store: SaveStore) {
 }
 
 export const Item = observer(({item}: {item: SaveItem}) => {
-    const saveStore = useContext(SaveContext);
-    const store = useContext(AppContext);
+    const rootStore = useContext(RootStoreContext);
+    const saveStore = rootStore.getSaveStore();
 
     const load = async () => {
-        store.loadSimulation(
+        rootStore.loadSimulation(
             await saveStore.getDump(item),
             item.getRenderMode()
         )
@@ -94,9 +94,9 @@ export const Item = observer(({item}: {item: SaveItem}) => {
 });
 
 export const Saves = observer(() => {
-    const saveStore = useContext(SaveContext);
-    const simulation = useContext(SimulationContext);
-    const store = useContext(AppContext);
+    const rootStore = useContext(RootStoreContext);
+    const saveStore = rootStore.getSaveStore();
+    const simulation = rootStore.getSimulationStore();
 
     const upload = () => {
         const input = document.createElement('input');
@@ -128,13 +128,13 @@ export const Saves = observer(() => {
     return (
         <>
             <ListHeader>
-                {! store.getSimulation() && <>
+                {! rootStore.getSimulationStore() && <>
                     <MainButton apperance='primary' onClick={() => upload()}>
                         <FontAwesomeIcon icon={faUpload} /> Import
                     </MainButton>
                 </>}
 
-                {store.getSimulation() && <>
+                {rootStore.getSimulationStore() && <>
                     <MainButton apperance='primary' onClick={() => simulation.save()}>
                         Save
                     </MainButton>

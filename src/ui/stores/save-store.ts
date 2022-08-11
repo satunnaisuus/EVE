@@ -1,6 +1,6 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { Dump } from "../../simulation/simulation";
-import { Store } from "../store";
+import { RootStore } from "./root-store";
 import { SaveItem } from "./save/save-item";
 import { SaveRepository } from "./save/save-repository";
 
@@ -9,7 +9,7 @@ export class SaveStore {
     private items: SaveItem[] = [];
 
     constructor(
-        private store: Store,
+        private store: RootStore,
         private repository: SaveRepository,
     ) {
         makeObservable(this);
@@ -53,7 +53,7 @@ export class SaveStore {
             this.generateId(),
             +Date.now(),
             dump.step,
-            this.store.getSimulation().getRenderer().getRenderMode(),
+            this.store.getSimulationStore().getRendererStore().getRenderMode(),
             dump.version
         );
     }

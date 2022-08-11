@@ -2,14 +2,15 @@ import * as React from "react";
 import styled from "styled-components";
 import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons/faFloppyDisk";
 import { observer } from "mobx-react-lite";
-import { GenomeBankContext, SimulationContext } from "../../context";
 import { useContext } from "react";
 import { Visualization } from "./organism/visualization";
 import { CellType } from "../../../simulation/types/cells";
 import { Program } from "./organism/program";
-import { Button } from "../button";
-import { SidebarTab } from "../../stores/simulation-ui";
+import { Button } from "../form/button";
+import { SidebarTab } from "../../stores/simulation-ui-store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SimulationContext } from "../simulation";
+import { RootStoreContext } from "../../stores/root-store";
 
 const Row = styled.div`
     display: flex;
@@ -37,9 +38,9 @@ const SaveButton = styled(Button)`
 `;
 
 export const OrganismCell = observer(() => {
-    const simulation = useContext(SimulationContext);
-    const genomeBank = useContext(GenomeBankContext);
-    const selectedCell = simulation.getSelectedCell();
+    const rootStore = useContext(RootStoreContext);
+    const {ui, selectedCell} = useContext(SimulationContext);
+    const genomeStore = rootStore.getGenomeStore();
     const cell = selectedCell.getCell();
 
     if (cell.type !== CellType.ORGANISM) {
@@ -47,8 +48,8 @@ export const OrganismCell = observer(() => {
     }
 
     const addGenome = () => {
-        genomeBank.addGenome(cell.genome).then(() => {
-            simulation.getUI().setActiveTab(SidebarTab.GENOMES);
+        genomeStore.addGenome(cell.genome).then(() => {
+            ui.setActiveTab(SidebarTab.GENOMES);
         });
     };
 

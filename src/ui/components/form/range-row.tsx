@@ -1,6 +1,5 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Flex } from "../flex";
 import { FormRow } from "./form-row";
 import { RangeInput } from "./range-input";
 
@@ -24,16 +23,14 @@ const StyledValue = styled.div`
 `;
 
 const StyledRangeWrapper = styled.div`
-    flex-grow: 1;
+    display: flex;
 `;
 
 export const RangeRow = ({label, postfix, min, max, step, value, onChange}: Props) => (
     <FormRow label={label}>
-        <Flex align="center">
-            <StyledRangeWrapper>
-                <RangeInput min={min} max={max} step={step} onChange={onChange} value={value} />
-            </StyledRangeWrapper>
+        <StyledRangeWrapper>
+            <RangeInput min={min} max={max} step={step} onChange={onChange} value={value} />
             <StyledValue>{value}{postfix}</StyledValue>
-        </Flex>
+        </StyledRangeWrapper>
     </FormRow>
 );

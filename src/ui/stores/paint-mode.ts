@@ -1,7 +1,7 @@
 import { makeObservable, observable, action, toJS } from "mobx";
 import { CreateOptions } from "../../simulation/cell/cell-factory";
 import { CellType, GenomeSerialized } from "../../simulation/types/cells";
-import { CanvasRenderer } from "./canvas-renderer";
+import { RendererStore } from "./renderer-store";
 import { SimulationStore } from "./simulation-store";
 
 export enum BrushType {
@@ -34,7 +34,7 @@ export class PaintMode {
 
     constructor(
         private simulation: SimulationStore,
-        private canvasRenderer: CanvasRenderer
+        private canvasRenderer: RendererStore
     ) {
         makeObservable(this);
     }
