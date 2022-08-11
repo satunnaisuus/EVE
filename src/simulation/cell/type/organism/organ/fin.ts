@@ -9,10 +9,10 @@ export class Fin extends AbstractOrgan {
         switch (Math.floor(parameter * PARAMETER_FACTOR)) {
             case 0:
                 this.organism.setDirection(rotateLeft(this.organism.getDirection()));
-                return true;
+                return false;
             case 1:
                 this.organism.setDirection(rotateRight(this.organism.getDirection()));
-                return true;
+                return false;
             case 2:
                 return context.moveByOffest(...getOffset(this.organism.getDirection()));
         }

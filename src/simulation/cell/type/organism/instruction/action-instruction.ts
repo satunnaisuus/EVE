@@ -12,9 +12,10 @@ export class ActionInstruction extends AbstractInstruction {
             return false;
         }
 
-        organ.use(args[1], context);
+        const breakExecution = organ.use(args[1], context);
         organism.addProgramCounterRelative(1);
-        return true;
+        
+        return breakExecution;
     }
 
     getArgsCount(): number {
