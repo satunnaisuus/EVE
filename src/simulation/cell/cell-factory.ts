@@ -12,7 +12,6 @@ import { Cell, CellType } from "../types/cells";
 export interface CreateOptions {
     genome?: {
         color: string;
-        divideLimit: number;
         organs: Organ[];
         program: InstructionConfig[];
     } 
@@ -36,7 +35,6 @@ export class CellFactory {
                     options.genome ? new Genome(
                         new Program(options.genome.program),
                         Color.fromHex(options.genome.color),
-                        options.genome.divideLimit,
                         options.genome.organs
                     ) : Genome.createRandom(),
                     255,
@@ -62,7 +60,6 @@ export class CellFactory {
                     new Genome(
                         new Program(cell.genome.program),
                         Color.fromHex(cell.genome.color),
-                        cell.genome.divideLimit,
                         cell.genome.organs
                     ),
                     cell.energy,

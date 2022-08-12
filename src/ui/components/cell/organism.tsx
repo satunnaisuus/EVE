@@ -84,10 +84,6 @@ export const OrganismCell = observer(() => {
                         <span>Lifetime</span>
                         <span>{cell.lifetime}</span>
                     </Row>
-                    <Row>
-                        <span>Divide limit</span>
-                        <span>{cell.genome.divideLimit}</span>
-                    </Row>
                     <Program organism={cell} />
                 </div>
             </Container>

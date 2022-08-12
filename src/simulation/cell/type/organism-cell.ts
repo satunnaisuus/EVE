@@ -15,6 +15,7 @@ import { Oxidizer } from "./organism/organ/oxidizer";
 import { Fin } from "./organism/organ/fin";
 import { Mouth } from "./organism/organ/mouth";
 import { Cell } from "../../types/cells";
+import { Reproductor } from "./organism/organ/reproductor";
 
 export const MAX_ENERGY = 255;
 export const ORGANS_COUNT = 16;
@@ -41,6 +42,10 @@ export class OrganismCell extends AbstractCell {
 
         for (const [i, organ] of genome.getOrgans().entries()) {
             switch (organ) {
+                case Organ.NONE:
+                    this.organs.push(null);
+                    break;
+
                 case Organ.EYE:
                     this.organs.push(new Eye(this, i));
                     break;
@@ -53,6 +58,10 @@ export class OrganismCell extends AbstractCell {
                 case Organ.OXIDIZER:
                     this.organs.push(new Oxidizer(this, i));
                     this.oxidizersCount++;
+                    break;
+
+                case Organ.REPRODUCTOR:
+                    this.organs.push(new Reproductor(this, i));
                     break;
 
                 case Organ.ARMOUR:
@@ -112,10 +121,6 @@ export class OrganismCell extends AbstractCell {
         this.genome.getProgram().execute(this, context);
         this.changeEnergy(-1);
         this.lifetime++;
-
-        if (this.energy >= this.genome.getDivideEnergyLimit()) {
-            this.divide(context);
-        }
     }
 
     setDirection(direction: Direction): void {
@@ -229,25 +234,25 @@ export class OrganismCell extends AbstractCell {
 
     makeMoreRed(): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() + 10,
-            this.supplyColor.getGreen() - 5,
-            this.supplyColor.getBlue() - 5
+            this.supplyColor.getRed() + 20,
+            this.supplyColor.getGreen() - 10,
+            this.supplyColor.getBlue() - 10
         );
     }
 
     makeMoreGreen(): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() - 5,
-            this.supplyColor.getGreen() + 10,
-            this.supplyColor.getBlue() - 5
+            this.supplyColor.getRed() - 10,
+            this.supplyColor.getGreen() + 20,
+            this.supplyColor.getBlue() - 10
         );
     }
 
     makeMoreBlue(): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() - 5,
-            this.supplyColor.getGreen() - 5,
-            this.supplyColor.getBlue() + 10
+            this.supplyColor.getRed() - 10,
+            this.supplyColor.getGreen() - 10,
+            this.supplyColor.getBlue() + 20
         );
     }
     

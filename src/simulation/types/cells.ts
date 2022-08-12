@@ -7,7 +7,6 @@ export { CellType, Organ, Direction, Command, GENOME_VERSION };
 
 export interface GenomeSerialized {
     color: string;
-    divideLimit: number;
     organs: Organ[];
     program: InstructionConfig[];
     version: 1;

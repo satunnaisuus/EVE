@@ -2,15 +2,17 @@ import { CellContext } from "../../cell-context";
 import { OrganismCell } from "../organism-cell";
 import { AbstractInstruction } from "./abstract-instruction";
 import { ActionInstruction } from "./instruction/action-instruction";
-import { IfInstruction } from "./instruction/if-instruction";
+import { SenseInstruction } from "./instruction/sense-instruction";
 import { JumpInstruction } from "./instruction/jump-instruction";
 import { NothingInstruction } from "./instruction/nothing-instruction";
+import { EnergyGtInstruction } from "./instruction/energy-gt-instruction";
 
 export enum Command {
     NOTHING = 0,
     JUMP = 1,
-    IF = 2,
+    SENSE = 2,
     ACTION = 3,
+    ENERGY_GT = 4,
 }
 
 export interface InstructionConfig {
@@ -24,8 +26,9 @@ const INSTRUCTIONS_PER_STEP_LIMIT = 8;
 const handlers: {[key: number]: AbstractInstruction} = {
     [Command.NOTHING]: new NothingInstruction(),
     [Command.JUMP]: new JumpInstruction(),
-    [Command.IF]: new IfInstruction(),
+    [Command.SENSE]: new SenseInstruction(),
     [Command.ACTION]: new ActionInstruction(),
+    [Command.ENERGY_GT]: new EnergyGtInstruction(),
 }
 
 export class Program {
@@ -36,10 +39,34 @@ export class Program {
     static createPrimitive(size: number): Program {
         const instructions: InstructionConfig[] = [];
 
-        for (let i = 0; i < size; i++) {
+        instructions.push({
+            code: Command.ENERGY_GT,
+            args: [0.5],
+            branches: [3],
+        });
+
+        instructions.push({
+            code: Command.ACTION,
+            args: [0, 0],
+            branches: [],
+        });
+
+        instructions.push({
+            code: Command.JUMP,
+            args: [],
+            branches: [0],
+        });
+
+        instructions.push({
+            code: Command.ACTION,
+            args: [0.3, 0],
+            branches: [],
+        });
+
+        for (let i = 4; i < size; i++) {
             instructions.push({
-                code: Command.ACTION,
-                args: [0, 0],
+                code: Command.NOTHING,
+                args: [],
                 branches: [],
             });
         }
@@ -76,7 +103,7 @@ export class Program {
     }
 
     getHandlersCount(): number {
-        return 4;
+        return 5;
     }
 
     getHandler(code: number): AbstractInstruction {

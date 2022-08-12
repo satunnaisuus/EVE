@@ -11,6 +11,7 @@ import { SpineOrgan } from "./organ/spine-organ";
 import { ChloroplastOrgan } from "./organ/chloroplast-organ";
 import { EyeOrgan } from "./organ/eye-organ";
 import { GenomeSerialized } from "../../../../simulation/types/cells";
+import { ReproductorOrgan } from "./organ/reproductor-organ";
 
 const Container = styled.div`
     width: 200px;
@@ -32,6 +33,8 @@ export const Visualization = observer(({genome}: {genome: GenomeSerialized}) => 
                     return <MouthOrgan key={i} direction={i} />;
                 case Organ.OXIDIZER:
                     return <OxidizerOrgan key={i} direction={i} />;
+                case Organ.REPRODUCTOR:
+                    return <ReproductorOrgan key={i} direction={i} />;
                 case Organ.SPINE:
                     return <SpineOrgan key={i} direction={i} />;
                 case Organ.CHLOROPLAST:
