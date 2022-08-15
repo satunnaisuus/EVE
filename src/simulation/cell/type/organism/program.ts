@@ -21,7 +21,7 @@ export interface InstructionConfig {
     branches: number[];
 }
 
-const INSTRUCTIONS_PER_STEP_LIMIT = 8;
+const INSTRUCTIONS_PER_STEP_LIMIT = 16;
 
 const handlers: {[key: number]: AbstractInstruction} = {
     [Command.NOTHING]: new NothingInstruction(),
@@ -37,33 +37,45 @@ export class Program {
     }
 
     static createPrimitive(size: number): Program {
-        const instructions: InstructionConfig[] = [];
+        const instructions: InstructionConfig[] = [
+            {
+                code: Command.ENERGY_GT,
+                args: [0.5],
+                branches: [3],
+            },
+            {
+                code: Command.ACTION,
+                args: [0.1, 0],
+                branches: [],
+            },
+            {
+                code: Command.JUMP,
+                args: [],
+                branches: [0],
+            },
+            {
+                code: Command.ACTION,
+                args: [0.3, 0],
+                branches: [],
+            },
+            {
+                code: Command.SENSE,
+                args: [0, 0.4],
+                branches: [6],
+            },
+            {
+                code: Command.JUMP,
+                args: [],
+                branches: [0],
+            },
+            {
+                code: Command.ACTION,
+                args: [0.5, 0],
+                branches: [],
+            },
+        ];
 
-        instructions.push({
-            code: Command.ENERGY_GT,
-            args: [0.5],
-            branches: [3],
-        });
-
-        instructions.push({
-            code: Command.ACTION,
-            args: [0, 0],
-            branches: [],
-        });
-
-        instructions.push({
-            code: Command.JUMP,
-            args: [],
-            branches: [0],
-        });
-
-        instructions.push({
-            code: Command.ACTION,
-            args: [0.3, 0],
-            branches: [],
-        });
-
-        for (let i = 4; i < size; i++) {
+        for (let i = instructions.length; i < size; i++) {
             instructions.push({
                 code: Command.NOTHING,
                 args: [],

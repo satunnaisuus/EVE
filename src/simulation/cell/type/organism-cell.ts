@@ -20,6 +20,9 @@ import { Reproductor } from "./organism/organ/reproductor";
 export const MAX_ENERGY = 255;
 export const ORGANS_COUNT = 16;
 
+const DIVIDE_COST = 20;
+const STEP_COST = 1;
+
 export class OrganismCell extends AbstractCell {
     private programCounter = 0;
 
@@ -108,6 +111,14 @@ export class OrganismCell extends AbstractCell {
 
     update(context: CellContext, parameters: SimulationParameters): void {
         if (this.energy === 0) {
+            return;
+        }
+
+        this.genome.getProgram().execute(this, context);
+        
+        this.changeEnergy(- STEP_COST);
+
+        if (this.energy === 0) {
             context.replace((factory: CellFactory) => factory.createEmpty());
             return;
         }
@@ -117,8 +128,6 @@ export class OrganismCell extends AbstractCell {
             return;
         }
 
-        this.genome.getProgram().execute(this, context);
-        this.changeEnergy(-1);
         this.lifetime++;
     }
 
@@ -127,28 +136,38 @@ export class OrganismCell extends AbstractCell {
     }
 
     divide(context: CellContext): void {
-        for (const direction of shuffle(directionsList())) {
-            const offset = getOffset(direction);
-            if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
-                context.moveByOffest(offset[0], offset[1]);
-                this.changeEnergy(Math.floor(this.energy / -2));
-                
-                if (this.energy > 0) {
-                    context.replace((factory: CellFactory) => {
-                        return factory.createOrganism(
-                            this.genome.clone(context.getSimulationParameters().mutationChance),
-                            this.energy,
-                            randomDirection(),
-                            this.supplyColor
-                        );
-                    });
+        this.changeEnergy(- DIVIDE_COST);
+
+        if (this.energy > 0) {
+            for (const direction of shuffle(directionsList())) {
+                const offset = getOffset(direction);
+                if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
+                    context.moveByOffest(offset[0], offset[1]);
+                    this.changeEnergy(Math.floor(this.energy / -2));
+                    
+                    if (this.energy > 0) {
+                        context.replace((factory: CellFactory) => {
+                            return factory.createOrganism(
+                                this.genome.clone(context.getSimulationParameters().mutationChance),
+                                this.energy,
+                                randomDirection(),
+                                this.supplyColor
+                            );
+                        });
+                    
+                        return;
+                    }
                 }
-                
-                return;
             }
         }
 
-        context.replace((factory: CellFactory) => factory.createOrganic(this.energy));
+        context.replace((factory: CellFactory) => {
+            if (this.energy === 0) {
+                return factory.createEmpty();
+            } else {
+                return factory.createOrganic(this.energy)
+            }
+        });
     }
 
     changeEnergy(value: number): number {

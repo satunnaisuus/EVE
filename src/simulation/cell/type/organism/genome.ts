@@ -18,12 +18,12 @@ export enum Organ {
     SPINE = 8,
 }
 
-const BASE_ORGANS = [Organ.CHLOROPLAST, Organ.OXIDIZER, Organ.EYE, Organ.REPRODUCTOR];
-const LIMB_ORGANS = [Organ.MOUTH, Organ.ARMOUR, Organ.FIN, Organ.SPINE];
+const BASE_ORGANS = [Organ.NONE, Organ.CHLOROPLAST, Organ.OXIDIZER, Organ.REPRODUCTOR, Organ.EYE];
+const LIMB_ORGANS = [Organ.NONE, Organ.MOUTH, Organ.ARMOUR, Organ.FIN, Organ.SPINE];
 
 const primitiveOrgans: Organ[] = [
+    Organ.EYE,
     Organ.CHLOROPLAST,
-    Organ.NONE,
     Organ.NONE,
     Organ.NONE,
     Organ.REPRODUCTOR,
@@ -34,7 +34,7 @@ const primitiveOrgans: Organ[] = [
     Organ.NONE,
     Organ.NONE,
     Organ.NONE,
-    Organ.NONE,
+    Organ.FIN,
     Organ.NONE,
     Organ.NONE,
     Organ.NONE
@@ -143,7 +143,7 @@ export class Genome {
         const organs = this.organs.slice();
         let handler = program.getHandler(instruction.code);
 
-        switch (randomInt(0, 5)) {
+        switch (randomInt(0, 3)) {
             case 0:
                 instruction.code = randomInt(0, program.getHandlersCount() - 1);
                 handler = program.getHandler(instruction.code);
@@ -185,11 +185,6 @@ export class Genome {
             case 4:
                 organs[randomInt(8, 15)] = shuffle(LIMB_ORGANS)[0];
                 break;
-
-            case 5:
-                organs[randomInt(0, 15)] = Organ.NONE;
-                break;
-
         }
 
         return new Genome(program, color, organs);
