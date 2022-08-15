@@ -60,17 +60,63 @@ export class Genome {
     }
 
     isSimilar(genome: Genome): boolean {
-        const otherOragans = genome.getOrgans();
+        let diff = 0;
 
-        let differences = 0;
+        const otherOragans = genome.getOrgans();
 
         for (let i = 0; i < 16; i++) {
             if (this.organs[i] !== otherOragans[i]) {
-                differences++;
+                diff++;
+            }
+
+            if (diff > SIMILARITY_LIMIT) {
+                return false;
             }
         }
 
-        return differences <= SIMILARITY_LIMIT;
+        const other = genome.getProgram().getInstructions();
+        const instructions = this.getProgram().getInstructions();
+
+        if (other.length !== instructions.length) {
+            return false;
+        }
+
+        i:
+        for (let i = 0; i < other.length; i++) {
+            if (diff > SIMILARITY_LIMIT) {
+                return false;
+            }
+
+            const instruction1 = other[i];
+            const instruction2 = instructions[i];
+
+            if (instruction1.code !== instruction2.code) {
+                diff++;
+                continue;
+            }
+
+            const branches1 = instruction1.branches;
+            const branches2 = instruction2.branches;
+
+            const args1 = instruction1.args;
+            const args2 = instruction2.args;
+
+            for (let a = 0; a < args1.length; a++) {
+                if (args1[a] !== args2[a]) {
+                    diff++;
+                    continue i;
+                }
+            }
+
+            for (let b = 0; b < branches1.length; b++) {
+                if (branches1[b] !== branches2[b]) {
+                    diff++;
+                    continue i;
+                }
+            }
+        }
+
+        return diff <= SIMILARITY_LIMIT;
     }
 
     getColor(): Color {
