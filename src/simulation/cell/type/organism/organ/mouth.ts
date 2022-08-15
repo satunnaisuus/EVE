@@ -24,10 +24,14 @@ export class Mouth extends AbstractOrgan {
         }
         
         if (target instanceof OrganismCell) {
-            const energy = target.onAttack(ATTACK_POWER, this.organism, reverseDirection(direction));
-            const amount = this.organism.changeEnergy(energy);
+            const energy = - target.onAttack(ATTACK_POWER, this.organism, reverseDirection(direction));
+            this.organism.changeEnergy(energy);
 
-            if (amount > 0) {
+            if (target.getEnergy() === 0) {
+                context.deleteByOffset(offset[0], offset[1]);
+            }
+
+            if (energy > 0) {
                 this.organism.makeMoreRed();
             }
             
