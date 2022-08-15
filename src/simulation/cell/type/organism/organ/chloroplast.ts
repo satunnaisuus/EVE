@@ -18,4 +18,8 @@ export class Chloroplast extends AbstractOrgan {
 
         return true;
     }
+
+    sense(): boolean {
+        return false;
+    }
 }

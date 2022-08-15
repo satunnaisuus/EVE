@@ -4,7 +4,7 @@ import { AbstractInstruction } from "../abstract-instruction";
 
 export class SenseInstruction extends AbstractInstruction {
     execute(organism: OrganismCell, context: CellContext, args: number[], branches: number[]): boolean {
-        const organIndex = args[0] % ORGANS_COUNT;
+        const organIndex = Math.floor(args[0] * ORGANS_COUNT);
         const organ = organism.getOrgan(organIndex);
 
         if (! organ) {
@@ -12,7 +12,7 @@ export class SenseInstruction extends AbstractInstruction {
             return false;
         }
 
-        if (organ.use(args[1], context)) {
+        if (organ.sense(args[1], context)) {
             organism.setProgramCounter(branches[0]);
         } else {
             organism.addProgramCounterRelative(1);

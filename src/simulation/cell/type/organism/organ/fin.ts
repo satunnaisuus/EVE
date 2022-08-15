@@ -19,4 +19,8 @@ export class Fin extends AbstractOrgan {
 
         return false;
     }
+
+    sense(): boolean {
+        return false;
+    }
 }

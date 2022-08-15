@@ -18,4 +18,8 @@ export class Oxidizer extends AbstractOrgan {
 
         return true;
     }
+
+    sense(): boolean {
+        return false;
+    }
 }

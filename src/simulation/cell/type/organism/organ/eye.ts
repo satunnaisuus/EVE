@@ -17,7 +17,11 @@ enum TargetType {
 const PARAMETER_FACTOR = Object.keys(TargetType).length / 2 + 1;
 
 export class Eye extends AbstractOrgan {
-    use(parameter: number, context: CellContext): boolean {
+    use(): boolean {
+        return false;
+    }
+
+    sense(parameter: number, context: CellContext): boolean {
         const offset = getOffset(rotateOnOffset(this.organism.getDirection(), this.position));
         const target = context.getByOffest(offset[0], offset[1]);
         

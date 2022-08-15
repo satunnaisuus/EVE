@@ -7,6 +7,10 @@ import { getOffset, reverseDirection, rotateOnOffset } from "../direction";
 const ATTACK_POWER = 50;
 
 export class Mouth extends AbstractOrgan {
+    sense(): boolean {
+        return false;
+    }
+    
     use(parameter: number, context: CellContext): boolean {
         const direction = rotateOnOffset(this.organism.getDirection(), this.position)
         const offset = getOffset(direction);

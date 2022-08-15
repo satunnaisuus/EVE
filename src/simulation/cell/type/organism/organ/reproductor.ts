@@ -5,6 +5,8 @@ export class Reproductor extends AbstractOrgan {
     use(parameter: number, context: CellContext): boolean {
         this.organism.divide(context);
 
-        return true;
+
+    sense(): boolean {
+        return false;
     }
 }

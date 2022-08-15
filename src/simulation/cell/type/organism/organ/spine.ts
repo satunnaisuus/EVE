@@ -12,4 +12,8 @@ export class Spine extends AbstractOrgan {
     use(): boolean {
         return true;
     }
+
+    sense(): boolean {
+        return false;
+    }
 }

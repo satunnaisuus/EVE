@@ -10,4 +10,6 @@ export abstract class AbstractOrgan {
     }
 
     abstract use(parameter: number, context: CellContext): boolean;
+
+    abstract sense(parameter: number, context: CellContext): boolean;
 }
