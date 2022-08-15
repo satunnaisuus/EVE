@@ -231,27 +231,27 @@ export class OrganismCell extends AbstractCell {
         return 0;
     }
 
-    makeMoreRed(): void {
+    makeMoreRed(energy: number): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() + 20,
-            this.supplyColor.getGreen() - 10,
-            this.supplyColor.getBlue() - 10
+            this.supplyColor.getRed() + energy,
+            this.supplyColor.getGreen() - energy,
+            this.supplyColor.getBlue() - energy
         );
     }
 
-    makeMoreGreen(): void {
+    makeMoreGreen(energy: number): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() - 10,
-            this.supplyColor.getGreen() + 20,
-            this.supplyColor.getBlue() - 10
+            this.supplyColor.getRed() - energy,
+            this.supplyColor.getGreen() + energy,
+            this.supplyColor.getBlue() - energy
         );
     }
 
-    makeMoreBlue(): void {
+    makeMoreBlue(energy: number): void {
         this.supplyColor = new Color(
-            this.supplyColor.getRed() - 10,
-            this.supplyColor.getGreen() - 10,
-            this.supplyColor.getBlue() + 20
+            this.supplyColor.getRed() - energy,
+            this.supplyColor.getGreen() - energy,
+            this.supplyColor.getBlue() + energy
         );
     }
     

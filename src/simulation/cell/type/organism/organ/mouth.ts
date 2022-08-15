@@ -13,11 +13,12 @@ export class Mouth extends AbstractOrgan {
         const target = context.getByOffest(offset[0], offset[1]);
         
         if (target instanceof OrganicCell) {
-            const amount = this.organism.changeEnergy(target.getEnergy());
+            const energy = target.getEnergy();
+            this.organism.changeEnergy(energy);
             context.deleteByOffset(offset[0], offset[1]);
 
-            if (amount > 0) {
-                this.organism.makeMoreRed();
+            if (energy > 0) {
+                this.organism.makeMoreRed(energy);
             }
 
             return true;
@@ -32,7 +33,7 @@ export class Mouth extends AbstractOrgan {
             }
 
             if (energy > 0) {
-                this.organism.makeMoreRed();
+                this.organism.makeMoreRed(energy);
             }
             
             return true;

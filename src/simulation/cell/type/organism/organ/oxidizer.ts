@@ -6,8 +6,7 @@ export class Oxidizer extends AbstractOrgan {
         const oxydizersCount = this.organism.getOxidizersCount();
         const amount = this.organism.changeEnergy(oxydizersCount * context.getMineralsEnergy());
 
-        if (amount > 0) {
-            this.organism.makeMoreBlue();
+            this.organism.makeMoreBlue(amount);
         }
 
         return true;

@@ -7,7 +7,7 @@ export class Chloroplast extends AbstractOrgan {
         const amount = this.organism.changeEnergy(oxydizersCount * context.getLightEnergy());
 
         if (amount > 0) {
-            this.organism.makeMoreGreen();
+            this.organism.makeMoreGreen(amount);
         }
 
         return true;
