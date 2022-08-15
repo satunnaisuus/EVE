@@ -21,8 +21,6 @@ export const MAX_ENERGY = 255;
 export const ORGANS_COUNT = 16;
 
 export class OrganismCell extends AbstractCell {
-    private lifetime = 0;
-
     private programCounter = 0;
 
     private organs: AbstractOrgan[] = [];
@@ -36,7 +34,8 @@ export class OrganismCell extends AbstractCell {
         private genome: Genome,
         private energy: number,
         private direction: Direction,
-        private supplyColor: Color
+        private supplyColor: Color,
+        private lifetime: number = 0,
     ) {
         super();
 

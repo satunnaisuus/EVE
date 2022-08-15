@@ -64,7 +64,8 @@ export class CellFactory {
                     ),
                     cell.energy,
                     cell.direction,
-                    Color.fromHex(cell.supplyColor)
+                    Color.fromHex(cell.supplyColor),
+                    cell.lifetime
                 );
         }
     }
