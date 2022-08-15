@@ -3,11 +3,17 @@ import { AbstractOrgan } from "../abstract-organ";
 
 export class Chloroplast extends AbstractOrgan {
     use(parameter: number, context: CellContext): boolean {
-        const oxydizersCount = this.organism.getChloroplastsCount();
-        const amount = this.organism.changeEnergy(oxydizersCount * context.getLightEnergy());
+        const chloroplastsCount = this.organism.getChloroplastsCount();
+        let energy = 0;
 
-        if (amount > 0) {
-            this.organism.makeMoreGreen(amount);
+        for (let i = 1; i <= chloroplastsCount; i++) {
+            energy += context.getLightEnergy() / i;
+        }
+
+        this.organism.changeEnergy(energy);
+
+        if (energy > 0) {
+            this.organism.makeMoreGreen(energy);
         }
 
         return true;
