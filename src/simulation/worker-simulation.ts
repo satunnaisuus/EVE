@@ -1,5 +1,5 @@
 import SimulationWorker from './simulation.worker.ts';
-import { Parameters, Dump, Simulation, StepData } from "./simulation";
+import { Parameter, Dump, Simulation, StepData } from "./simulation";
 import { SimulationOptions } from "./types/simulation-options";
 import { WorkerResponse } from "./types/worker-response";
 import { Cell, CellType } from "./types/cells";
@@ -128,7 +128,7 @@ export class WorkerSimulation extends Simulation {
         });
     }
 
-    setParameter<T>(parameter: Parameters, value: T): Promise<T> {
+    setParameter<T>(parameter: Parameter, value: T): Promise<T> {
         return new Promise((resolve) => {
             const id = this.nextId();
             this.messageListeners.setParameter[id] = resolve;

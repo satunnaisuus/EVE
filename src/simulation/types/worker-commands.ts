@@ -1,6 +1,6 @@
 import { CreateOptions } from "../cell/cell-factory";
 import { PayloadData } from "../data";
-import { Parameters, Dump } from "../simulation";
+import { Parameter, Dump } from "../simulation";
 import { CellType } from "./cells";
 import { SimulationOptions } from "./simulation-options";
 
@@ -24,7 +24,7 @@ export interface CommandRequestState {
 export interface CommandSetParameter {
     id: number;
     type: 'setParameter';
-    parameter: Parameters,
+    parameter: Parameter,
     value: any;
 }
 

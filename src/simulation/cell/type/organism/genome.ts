@@ -3,6 +3,7 @@ import { Color } from "../../../../common/color";
 import { Program } from "./program";
 import { GenomeSerialized } from "../../../types/cells";
 import { shuffle } from "../../../../common/array-utils";
+import { SimulationParameters } from "../../../simulation-parameters";
 
 const SIMILARITY_LIMIT = 1;
 
@@ -127,66 +128,74 @@ export class Genome {
         return this.program;
     }
 
-    clone(mutationChance: number): Genome {
-        if (mutationChance <= randomInt(0, 100)) {
-            return this;
-        }
+    clone(parameters: SimulationParameters): Genome {
+        let hasMutation = false;
 
-        const color = new Color(
-            this.color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
-            this.color.getGreen() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
-            this.color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
-        );
-
-        const program = this.program.clone();
-        const instruction = program.get(randomInt(0, program.getLength() - 1));
+        let color = this.color;
         const organs = this.organs.slice();
-        let handler = program.getHandler(instruction.code);
+        const program = this.program.clone();
 
-        switch (randomInt(0, 3)) {
-            case 0:
-                instruction.code = randomInt(0, program.getHandlersCount() - 1);
-                handler = program.getHandler(instruction.code);
-
-                if (instruction.args.length > handler.getArgsCount()) {
-                    instruction.args.splice(handler.getArgsCount());
-                } else {
-                    while (instruction.args.length < handler.getArgsCount()) {
-                        instruction.args.push(Math.random());
-                    }
-                }
-
-                if (instruction.branches.length > handler.getBranchesCount()) {
-                    instruction.branches.splice(handler.getBranchesCount());
-                } else {
-                    while (instruction.branches.length < handler.getBranchesCount()) {
-                        instruction.branches.push(randomInt(0, program.getLength() - 1));
-                    }
-                }
-
-                break;
-            
-            case 1:
-                if (instruction.args.length > 0) {
-                    instruction.args[randomInt(0, instruction.args.length - 1)] = Math.random();
-                }
-                break;
-
-            case 2:
-                if (instruction.branches.length > 0) {
-                    instruction.branches[randomInt(0, instruction.branches.length - 1)] = randomInt(0, program.getLength() - 1);
-                }
-                break;
-            
-            case 3:
-                organs[randomInt(0, 7)] = shuffle(BASE_ORGANS)[0];
-                break;
-            
-            case 4:
-                organs[randomInt(8, 15)] = shuffle(LIMB_ORGANS)[0];
-                break;
+        if (parameters.mutationBaseOrgansRate >= randomInt(1, 100)) {
+            hasMutation = true;
+            organs[randomInt(0, 7)] = shuffle(BASE_ORGANS)[0];
         }
 
+        if (parameters.mutationLimbOrgansRate >= randomInt(1, 100)) {
+            hasMutation = true;
+            organs[randomInt(8, 15)] = shuffle(LIMB_ORGANS)[0];
+        }
+
+        if (parameters.mutationProgramRate >= randomInt(1, 100)) {
+            hasMutation = true;
+            
+            const instruction = program.get(randomInt(0, program.getLength() - 1));
+            let handler = program.getHandler(instruction.code);
+
+            switch (randomInt(0, 2)) {
+                case 0:
+                    instruction.code = randomInt(0, program.getHandlersCount() - 1);
+                    handler = program.getHandler(instruction.code);
+    
+                    if (instruction.args.length > handler.getArgsCount()) {
+                        instruction.args.splice(handler.getArgsCount());
+                    } else {
+                        while (instruction.args.length < handler.getArgsCount()) {
+                            instruction.args.push(Math.random());
+                        }
+                    }
+    
+                    if (instruction.branches.length > handler.getBranchesCount()) {
+                        instruction.branches.splice(handler.getBranchesCount());
+                    } else {
+                        while (instruction.branches.length < handler.getBranchesCount()) {
+                            instruction.branches.push(randomInt(0, program.getLength() - 1));
+                        }
+                    }
+    
+                    break;
+                
+                case 1:
+                    if (instruction.args.length > 0) {
+                        instruction.args[randomInt(0, instruction.args.length - 1)] = Math.random();
+                    }
+                    break;
+    
+                case 2:
+                    if (instruction.branches.length > 0) {
+                        instruction.branches[randomInt(0, instruction.branches.length - 1)] = randomInt(0, program.getLength() - 1);
+                    }
+                    break;
+            }
+        }
+
+        if (hasMutation) {
+            color = new Color(
+                this.color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
+                this.color.getGreen() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
+                this.color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
+            );
+        }
+        
         return new Genome(program, color, organs);
     }
 

@@ -1,4 +1,5 @@
 import { makeObservable, observable, action, runInAction } from "mobx";
+import { Parameter } from "../../simulation/simulation";
 import { SimulationParameters } from "../../simulation/types/simulation-parameters";
 import { SimulationStore } from "./simulation-store";
 
@@ -13,7 +14,13 @@ export class SimulationParametersStore {
     private chemosynthesisEnergy = 5;
 
     @observable
-    private mutationChance = 25;
+    private mutationProgramRate = 25;
+
+    @observable
+    private mutationBaseOrgansRate = 25;
+
+    @observable
+    private mutationLimbOrgansRate = 0;
 
     constructor(private store: SimulationStore) {
         makeObservable(this);
@@ -24,12 +31,14 @@ export class SimulationParametersStore {
         this.organismMaxLifetime = parameters.organismMaxLifetime;
         this.photosynthesisEnergy = parameters.photosynthesisEnergy;
         this.chemosynthesisEnergy = parameters.chemosynthesisEnergy;
-        this.mutationChance = parameters.mutationChance;
+        this.mutationProgramRate = parameters.mutationProgramRate;
+        this.mutationBaseOrgansRate = parameters.mutationBaseOrgansRate;
+        this.mutationLimbOrgansRate = parameters.mutationLimbOrgansRate;
     }
 
     @action
     setOrganismMaxLifetime(value: number): void {
-        this.store.getSimulation().setParameter('organismMaxLifetime', value).then(value => {
+        this.store.getSimulation().setParameter(Parameter.organismMaxLifetime, value).then(value => {
             runInAction(() => {
                 this.organismMaxLifetime = value;
             });
@@ -38,7 +47,7 @@ export class SimulationParametersStore {
 
     @action
     setPhotosynthesisEnergy(value: number): void {
-        this.store.getSimulation().setParameter('photosynthesisEnergy', value).then(value => {
+        this.store.getSimulation().setParameter(Parameter.photosynthesisEnergy, value).then(value => {
             runInAction(() => {
                 this.photosynthesisEnergy = value;
             });
@@ -47,7 +56,7 @@ export class SimulationParametersStore {
 
     @action
     setChemosynthesisEnergy(value: number): void {
-        this.store.getSimulation().setParameter('chemosynthesisEnergy', value).then(value => {
+        this.store.getSimulation().setParameter(Parameter.chemosynthesisEnergy, value).then(value => {
             runInAction(() => {
                 this.chemosynthesisEnergy = value;
             });
@@ -55,10 +64,28 @@ export class SimulationParametersStore {
     }
 
     @action
-    setMutationChance(value: number): void {
-        this.store.getSimulation().setParameter('mutationChance', value).then(value => {
+    setMutationProgramRate(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.mutationProgramRate, value).then(value => {
             runInAction(() => {
-                this.mutationChance = value;
+                this.mutationProgramRate = value;
+            });
+        });
+    }
+
+    @action
+    setMutationBaseOrgansRate(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.mutationBaseOrgansRate, value).then(value => {
+            runInAction(() => {
+                this.mutationBaseOrgansRate = value;
+            });
+        });
+    }
+
+    @action
+    setMutationLimbOrgansRate(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.mutationLimbOrgansRate, value).then(value => {
+            runInAction(() => {
+                this.mutationLimbOrgansRate = value;
             });
         });
     }
@@ -75,7 +102,15 @@ export class SimulationParametersStore {
         return this.chemosynthesisEnergy;
     }
 
-    getMutationChance(): number {
-        return this.mutationChance;
+    getMutationProgramRate(): number {
+        return this.mutationProgramRate;
+    }
+
+    getMutationBaseOrgansRate(): number {
+        return this.mutationBaseOrgansRate;
+    }
+
+    getMutationLimbOrgansRate(): number {
+        return this.mutationLimbOrgansRate;
     }
 }

@@ -13,14 +13,19 @@ export class StepData {
     }
 }
 
-export type Parameters = 'organismMaxLifetime' | 'photosynthesisEnergy' | 'chemosynthesisEnergy' | 'mutationChance';
+export enum Parameter {
+    photosynthesisEnergy = 'photosynthesisEnergy',
+    chemosynthesisEnergy = 'chemosynthesisEnergy',
+    organismMaxLifetime = 'organismMaxLifetime',
+    mutationProgramRate = 'mutationProgramRate',
+    mutationBaseOrgansRate = 'mutationBaseOrgansRate',
+    mutationLimbOrgansRate = 'mutationLimbOrgansRate',
+}
 
 export interface Dump {
     options: SimulationOptions;
     parameters: {
-        photosynthesisEnergy: number,
-        chemosynthesisEnergy: number,
-        organismMaxLifetime: number,
+        [key in Parameter]: number;
     };
     step: number;
     grid: Cell[][];
@@ -38,7 +43,7 @@ export abstract class Simulation {
 
     abstract makeStep(): Promise<number>;
 
-    abstract setParameter<T>(parameter: Parameters, value: T): Promise<T>;
+    abstract setParameter<T>(parameter: Parameter, value: T): Promise<T>;
 
     abstract getOrganismsCount(): Promise<number>;
 

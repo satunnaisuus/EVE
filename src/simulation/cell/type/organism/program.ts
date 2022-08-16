@@ -6,6 +6,7 @@ import { SenseInstruction } from "./instruction/sense-instruction";
 import { JumpInstruction } from "./instruction/jump-instruction";
 import { NothingInstruction } from "./instruction/nothing-instruction";
 import { EnergyGtInstruction } from "./instruction/energy-gt-instruction";
+import { randomInt } from "../../../../common/random";
 
 export enum Command {
     NOTHING = 0,
@@ -106,6 +107,38 @@ export class Program {
         return this.instructions.slice();
     }
 
+    addInstruction(index: number, instruction: InstructionConfig): void {
+        if (index === this.getLength()) {
+            this.instructions.push(instruction);
+        } else {
+            this.instructions.splice(index, 0, instruction);
+        }
+
+        for (let i = 0; i < this.getLength(); i++) {
+            const branches = this.get(i).branches;
+
+            for (let j = 0; j < branches.length; j++) {
+                if (branches[j] >= index) {
+                    branches[j] = branches[j] + 1;
+                }
+            }
+        }
+    }
+
+    removeInstruction(index: number): void {
+        this.instructions.splice(index, 1);
+
+        for (let i = 0; i < this.getLength(); i++) {
+            const branches = this.get(i).branches;
+
+            for (let j = 0; j < branches.length; j++) {
+                if (branches[j] >= index && branches[j] > 0) {
+                    branches[j] = branches[j] - 1;
+                }
+            }
+        }
+    }
+
     get(i: number): InstructionConfig {
         return this.instructions[i];
     }
@@ -134,5 +167,27 @@ export class Program {
 
     serialize() {
         return this.instructions;
+    }
+
+    static createRandomInstruction(program: Program): InstructionConfig {
+        const args = [];
+        const branches = [];
+
+        const code: Command = randomInt(0, program.getHandlersCount() - 1);
+        const handler = handlers[code];
+
+        for (let i = 0; i < handler.getArgsCount(); i++) {
+            args.push(Math.random());
+        }
+
+        for (let i = 0; i < handler.getBranchesCount(); i++) {
+            branches.push(randomInt(0, program.getLength() - 1));
+        }
+
+        return {
+            code: code,
+            args: args,
+            branches: branches
+        };
     }
 }

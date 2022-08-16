@@ -5,7 +5,11 @@ export class SimulationParameters {
 
     private chemosynthesisEnergyValue = 5;
 
-    private mutationChanceValue = 25;
+    private mutationProgramRateValue = 25;
+
+    private mutationBaseOrgansRateValue = 10;
+
+    private mutationLimbOrgansRateValue = 0;
 
     constructor(options: {[key: string]: any} = {}) {
         if (options['photosynthesisEnergy'] != null) {
@@ -20,8 +24,16 @@ export class SimulationParameters {
             this.organismMaxLifetime = options['organismMaxLifetime'];
         }
 
-        if (options['mutationChance'] != null) {
-            this.mutationChance = options['mutationChance'];
+        if (options['mutationProgramRate'] != null) {
+            this.mutationProgramRate = options['mutationProgramRate'];
+        }
+
+        if (options['mutationBaseOrgansRate'] != null) {
+            this.mutationBaseOrgansRate = options['mutationBaseOrgansRate'];
+        }
+
+        if (options['mutationLimbOrgansRate'] != null) {
+            this.mutationLimbOrgansRate = options['mutationLimbOrgansRate'];
         }
     }
 
@@ -49,12 +61,28 @@ export class SimulationParameters {
         return this.chemosynthesisEnergyValue;
     }
 
-    set mutationChance(value: number) {
-        this.mutationChanceValue = this.converNumberValue(value, false, 0, 100);
+    set mutationProgramRate(value: number) {
+        this.mutationProgramRateValue = this.converNumberValue(value, false, 0, 100);
     }
 
-    get mutationChance(): number {
-        return this.mutationChanceValue;
+    get mutationProgramRate(): number {
+        return this.mutationProgramRateValue;
+    }
+
+    set mutationBaseOrgansRate(value: number) {
+        this.mutationBaseOrgansRateValue = this.converNumberValue(value, false, 0, 100);
+    }
+
+    get mutationBaseOrgansRate(): number {
+        return this.mutationBaseOrgansRateValue;
+    }
+
+    set mutationLimbOrgansRate(value: number) {
+        this.mutationLimbOrgansRateValue = this.converNumberValue(value, false, 0, 100);
+    }
+
+    get mutationLimbOrgansRate(): number {
+        return this.mutationLimbOrgansRateValue;
     }
 
     serialize(): any {
@@ -62,7 +90,9 @@ export class SimulationParameters {
             photosynthesisEnergy: this.photosynthesisEnergy,
             chemosynthesisEnergy: this.chemosynthesisEnergy,
             organismMaxLifetime: this.organismMaxLifetime,
-            mutationChance: this.mutationChance
+            mutationProgramRate: this.mutationProgramRate,
+            mutationBaseOrgansRate: this.mutationBaseOrgansRate,
+            mutationLimbOrgansRate: this.mutationLimbOrgansRate,
         };
     }
 

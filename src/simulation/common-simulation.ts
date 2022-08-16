@@ -6,7 +6,7 @@ import { randomDirection } from "./cell/type/organism/direction";
 import { Genome } from "./cell/type/organism/genome";
 import { Data, PayloadData } from "./data";
 import { Grid } from "./grid";
-import { Parameters, Dump, DUMP_VERSION, Simulation, StepData } from "./simulation";
+import { Parameter, Dump, DUMP_VERSION, Simulation, StepData } from "./simulation";
 import { SimulationParameters } from "./simulation-parameters";
 import { Cell, CellType } from "./types/cells";
 import { SimulationOptions } from "./types/simulation-options";
@@ -88,7 +88,7 @@ export class CommonSimulation extends Simulation {
         };
     }
 
-    async setParameter<T>(parameter: Parameters, value: T): Promise<T> {
+    async setParameter<T>(parameter: Parameter, value: T): Promise<T> {
         this.parameters[parameter] = value as any;
         return this.parameters[parameter] as any;
     }

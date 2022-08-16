@@ -148,7 +148,7 @@ export class OrganismCell extends AbstractCell {
                     if (this.energy > 0) {
                         context.replace((factory: CellFactory) => {
                             return factory.createOrganism(
-                                this.genome.clone(context.getSimulationParameters().mutationChance),
+                                this.genome.clone(context.getSimulationParameters()),
                                 this.energy,
                                 randomDirection(),
                                 this.supplyColor

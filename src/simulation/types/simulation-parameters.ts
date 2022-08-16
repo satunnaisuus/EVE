@@ -1,6 +1,5 @@
-export interface SimulationParameters {
-    photosynthesisEnergy: number;
-    chemosynthesisEnergy: number,
-    organismMaxLifetime: number,
-    mutationChance: number,
+import { Parameter } from "../simulation";
+
+export type SimulationParameters = {
+    [key in Parameter]: number
 }
