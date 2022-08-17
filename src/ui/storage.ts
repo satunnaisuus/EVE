@@ -8,12 +8,12 @@ export function loadOptions(): SimulationOptions {
         width: 200,
         height: 100,
         loop: GridLoopType.NONE,
-        population: 5,
+        population: 0.1,
         initialEnergy: 70,
-        lightDepth: 100,
-        lightGradient: false,
-        mineralsDepth: 100,
-        mineralsGradient: false,
+        lightDepth: 75,
+        lightGradient: true,
+        mineralsDepth: 75,
+        mineralsGradient: true,
         programLength: 16,
     }, loadObject(optionsKey));
 }
