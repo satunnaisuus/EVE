@@ -20,7 +20,6 @@ import { Reproductor } from "./organism/organ/reproductor";
 export const MAX_ENERGY = 255;
 export const ORGANS_COUNT = 16;
 
-const DIVIDE_COST = 20;
 const STEP_COST = 1;
 
 export class OrganismCell extends AbstractCell {
@@ -113,13 +112,10 @@ export class OrganismCell extends AbstractCell {
     }
 
     update(context: CellContext, parameters: SimulationParameters): void {
-        if (this.energy === 0) {
-            return;
+        if (this.energy > 0) {
+            this.genome.getProgram().execute(this, context);
+            this.changeEnergy(- parameters.stepCost);
         }
-
-        this.genome.getProgram().execute(this, context);
-        
-        this.changeEnergy(- STEP_COST);
 
         if (this.energy === 0) {
             context.replace((factory: CellFactory) => factory.createEmpty());
@@ -139,8 +135,6 @@ export class OrganismCell extends AbstractCell {
     }
 
     divide(context: CellContext): void {
-        this.changeEnergy(- DIVIDE_COST);
-
         if (this.energy > 0) {
             for (const direction of shuffle(directionsList())) {
                 const offset = getOffset(direction);
@@ -235,7 +229,7 @@ export class OrganismCell extends AbstractCell {
         return this.mouthsCount;
     }
 
-    onAttack(power: number, enemy: OrganismCell, direction: Direction): number {
+    onAttack(power: number, enemy: OrganismCell, direction: Direction, context: CellContext): number {
         if (this.energy === 0) {
             return 0;
         }
@@ -246,15 +240,7 @@ export class OrganismCell extends AbstractCell {
             return this.changeEnergy(- power);
         }
 
-        if (limb instanceof Armour) {
-            return limb.onAttack(power);
-        }
-
-        if (limb instanceof Spine) {
-            return limb.onAttack(power, enemy);
-        }
-
-        return 0;
+        return limb.onAttack(power, enemy, context);
     }
 
     makeMoreRed(energy: number): void {

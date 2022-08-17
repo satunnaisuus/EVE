@@ -1,10 +1,10 @@
+import { CellContext } from "../../../cell-context";
+import { OrganismCell } from "../../organism-cell";
 import { AbstractOrgan } from "../abstract-organ";
 
-const ARMOR_FACTOR = -0.5;
-
 export class Armour extends AbstractOrgan {
-    onAttack(power: number): number {
-        return this.organism.changeEnergy(power * ARMOR_FACTOR);
+    onAttack(power: number, aggressor: OrganismCell, context: CellContext): number {
+        return this.organism.changeEnergy(- power * context.getSimulationParameters().armourProtectionRate);
     }
 
     use(): boolean {

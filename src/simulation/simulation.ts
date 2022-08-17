@@ -22,6 +22,10 @@ export enum Parameter {
     mutationLimbOrgansRate = 'mutationLimbOrgansRate',
     eatCost = 'eatCost',
     attackCostRate = 'attackCostRate',
+    divideCost = 'divideCost',
+    spineDamageRate = 'spineDamageRate',
+    armourProtectionRate = 'armourProtectionRate',
+    stepCost = 'stepCost',
 }
 
 export interface Dump {

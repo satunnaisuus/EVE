@@ -135,17 +135,19 @@ export class Genome {
         const organs = this.organs.slice();
         const program = this.program.clone();
 
-        if (parameters.mutationBaseOrgansRate >= randomInt(1, 100)) {
+        const randomNumber = randomInt(1, 100);
+
+        if (parameters.mutationBaseOrgansRate >= randomNumber) {
             hasMutation = true;
             organs[randomInt(0, 7)] = shuffle(BASE_ORGANS)[0];
         }
 
-        if (parameters.mutationLimbOrgansRate >= randomInt(1, 100)) {
+        if (parameters.mutationLimbOrgansRate >= randomNumber) {
             hasMutation = true;
             organs[randomInt(8, 15)] = shuffle(LIMB_ORGANS)[0];
         }
 
-        if (parameters.mutationProgramRate >= randomInt(1, 100)) {
+        if (parameters.mutationProgramRate >= randomNumber) {
             hasMutation = true;
             
             const instruction = program.get(randomInt(0, program.getLength() - 1));

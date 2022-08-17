@@ -28,6 +28,18 @@ export class SimulationParametersStore {
     @observable
     private attackCostRate = 5;
 
+    @observable
+    private divideCost = 20;
+
+    @observable
+    private armourProtectionRate = 50;
+
+    @observable
+    private spineDamageRate = 50;
+
+    @observable
+    private stepCost = 1;
+
     constructor(private store: SimulationStore) {
         makeObservable(this);
     }
@@ -42,6 +54,10 @@ export class SimulationParametersStore {
         this.mutationLimbOrgansRate = parameters.mutationLimbOrgansRate;
         this.eatCost = parameters.eatCost;
         this.attackCostRate = parameters.attackCostRate;
+        this.divideCost = parameters.divideCost;
+        this.armourProtectionRate = parameters.armourProtectionRate;
+        this.spineDamageRate = parameters.spineDamageRate;
+        this.stepCost = parameters.stepCost;
     }
 
     @action
@@ -100,6 +116,34 @@ export class SimulationParametersStore {
         });
     }
 
+    @action
+    setArmourProtectionRate(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.armourProtectionRate, value).then(value => {
+            runInAction(() => this.armourProtectionRate = value);
+        });
+    }
+
+    @action
+    setSpineDamageRate(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.spineDamageRate, value).then(value => {
+            runInAction(() => this.spineDamageRate = value);
+        });
+    }
+
+    @action
+    setDivideCost(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.divideCost, value).then(value => {
+            runInAction(() => this.divideCost = value);
+        });
+    }
+
+    @action
+    setStepCost(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.stepCost, value).then(value => {
+            runInAction(() => this.stepCost = value);
+        });
+    }
+
     getOrganismMaxLifetime(): number {
         return this.organismMaxLifetime;
     }
@@ -130,5 +174,21 @@ export class SimulationParametersStore {
 
     getAttackCostRate(): number {
         return this.attackCostRate;
+    }
+
+    getArmourProtectionRate(): number {
+        return this.armourProtectionRate;
+    }
+
+    getSpineDamageRate(): number {
+        return this.spineDamageRate;
+    }
+
+    getDivideCost(): number {
+        return this.divideCost;
+    }
+
+    getStepCost(): number {
+        return this.stepCost;
     }
 }

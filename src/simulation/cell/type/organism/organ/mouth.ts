@@ -36,7 +36,7 @@ export class Mouth extends AbstractOrgan {
             const power = Math.floor(MAX_ENERGY * parameter);
             const attackFactor = context.getSimulationParameters().attackCostRate / 100;
             const attackCost = power * attackFactor;
-            const energy = - target.onAttack(power, this.organism, reverseDirection(direction));
+            const energy = - target.onAttack(power, this.organism, reverseDirection(direction), context);
             this.organism.changeEnergy(energy - attackCost);
 
             if (target.getEnergy() === 0) {

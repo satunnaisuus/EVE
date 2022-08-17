@@ -12,4 +12,8 @@ export abstract class AbstractOrgan {
     abstract use(parameter: number, context: CellContext): boolean;
 
     abstract sense(parameter: number, context: CellContext): boolean;
+
+    onAttack(power: number, aggressor: OrganismCell, context: CellContext): number {
+        return this.organism.changeEnergy(- power);
+    }
 }

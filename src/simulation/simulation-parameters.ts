@@ -15,6 +15,14 @@ export class SimulationParameters {
 
     private attackCostRateValue = 5;
 
+    private armourProtectionRateValue = 50;
+
+    private spineDamageRateValue = 50;
+
+    private divideCostValue = 20;
+
+    private stepCostValue = 1;
+
     constructor(options: {[key: string]: any} = {}) {
         if (options['photosynthesisEnergy'] != null) {
             this.photosynthesisEnergy = options['photosynthesisEnergy'];
@@ -44,8 +52,24 @@ export class SimulationParameters {
             this.eatCost = options['eatCost'];
         }
 
-        if (options['attackCostFactor'] != null) {
+        if (options['attackCostRate'] != null) {
             this.attackCostRate = options['attackCostRate'];
+        }
+
+        if (options['armourProtectionRate'] != null) {
+            this.armourProtectionRate = options['armourProtectionRate'];
+        }
+
+        if (options['spineDamageRate'] != null) {
+            this.spineDamageRate = options['spineDamageRate'];
+        }
+
+        if (options['divideCost'] != null) {
+            this.divideCost = options['divideCost'];
+        }
+
+        if (options['stepCost'] != null) {
+            this.stepCost = options['stepCost'];
         }
     }
 
@@ -113,6 +137,38 @@ export class SimulationParameters {
         return this.attackCostRateValue;
     }
 
+    set divideCost(value: number) {
+        this.divideCostValue = this.converNumberValue(value, false, 0, 255);
+    }
+
+    get divideCost(): number {
+        return this.divideCostValue;
+    }
+
+    set spineDamageRate(value: number) {
+        this.spineDamageRateValue = this.converNumberValue(value, false, 0, 255);
+    }
+
+    get spineDamageRate(): number {
+        return this.spineDamageRateValue;
+    }
+
+    set armourProtectionRate(value: number) {
+        this.armourProtectionRateValue = this.converNumberValue(value, false, 0, 100);
+    }
+
+    get armourProtectionRate(): number {
+        return this.armourProtectionRateValue;
+    }
+
+    set stepCost(value: number) {
+        this.stepCostValue = this.converNumberValue(value, false, 0, 255);
+    }
+
+    get stepCost(): number {
+        return this.stepCostValue;
+    }
+
     serialize(): any {
         return {
             photosynthesisEnergy: this.photosynthesisEnergy,
@@ -123,6 +179,10 @@ export class SimulationParameters {
             mutationLimbOrgansRate: this.mutationLimbOrgansRate,
             eatCost: this.eatCost,
             attackCostRate: this.attackCostRate,
+            divideCost: this.divideCost,
+            spineDamageRate: this.spineDamageRate,
+            armourProtectionRate: this.armourProtectionRate,
+            stepCost: this.stepCost,
         };
     }
 

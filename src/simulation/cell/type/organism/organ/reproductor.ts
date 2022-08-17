@@ -3,6 +3,7 @@ import { AbstractOrgan } from "../abstract-organ";
 
 export class Reproductor extends AbstractOrgan {
     use(parameter: number, context: CellContext): boolean {
+        this.organism.changeEnergy(- context.getSimulationParameters().divideCost);
         this.organism.divide(context);
 
         return true;
