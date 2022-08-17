@@ -13,13 +13,14 @@ export enum Organ {
     OXIDIZER = 2,
     EYE = 3,
     REPRODUCTOR = 4,
-    MOUTH = 5,
-    ARMOUR = 6,
-    FIN = 7,
-    SPINE = 8,
+    FERMENTER = 5,
+    MOUTH = 6,
+    ARMOUR = 7,
+    FIN = 8,
+    SPINE = 9,
 }
 
-const BASE_ORGANS = [Organ.NONE, Organ.CHLOROPLAST, Organ.OXIDIZER, Organ.REPRODUCTOR, Organ.EYE];
+const BASE_ORGANS = [Organ.NONE, Organ.CHLOROPLAST, Organ.OXIDIZER, Organ.REPRODUCTOR, Organ.EYE, Organ.FERMENTER];
 const LIMB_ORGANS = [Organ.NONE, Organ.MOUTH, Organ.ARMOUR, Organ.FIN, Organ.SPINE];
 
 const primitiveOrgans: Organ[] = [

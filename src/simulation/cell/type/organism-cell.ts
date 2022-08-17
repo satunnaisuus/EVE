@@ -16,6 +16,7 @@ import { Fin } from "./organism/organ/fin";
 import { Mouth } from "./organism/organ/mouth";
 import { Cell } from "../../types/cells";
 import { Reproductor } from "./organism/organ/reproductor";
+import { Fermenter } from "./organism/organ/fermenter";
 
 export const MAX_ENERGY = 255;
 export const ORGANS_COUNT = 16;
@@ -32,6 +33,8 @@ export class OrganismCell extends AbstractCell {
     private chloroplastsCount = 0;
 
     private mouthsCount = 0;
+
+    private fermentersCount = 0;
 
     constructor(
         private id: number,
@@ -65,6 +68,11 @@ export class OrganismCell extends AbstractCell {
 
                 case Organ.REPRODUCTOR:
                     this.organs.push(new Reproductor(this, i));
+                    break;
+
+                case Organ.FERMENTER:
+                    this.organs.push(new Fermenter(this, i));
+                    this.fermentersCount++;
                     break;
 
                 case Organ.ARMOUR:
@@ -227,6 +235,10 @@ export class OrganismCell extends AbstractCell {
 
     getMouthsCount(): number {
         return this.mouthsCount;
+    }
+
+    getFermentersCount(): number {
+        return this.fermentersCount;
     }
 
     onAttack(power: number, enemy: OrganismCell, direction: Direction, context: CellContext): number {
