@@ -50,6 +50,18 @@ const MainButton = styled(Button)`
     flex-grow: 1;
 `;
 
+const SavesStyled = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`;
+
+const ItemsContainer = styled.div`
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+`;
+
 async function download(item: SaveItem, store: SaveStore) {
     const a = document.createElement('a');
     const url = window.URL.createObjectURL(
@@ -126,7 +138,7 @@ export const Saves = observer(() => {
     };
 
     return (
-        <>
+        <SavesStyled>
             <ListHeader>
                 {! rootStore.getSimulationStore() && <>
                     <MainButton apperance='primary' onClick={() => upload()}>
@@ -143,9 +155,9 @@ export const Saves = observer(() => {
                 
                 <Button onClick={() => saveStore.refresh()}><FontAwesomeIcon icon={faRotate} /></Button>
             </ListHeader>
-            <>
+            <ItemsContainer>
                 {saveStore.getItems().map((item) => <Item item={item} key={item.getId()} />)}
-            </>
-        </>
+            </ItemsContainer>
+        </SavesStyled>
     );
 });

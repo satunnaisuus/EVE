@@ -21,8 +21,6 @@ import { Fermenter } from "./organism/organ/fermenter";
 export const MAX_ENERGY = 255;
 export const ORGANS_COUNT = 16;
 
-const STEP_COST = 1;
-
 export class OrganismCell extends AbstractCell {
     private programCounter = 0;
 

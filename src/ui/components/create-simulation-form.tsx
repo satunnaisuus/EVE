@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useContext, useState } from "react";
+import styled from "styled-components";
 import { GridLoopType } from "../../simulation/types/grid-loop-type";
 import { SimulationOptions } from "../../simulation/types/simulation-options";
 import { RootStoreContext } from "../stores/root-store";
@@ -20,6 +21,29 @@ const LoopTypes = [
     {label: 'Horizontal', value: GridLoopType.HORIZONTAL},
     {label: 'Vertical', value: GridLoopType.VERTICAL},
 ];
+
+const FormStyled = styled.div`
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+`;
+
+const FieldsWrapperStyled = styled.div`
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-left: 5px;
+    padding-right: 20px;
+    margin-bottom: 15px;
+`;
+
+const Row = styled.div`
+    display: flex;
+    gap: 10px;
+
+    > * {
+        flex-grow: 1;
+    }
+`;
 
 export const CreateSimulationForm = ({options}: Props) => {
     const store = useContext(RootStoreContext);
@@ -51,36 +75,42 @@ export const CreateSimulationForm = ({options}: Props) => {
     }
 
     return (
-        <>
-            <FormRow label='Grid width'>
-                <NumberInput min={0} onChange={(value) => setWidth(value)} value={width} />
-            </FormRow>
+        <FormStyled>
+            <FieldsWrapperStyled>
+                <Row>
+                    <FormRow label='Grid width'>
+                        <NumberInput min={0} onChange={(value) => setWidth(value)} value={width} />
+                    </FormRow>
 
-            <FormRow label='Grid height'>
-                <NumberInput min={0} onChange={(value) => setHeight(value)} value={height} />
-            </FormRow>
+                    <FormRow label='Grid height'>
+                        <NumberInput min={0} onChange={(value) => setHeight(value)} value={height} />
+                    </FormRow>
+                </Row>
 
-            <FormRow label='Loop'>
-                <Select onSelect={(value) => setLoop(value as GridLoopType)} options={LoopTypes} value={loop} />
-            </FormRow>
+                <FormRow label='Loop'>
+                    <Select onSelect={(value) => setLoop(value as GridLoopType)} options={LoopTypes} value={loop} />
+                </FormRow>
 
-            <FormRow label='Program length'>
-                <NumberInput min={0} onChange={(value) => setProgramLength(value)} value={programLength} />
-            </FormRow>
+                <FormRow label='Program length'>
+                    <NumberInput min={0} onChange={(value) => setProgramLength(value)} value={programLength} />
+                </FormRow>
 
-            <RangeRow label='Population' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setPopulation(value)} value={population} />
+                <RangeRow label='Initial population' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setPopulation(value)} value={population} />
 
-            <RangeRow label='Initial energy' min={0} max={100} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
+                <RangeRow label='Initial energy' postfix='%' min={0} max={100} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
 
-            <RangeRow label='Light depth' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setLightDepth(value)} value={lightDepth} />
+                <RangeRow label='Light depth' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setLightDepth(value)} value={lightDepth} />
 
-            <Switch label='Light gradient' value={lightGradient} onChange={(checked) => setLightGradient(checked)} />
+                <RangeRow label='Minerals depth' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setMineralsDepth(value)} value={mineralsDepth} />
 
-            <RangeRow label='Minerals depth' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setMineralsDepth(value)} value={mineralsDepth} />
+                <Switch label='Light gradient' value={lightGradient} onChange={(checked) => setLightGradient(checked)} />
 
-            <Switch label='Minerals gradient' value={mineralsGradient} onChange={(checked) => setMineralsGradient(checked)} />
+                <Switch label='Minerals gradient' value={mineralsGradient} onChange={(checked) => setMineralsGradient(checked)} />
+
+            </FieldsWrapperStyled>
 
             <Button apperance='primary' width='100%' onClick={create}>Create</Button>
-        </>
+        </FormStyled>
+
     );
 };

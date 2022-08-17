@@ -146,7 +146,7 @@ export class SimulationParameters {
     }
 
     set spineDamageRate(value: number) {
-        this.spineDamageRateValue = this.converNumberValue(value, false, 0, 255);
+        this.spineDamageRateValue = this.converNumberValue(value, false, 0, 100);
     }
 
     get spineDamageRate(): number {
