@@ -1,10 +1,9 @@
 import { CellContext } from "../../../cell-context";
 import { OrganicCell } from "../../organic-cell";
-import { OrganismCell } from "../../organism-cell";
+import { MAX_ENERGY, OrganismCell } from "../../organism-cell";
 import { AbstractOrgan } from "../abstract-organ";
 import { getOffset, reverseDirection, rotateOnOffset } from "../direction";
 
-const ATTACK_POWER = 50;
 const ADDITIONAL_MOUTH_COST = 64;
 
 export class Mouth extends AbstractOrgan {
@@ -34,8 +33,11 @@ export class Mouth extends AbstractOrgan {
         }
         
         if (target instanceof OrganismCell) {
-            const energy = - target.onAttack(ATTACK_POWER, this.organism, reverseDirection(direction));
-            this.organism.changeEnergy(energy);
+            const power = Math.floor(MAX_ENERGY * parameter);
+            const attackFactor = context.getSimulationParameters().attackCostRate / 100;
+            const attackCost = power * attackFactor;
+            const energy = - target.onAttack(power, this.organism, reverseDirection(direction));
+            this.organism.changeEnergy(energy - attackCost);
 
             if (target.getEnergy() === 0) {
                 context.deleteByOffset(offset[0], offset[1]);

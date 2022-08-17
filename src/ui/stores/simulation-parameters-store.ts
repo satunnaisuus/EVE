@@ -25,6 +25,9 @@ export class SimulationParametersStore {
     @observable
     private eatCost = 2;
 
+    @observable
+    private attackCostRate = 5;
+
     constructor(private store: SimulationStore) {
         makeObservable(this);
     }
@@ -38,6 +41,7 @@ export class SimulationParametersStore {
         this.mutationBaseOrgansRate = parameters.mutationBaseOrgansRate;
         this.mutationLimbOrgansRate = parameters.mutationLimbOrgansRate;
         this.eatCost = parameters.eatCost;
+        this.attackCostRate = parameters.attackCostRate;
     }
 
     @action
@@ -89,6 +93,13 @@ export class SimulationParametersStore {
         });
     }
 
+    @action
+    setAttackCostRate(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.attackCostRate, value).then(value => {
+            runInAction(() => this.attackCostRate = value);
+        });
+    }
+
     getOrganismMaxLifetime(): number {
         return this.organismMaxLifetime;
     }
@@ -115,5 +126,9 @@ export class SimulationParametersStore {
 
     getEatCost(): number {
         return this.eatCost;
+    }
+
+    getAttackCostRate(): number {
+        return this.attackCostRate;
     }
 }
