@@ -5,7 +5,7 @@ import { AbstractOrgan } from "../abstract-organ";
 import { getOffset, reverseDirection, rotateOnOffset } from "../direction";
 
 const ATTACK_POWER = 50;
-const EAT_COST = 2;
+const ADDITIONAL_MOUTH_COST = 64;
 
 export class Mouth extends AbstractOrgan {
     sense(): boolean {
@@ -13,7 +13,9 @@ export class Mouth extends AbstractOrgan {
     }
     
     use(parameter: number, context: CellContext): boolean {
-        this.organism.changeEnergy(- EAT_COST);
+        const fine = ADDITIONAL_MOUTH_COST * (this.organism.getMouthsCount() - 1);
+        const cost = context.getSimulationParameters().eatCost;
+        this.organism.changeEnergy(- cost - fine);
 
         const direction = rotateOnOffset(this.organism.getDirection(), this.position)
         const offset = getOffset(direction);

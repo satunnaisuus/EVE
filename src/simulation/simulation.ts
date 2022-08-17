@@ -20,6 +20,7 @@ export enum Parameter {
     mutationProgramRate = 'mutationProgramRate',
     mutationBaseOrgansRate = 'mutationBaseOrgansRate',
     mutationLimbOrgansRate = 'mutationLimbOrgansRate',
+    eatCost = 'eatCost',
 }
 
 export interface Dump {

@@ -32,6 +32,8 @@ export class OrganismCell extends AbstractCell {
 
     private chloroplastsCount = 0;
 
+    private mouthsCount = 0;
+
     constructor(
         private id: number,
         private genome: Genome,
@@ -80,6 +82,7 @@ export class OrganismCell extends AbstractCell {
                 
                 case Organ.MOUTH:
                     this.organs.push(new Mouth(this, i));
+                    this.mouthsCount++;
                     break;
             }
         }
@@ -226,6 +229,10 @@ export class OrganismCell extends AbstractCell {
 
     getOxidizersCount(): number {
         return this.oxidizersCount;
+    }
+
+    getMouthsCount(): number {
+        return this.mouthsCount;
     }
 
     onAttack(power: number, enemy: OrganismCell, direction: Direction): number {

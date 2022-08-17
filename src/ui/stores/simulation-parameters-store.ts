@@ -22,6 +22,9 @@ export class SimulationParametersStore {
     @observable
     private mutationLimbOrgansRate = 0;
 
+    @observable
+    private eatCost = 2;
+
     constructor(private store: SimulationStore) {
         makeObservable(this);
     }
@@ -34,59 +37,55 @@ export class SimulationParametersStore {
         this.mutationProgramRate = parameters.mutationProgramRate;
         this.mutationBaseOrgansRate = parameters.mutationBaseOrgansRate;
         this.mutationLimbOrgansRate = parameters.mutationLimbOrgansRate;
+        this.eatCost = parameters.eatCost;
     }
 
     @action
     setOrganismMaxLifetime(value: number): void {
         this.store.getSimulation().setParameter(Parameter.organismMaxLifetime, value).then(value => {
-            runInAction(() => {
-                this.organismMaxLifetime = value;
-            });
+            runInAction(() => this.organismMaxLifetime = value);
         });
     }
 
     @action
     setPhotosynthesisEnergy(value: number): void {
         this.store.getSimulation().setParameter(Parameter.photosynthesisEnergy, value).then(value => {
-            runInAction(() => {
-                this.photosynthesisEnergy = value;
-            });
+            runInAction(() => this.photosynthesisEnergy = value);
         });
     }
 
     @action
     setChemosynthesisEnergy(value: number): void {
         this.store.getSimulation().setParameter(Parameter.chemosynthesisEnergy, value).then(value => {
-            runInAction(() => {
-                this.chemosynthesisEnergy = value;
-            });
+            runInAction(() => this.chemosynthesisEnergy = value);
         });
     }
 
     @action
     setMutationProgramRate(value: number): void {
         this.store.getSimulation().setParameter(Parameter.mutationProgramRate, value).then(value => {
-            runInAction(() => {
-                this.mutationProgramRate = value;
-            });
+            runInAction(() => this.mutationProgramRate = value);
         });
     }
 
     @action
     setMutationBaseOrgansRate(value: number): void {
         this.store.getSimulation().setParameter(Parameter.mutationBaseOrgansRate, value).then(value => {
-            runInAction(() => {
-                this.mutationBaseOrgansRate = value;
-            });
+            runInAction(() => this.mutationBaseOrgansRate = value);
         });
     }
 
     @action
     setMutationLimbOrgansRate(value: number): void {
         this.store.getSimulation().setParameter(Parameter.mutationLimbOrgansRate, value).then(value => {
-            runInAction(() => {
-                this.mutationLimbOrgansRate = value;
-            });
+            runInAction(() => this.mutationLimbOrgansRate = value);
+        });
+    }
+
+    @action
+    setEatCost(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.eatCost, value).then(value => {
+            runInAction(() => this.eatCost = value);
         });
     }
 
@@ -112,5 +111,9 @@ export class SimulationParametersStore {
 
     getMutationLimbOrgansRate(): number {
         return this.mutationLimbOrgansRate;
+    }
+
+    getEatCost(): number {
+        return this.eatCost;
     }
 }

@@ -11,6 +11,8 @@ export class SimulationParameters {
 
     private mutationLimbOrgansRateValue = 0;
 
+    private eatCostValue = 0;
+
     constructor(options: {[key: string]: any} = {}) {
         if (options['photosynthesisEnergy'] != null) {
             this.photosynthesisEnergy = options['photosynthesisEnergy'];
@@ -34,6 +36,10 @@ export class SimulationParameters {
 
         if (options['mutationLimbOrgansRate'] != null) {
             this.mutationLimbOrgansRate = options['mutationLimbOrgansRate'];
+        }
+
+        if (options['eatCost'] != null) {
+            this.eatCostValue = options['eatCost'];
         }
     }
 
@@ -85,6 +91,14 @@ export class SimulationParameters {
         return this.mutationLimbOrgansRateValue;
     }
 
+    get eatCost(): number {
+        return this.eatCostValue;
+    }
+
+    set eatCost(value: number) {
+        this.eatCostValue = this.converNumberValue(value, false, 0, 255);
+    }
+
     serialize(): any {
         return {
             photosynthesisEnergy: this.photosynthesisEnergy,
@@ -93,6 +107,7 @@ export class SimulationParameters {
             mutationProgramRate: this.mutationProgramRate,
             mutationBaseOrgansRate: this.mutationBaseOrgansRate,
             mutationLimbOrgansRate: this.mutationLimbOrgansRate,
+            eatCost: this.eatCost,
         };
     }
 
