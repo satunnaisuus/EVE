@@ -3,14 +3,14 @@ import { OrganismCell } from "../organism-cell";
 import { AbstractInstruction } from "./abstract-instruction";
 import { ActionInstruction } from "./instruction/action-instruction";
 import { SenseInstruction } from "./instruction/sense-instruction";
-import { JumpInstruction } from "./instruction/jump-instruction";
+import { GotoInstruction } from "./instruction/goto-instruction";
 import { NothingInstruction } from "./instruction/nothing-instruction";
 import { EnergyGtInstruction } from "./instruction/energy-gt-instruction";
 import { randomInt } from "../../../../common/random";
 
 export enum Command {
     NOTHING = 0,
-    JUMP = 1,
+    GOTO = 1,
     SENSE = 2,
     ACTION = 3,
     ENERGY_GT = 4,
@@ -26,7 +26,7 @@ const INSTRUCTIONS_PER_STEP_LIMIT = 16;
 
 const handlers: {[key: number]: AbstractInstruction} = {
     [Command.NOTHING]: new NothingInstruction(),
-    [Command.JUMP]: new JumpInstruction(),
+    [Command.GOTO]: new GotoInstruction(),
     [Command.SENSE]: new SenseInstruction(),
     [Command.ACTION]: new ActionInstruction(),
     [Command.ENERGY_GT]: new EnergyGtInstruction(),
@@ -50,7 +50,7 @@ export class Program {
                 branches: [],
             },
             {
-                code: Command.JUMP,
+                code: Command.GOTO,
                 args: [],
                 branches: [0],
             },
@@ -65,7 +65,7 @@ export class Program {
                 branches: [6],
             },
             {
-                code: Command.JUMP,
+                code: Command.GOTO,
                 args: [],
                 branches: [0],
             },
