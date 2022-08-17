@@ -33,6 +33,7 @@ export const CreateSimulationForm = ({options}: Props) => {
     const [lightGradient, setLightGradient] = useState(options.lightGradient);
     const [mineralsDepth, setMineralsDepth] = useState(options.mineralsDepth);
     const [mineralsGradient, setMineralsGradient] = useState(options.mineralsGradient);
+    const [programLength, setProgramLength] = useState(options.programLength);
 
     const create = () => {
         store.newSimulation({
@@ -45,6 +46,7 @@ export const CreateSimulationForm = ({options}: Props) => {
             lightGradient: lightGradient,
             mineralsDepth: mineralsDepth,
             mineralsGradient: mineralsGradient,
+            programLength: programLength,
         });
     }
 
@@ -60,6 +62,10 @@ export const CreateSimulationForm = ({options}: Props) => {
 
             <FormRow label='Loop'>
                 <Select onSelect={(value) => setLoop(value as GridLoopType)} options={LoopTypes} value={loop} />
+            </FormRow>
+
+            <FormRow label='Program length'>
+                <NumberInput min={0} onChange={(value) => setProgramLength(value)} value={programLength} />
             </FormRow>
 
             <RangeRow label='Population' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setPopulation(value)} value={population} />

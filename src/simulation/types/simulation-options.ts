@@ -6,6 +6,7 @@ export type SimulationOptions = {
     loop: GridLoopType,
     initialEnergy: number,
     population: number,
+    programLength: number,
     lightDepth: number,
     lightGradient: boolean,
     mineralsDepth: number,

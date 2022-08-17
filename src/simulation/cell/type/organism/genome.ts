@@ -52,9 +52,9 @@ export class Genome {
         
     }
 
-    static createRandom(): Genome {
+    static createRandom(programLength: number): Genome {
         return new Genome(
-            Program.createPrimitive(16),
+            Program.createPrimitive(programLength),
             Color.random(),
             primitiveOrgans
         );

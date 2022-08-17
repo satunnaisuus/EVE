@@ -28,7 +28,7 @@ export class CommonSimulation extends Simulation {
 
         super(options);
 
-        this.cellFactory = new CellFactory();
+        this.cellFactory = new CellFactory(this.options.programLength);
         this.parameters = new SimulationParameters();
         this.grid = new Grid(this.options, this.cellFactory);
 
@@ -45,7 +45,7 @@ export class CommonSimulation extends Simulation {
             }
         } else {
             const population = Math.ceil(options.width * options.height * options.population / 100);
-            this.spawnOrganisms(population, options.initialEnergy);
+            this.spawnOrganisms(population, options.initialEnergy, options.programLength);
         }
     }
 
@@ -147,7 +147,7 @@ export class CommonSimulation extends Simulation {
         return this.parameters.serialize();
     }
 
-    private spawnOrganisms(count: number, initialEnergy: number): void {
+    private spawnOrganisms(count: number, initialEnergy: number, programLength: number): void {
         const coordinates: [number, number][] = [];
         const cells = this.grid.toArray();
     
@@ -163,7 +163,7 @@ export class CommonSimulation extends Simulation {
     
         for (const [x, y] of shuffle(coordinates).slice(0, count)) {
             this.grid.insert(x, y, this.cellFactory.createOrganism(
-                Genome.createRandom(),
+                Genome.createRandom(programLength),
                 initialEnergy,
                 randomDirection(),
                 new Color(0, 255, 0),

@@ -14,6 +14,7 @@ export function loadOptions(): SimulationOptions {
         lightGradient: false,
         mineralsDepth: 100,
         mineralsGradient: false,
+        programLength: 16,
     }, loadObject(optionsKey));
 }
 

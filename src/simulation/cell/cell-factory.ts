@@ -24,6 +24,10 @@ export class CellFactory {
 
     private id = 0;
 
+    constructor(private programLength: number) {
+
+    }
+
     create(type: CellType, options: CreateOptions): AbstractCell {
         switch (type) {
             case CellType.WALL:
@@ -36,7 +40,7 @@ export class CellFactory {
                         new Program(options.genome.program),
                         Color.fromHex(options.genome.color),
                         options.genome.organs
-                    ) : Genome.createRandom(),
+                    ) : Genome.createRandom(this.programLength),
                     255,
                     randomDirection(),
                     new Color(255, 255, 255)
