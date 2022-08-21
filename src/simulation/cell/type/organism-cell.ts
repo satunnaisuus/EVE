@@ -27,11 +27,9 @@ export enum Organ {
     SPINE = 9,
 }
 
-
-
 export function createPrimitiveProgram(size: number): Uint8Array {
     const program: number[] = [
-        Command.ENERGY_GT, Math.trunc(MAX_ENERGY / 2), 3,
+        Command.SENSE, 55, 3,
         Command.ACTION, 16, 0,
         Command.GOTO, 0, 4,
         Command.ACTION, 64, 0,
@@ -211,7 +209,7 @@ export class OrganismCell extends AbstractCell {
 
                     if (handler.hasGoto()) {
                         if (program[indexGoto] === 0) {
-                            program[indexGoto] = randomInt(0, program.length - 1);
+                            program[indexGoto] = randomInt(0, this.instructionsCount - 1);
                         }
                     } else {
                         program[indexGoto] = 0;

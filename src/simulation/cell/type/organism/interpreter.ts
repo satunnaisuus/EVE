@@ -1,18 +1,16 @@
 import { CellContext } from "../../cell-context";
-import { MAX_ENERGY, OrganismCell } from "../organism-cell";
+import { OrganismCell } from "../organism-cell";
 import { AbstractInstruction } from "./abstract-instruction";
 import { ActionInstruction } from "./instruction/action-instruction";
 import { SenseInstruction } from "./instruction/sense-instruction";
 import { GotoInstruction } from "./instruction/goto-instruction";
 import { NothingInstruction } from "./instruction/nothing-instruction";
-import { EnergyGtInstruction } from "./instruction/energy-gt-instruction";
 
 export enum Command {
     NOTHING = 0,
     GOTO = 1,
     SENSE = 2,
     ACTION = 3,
-    ENERGY_GT = 4,
 }
 
 export const MAX_ARG_VALUE = 255;
@@ -24,7 +22,6 @@ const handlers: {[key: number]: AbstractInstruction} = {
     [Command.GOTO]: new GotoInstruction(),
     [Command.SENSE]: new SenseInstruction(),
     [Command.ACTION]: new ActionInstruction(),
-    [Command.ENERGY_GT]: new EnergyGtInstruction(),
 }
 
 const handlersCount = Object.keys(handlers).length;

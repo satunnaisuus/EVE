@@ -5,7 +5,6 @@ import { WallCell } from "./type/wall-cell";
 import { AbstractCell } from "./abstract-cell";
 import { Direction, randomDirection } from "./type/organism/direction";
 import { Color } from "../../common/color";
-import { Interpreter } from "./type/organism/interpreter";
 import { Cell, CellType } from "../types/cells";
 
 export interface CreateOptions {
@@ -20,7 +19,7 @@ export const PRIMITIVE_ORGANS: Organ[] = [
     Organ.EYE,
     Organ.CHLOROPLAST,
     Organ.NONE,
-    Organ.NONE,
+    Organ.FERMENTER,
     Organ.REPRODUCTOR,
     Organ.NONE,
     Organ.NONE,

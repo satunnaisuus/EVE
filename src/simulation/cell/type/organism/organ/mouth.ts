@@ -49,9 +49,10 @@ export class Mouth extends AbstractOrgan {
                 }
             }
 
-            let digestibilityFactor = 0.5;
-            for (let i = 1; i <= organism.getFermentersCount(); i++) {
-                digestibilityFactor += 0.25 / i;
+            let digestibilityFactor = 0;
+            
+            for (let i = 1, factor = 1; i <= organism.getFermentersCount(); i++) {
+                digestibilityFactor += factor /= 2;
             }
 
             organism.changeEnergy(energy * digestibilityFactor - attackCost);
