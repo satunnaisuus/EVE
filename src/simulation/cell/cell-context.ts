@@ -2,6 +2,31 @@ import { AbstractCell } from "./abstract-cell";
 import { CellFactory } from "./cell-factory";
 import { Grid } from "../grid";
 import { SimulationParameters } from "../simulation-parameters";
+import { Direction } from "./type/organism/direction";
+import { OrganPool } from "./type/organism/organ-pool";
+import { Interpreter } from "./type/organism/interpreter";
+
+const offsetXByDirection = {
+    [Direction.NORTH]: 0,
+    [Direction.NORTH_EAST]: 1,
+    [Direction.NORTH_WEST]: -1,
+    [Direction.SOUTH]: 0,
+    [Direction.SOUTH_EAST]: 1,
+    [Direction.SOUTH_WEST]: -1,
+    [Direction.EAST]: 1,
+    [Direction.WEST]: -1,
+};
+
+const offsetYByDirection = {
+    [Direction.NORTH]: -1,
+    [Direction.NORTH_EAST]: -1,
+    [Direction.NORTH_WEST]: -1,
+    [Direction.SOUTH]: 1,
+    [Direction.SOUTH_EAST]: 1,
+    [Direction.SOUTH_WEST]: 1,
+    [Direction.EAST]: 0,
+    [Direction.WEST]: 0,
+};
 
 export class CellContext {
     constructor(
@@ -9,12 +34,16 @@ export class CellContext {
         private x: number,
         private y: number,
         private factory: CellFactory,
-        private parameters: SimulationParameters
+        private interpreter: Interpreter,
+        private organPool: OrganPool,
+        private parameters: SimulationParameters,
     ) {
 
     }
 
-    moveByOffest(x: number, y: number): boolean {
+    moveByDirection(direction: Direction): boolean {
+        const x = offsetXByDirection[direction];
+        const y = offsetYByDirection[direction];
         const cell = this.grid.getCell(this.x, this.y);
         const nextCell = this.grid.getCell(this.x + x, this.y + y);
 
@@ -28,17 +57,31 @@ export class CellContext {
         return false;
     }
 
-    deleteByOffset(x: number, y: number): void {
-        this.grid.delete(this.x + x, this.y + y);
+    deleteByDirection(direction: Direction): void {
+        this.grid.delete(
+            this.x + offsetXByDirection[direction],
+            this.y + offsetYByDirection[direction]
+        );
     }
 
-    getByOffest(x: number, y: number): AbstractCell {
-        return this.grid.getCell(this.x + x, this.y + y);
+    replaceByDirection(direction: Direction, cell: AbstractCell): void {
+        this.grid.insert(
+            this.x + offsetXByDirection[direction],
+            this.y + offsetYByDirection[direction],
+            cell
+        );
     }
 
-    replace(createCell: (factory: CellFactory) => AbstractCell) {
+    getByDirection(direction: Direction): AbstractCell {
+        return this.grid.getCell(
+            this.x + offsetXByDirection[direction],
+            this.y + offsetYByDirection[direction]
+        );
+    }
+
+    replace(cell: AbstractCell) {
         this.grid.delete(this.x, this.y);
-        this.grid.insert(this.x, this.y, createCell(this.factory));
+        this.grid.insert(this.x, this.y, cell);
     }
 
     getLightEnergy(): number {
@@ -51,5 +94,25 @@ export class CellContext {
 
     getSimulationParameters(): SimulationParameters {
         return this.parameters;
+    }
+
+    setX(x: number): void {
+        this.x = x;
+    }
+
+    setY(y: number): void {
+        this.y = y;
+    }
+
+    getCellFactory(): CellFactory {
+        return this.factory;
+    }
+
+    getInterpreter(): Interpreter {
+        return this.interpreter;
+    }
+
+    getOrganPool(): OrganPool {
+        return this.organPool;
     }
 }

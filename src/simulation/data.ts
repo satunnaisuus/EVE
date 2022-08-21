@@ -45,15 +45,15 @@ export class Data {
                             break;
 
                         case 'genesis':
-                            for (const value of cell.getColor().toArray()) {
-                                array.push(value);
-                            }
+                            array.push(cell.getColor().getRed());
+                            array.push(cell.getColor().getGreen());
+                            array.push(cell.getColor().getBlue());
                             break;
 
                         case 'supply':
-                            for (const value of cell.getSupplyColor().toArray()) {
-                                array.push(value);
-                            }
+                            array.push(cell.getSupplyColor().getRed());
+                            array.push(cell.getSupplyColor().getGreen());
+                            array.push(cell.getSupplyColor().getBlue());
                             break;
                     }
                 }

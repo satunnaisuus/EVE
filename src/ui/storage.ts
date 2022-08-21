@@ -7,14 +7,14 @@ export function loadOptions(): SimulationOptions {
     return Object.assign({
         width: 200,
         height: 100,
-        loop: GridLoopType.NONE,
+        loop: GridLoopType.HORIZONTAL,
         population: 0.1,
         initialEnergy: 70,
         lightDepth: 75,
         lightGradient: true,
         mineralsDepth: 75,
         mineralsGradient: true,
-        programLength: 16,
+        programLength: 24,
     }, loadObject(optionsKey));
 }
 

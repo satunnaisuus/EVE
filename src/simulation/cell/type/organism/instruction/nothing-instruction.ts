@@ -8,11 +8,11 @@ export class NothingInstruction extends AbstractInstruction {
         return false;
     }
 
-    getArgsCount(): number {
-        return 0;
+    hasArgument(): boolean {
+        return false;
     }
 
-    getBranchesCount(): number {
-        return 0;
+    hasGoto(): boolean {
+        return false;
     }
 }

@@ -38,7 +38,7 @@ export interface Dump {
     version: number;
 }
 
-export const DUMP_VERSION = 1;
+export const DUMP_VERSION = 2;
 
 export abstract class Simulation {
     constructor(protected options: SimulationOptions) {

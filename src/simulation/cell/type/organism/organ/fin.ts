@@ -1,20 +1,21 @@
 import { CellContext } from "../../../cell-context";
+import { OrganismCell } from "../../organism-cell";
 import { AbstractOrgan } from "../abstract-organ";
-import { getOffset, rotateLeft, rotateRight } from "../direction";
+import { rotateLeft, rotateRight } from "../direction";
 
 const PARAMETER_FACTOR = 3;
 
 export class Fin extends AbstractOrgan {
-    use(parameter: number, context: CellContext): boolean {
-        switch (Math.floor(parameter * PARAMETER_FACTOR)) {
+    use(organism: OrganismCell, parameter: number, context: CellContext): boolean {
+        switch (parameter % PARAMETER_FACTOR) {
             case 0:
-                this.organism.setDirection(rotateLeft(this.organism.getDirection()));
+                organism.setDirection(rotateLeft(organism.getDirection()));
                 return false;
             case 1:
-                this.organism.setDirection(rotateRight(this.organism.getDirection()));
+                organism.setDirection(rotateRight(organism.getDirection()));
                 return false;
             case 2:
-                return context.moveByOffest(...getOffset(this.organism.getDirection()));
+                return context.moveByDirection(organism.getDirection());
         }
 
         return false;

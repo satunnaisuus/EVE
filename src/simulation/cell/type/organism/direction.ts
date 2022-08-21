@@ -11,31 +11,16 @@ export enum Direction {
     NORTH_WEST = 7
 }
 
-export function directionsList(): [Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST] {
-    return [
-        Direction.NORTH,
-        Direction.NORTH_EAST,
-        Direction.EAST,
-        Direction.SOUTH_EAST,
-        Direction.SOUTH,
-        Direction.SOUTH_WEST,
-        Direction.WEST,
-        Direction.NORTH_WEST
-    ];
-}
-
-export function getOffset(direction: Direction): [number, number] {
-    switch (direction) {
-        case Direction.NORTH: return [0, -1];
-        case Direction.NORTH_EAST: return [1, -1];
-        case Direction.NORTH_WEST: return [-1, -1];
-        case Direction.SOUTH: return [0, 1];
-        case Direction.SOUTH_EAST: return [1, 1];
-        case Direction.SOUTH_WEST: return [-1, 1];
-        case Direction.EAST: return [1, 0];
-        case Direction.WEST: return [-1, 0];
-    }
-}
+export const directionsList = [
+    Direction.NORTH,
+    Direction.NORTH_EAST,
+    Direction.EAST,
+    Direction.SOUTH_EAST,
+    Direction.SOUTH,
+    Direction.SOUTH_WEST,
+    Direction.WEST,
+    Direction.NORTH_WEST
+];
 
 export function randomDirection(): Direction {
     return randomInt(0, 7);

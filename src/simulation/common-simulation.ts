@@ -1,9 +1,11 @@
 import { shuffle } from "../common/array-utils";
 import { Color } from "../common/color";
 import { CellContext } from "./cell/cell-context";
-import { CellFactory, CreateOptions } from "./cell/cell-factory";
+import { CellFactory, CreateOptions, PRIMITIVE_ORGANS } from "./cell/cell-factory";
+import { createPrimitiveProgram } from "./cell/type/organism-cell";
 import { randomDirection } from "./cell/type/organism/direction";
-import { Genome } from "./cell/type/organism/genome";
+import { Interpreter } from "./cell/type/organism/interpreter";
+import { OrganPool } from "./cell/type/organism/organ-pool";
 import { Data, PayloadData } from "./data";
 import { Grid } from "./grid";
 import { Parameter, Dump, DUMP_VERSION, Simulation, StepData } from "./simulation";
@@ -19,6 +21,10 @@ export class CommonSimulation extends Simulation {
 
     private cellFactory: CellFactory;
 
+    private interpreter: Interpreter;
+
+    private organPool: OrganPool;
+
     private parameters: SimulationParameters;
     
     private constructor(options?: SimulationOptions, dump?: Dump) {
@@ -29,6 +35,8 @@ export class CommonSimulation extends Simulation {
         super(options);
 
         this.cellFactory = new CellFactory(this.options.programLength);
+        this.interpreter = new Interpreter();
+        this.organPool = new OrganPool();
         this.parameters = new SimulationParameters();
         this.grid = new Grid(this.options, this.cellFactory);
 
@@ -59,6 +67,7 @@ export class CommonSimulation extends Simulation {
 
     async makeStep(): Promise<number> {
         const cells = this.grid.toArray();
+        const context = new CellContext(this.grid, 0, 0, this.cellFactory, this.interpreter, this.organPool, this.parameters);
 
         for (let x = 0; x < cells.length; x++) {
             for (let y = 0; y < cells[x].length; y++) {
@@ -68,13 +77,13 @@ export class CommonSimulation extends Simulation {
                     continue;
                 }
 
-                cell.update(
-                    new CellContext(this.grid, x, y, this.cellFactory, this.parameters),
-                    this.parameters
-                );
+                context.setX(x);
+                context.setY(y);
+
+                cell.update(context);
             }
         }
-        
+
         return this.step++;
     }
 
@@ -163,7 +172,9 @@ export class CommonSimulation extends Simulation {
     
         for (const [x, y] of shuffle(coordinates).slice(0, count)) {
             this.grid.insert(x, y, this.cellFactory.createOrganism(
-                Genome.createRandom(programLength),
+                PRIMITIVE_ORGANS,
+                Color.random(),
+                createPrimitiveProgram(programLength),
                 initialEnergy,
                 randomDirection(),
                 new Color(0, 255, 0),

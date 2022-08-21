@@ -1,8 +1,8 @@
 import { CellContext } from "../../../cell-context";
 import { OrganicCell } from "../../organic-cell";
-import { MAX_ENERGY, OrganismCell } from "../../organism-cell";
+import { OrganismCell } from "../../organism-cell";
 import { AbstractOrgan } from "../abstract-organ";
-import { getOffset, reverseDirection, rotateOnOffset } from "../direction";
+import { reverseDirection, rotateOnOffset } from "../direction";
 
 const ADDITIONAL_MOUTH_COST = 64;
 
@@ -11,46 +11,57 @@ export class Mouth extends AbstractOrgan {
         return false;
     }
     
-    use(parameter: number, context: CellContext): boolean {
-        const fine = ADDITIONAL_MOUTH_COST * (this.organism.getMouthsCount() - 1);
+    use(organism: OrganismCell, parameter: number, context: CellContext, position: number): boolean {
+        const fine = ADDITIONAL_MOUTH_COST * (organism.getMouthsCount() - 1);
         const cost = context.getSimulationParameters().eatCost;
-        this.organism.changeEnergy(- cost - fine);
+        organism.changeEnergy(- cost - fine);
 
-        const direction = rotateOnOffset(this.organism.getDirection(), this.position)
-        const offset = getOffset(direction);
-        const target = context.getByOffest(offset[0], offset[1]);
+        const direction = rotateOnOffset(organism.getDirection(), position)
+        const target = context.getByDirection(direction);
         
         if (target instanceof OrganicCell) {
             const energy = target.getEnergy();
-            this.organism.changeEnergy(energy);
-            context.deleteByOffset(offset[0], offset[1]);
+            organism.changeEnergy(energy);
+            context.deleteByDirection(direction);
 
             if (energy > 0) {
-                this.organism.makeMoreRed(energy);
+                organism.makeMoreRed(energy);
             }
 
             return true;
         }
         
         if (target instanceof OrganismCell) {
-            const power = Math.floor(MAX_ENERGY * parameter);
+            const power = parameter;
             const attackFactor = context.getSimulationParameters().attackCostRate / 100;
             const attackCost = power * attackFactor;
-            const energy = - target.onAttack(power, this.organism, reverseDirection(direction), context);
+
+            let energy = 0;
+
+            if (target.getEnergy() > 0) {
+                const organPosition = 8 + rotateOnOffset(target.getDirection(), reverseDirection(direction));
+                const limb = context.getOrganPool().getOrgan(target.getOrgan(organPosition));
+    
+                if (limb === null) {
+                    energy = - target.changeEnergy(- power);
+                } else {
+                    energy = - limb.onAttack(target, power, organism, context);
+                }
+            }
 
             let digestibilityFactor = 0.5;
-            for (let i = 1; i <= this.organism.getFermentersCount(); i++) {
+            for (let i = 1; i <= organism.getFermentersCount(); i++) {
                 digestibilityFactor += 0.25 / i;
             }
 
-            this.organism.changeEnergy(energy * digestibilityFactor - attackCost);
+            organism.changeEnergy(energy * digestibilityFactor - attackCost);
 
             if (target.getEnergy() === 0) {
-                context.deleteByOffset(offset[0], offset[1]);
+                context.deleteByDirection(direction);
             }
 
             if (energy > 0) {
-                this.organism.makeMoreRed(energy);
+                organism.makeMoreRed(energy);
             }
             
             return true;

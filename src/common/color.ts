@@ -10,8 +10,6 @@ for(let i = 0; i < 256; i++) {
 }
 
 export class Color {
-    private readonly hex: string;
-
     constructor(
         private readonly red: number,
         private readonly green: number,
@@ -34,8 +32,6 @@ export class Color {
         } else if (blue < 0) {
             this.blue = 0;
         }
-
-        this.hex = '#' + hexMap[this.red] + hexMap[this.green] + hexMap[this.blue];
     }
 
     getRed(): number {
@@ -59,7 +55,7 @@ export class Color {
     }
 
     toHexFormat(): string {
-        return this.hex;
+        return '#' + hexMap[this.red] + hexMap[this.green] + hexMap[this.blue];
     }
 
     equals(color: Color): boolean {

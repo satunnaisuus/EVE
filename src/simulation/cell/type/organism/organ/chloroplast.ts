@@ -1,19 +1,20 @@
 import { CellContext } from "../../../cell-context";
+import { OrganismCell } from "../../organism-cell";
 import { AbstractOrgan } from "../abstract-organ";
 
 export class Chloroplast extends AbstractOrgan {
-    use(parameter: number, context: CellContext): boolean {
-        const chloroplastsCount = this.organism.getChloroplastsCount();
+    use(organism: OrganismCell, parameter: number, context: CellContext): boolean {
+        const chloroplastsCount = organism.getChloroplastsCount();
         let energy = 0;
 
         for (let i = 1; i <= chloroplastsCount; i++) {
             energy += context.getLightEnergy() / i;
         }
 
-        this.organism.changeEnergy(energy);
+        organism.changeEnergy(energy);
 
         if (energy > 0) {
-            this.organism.makeMoreGreen(energy);
+            organism.makeMoreGreen(energy);
         }
 
         return true;

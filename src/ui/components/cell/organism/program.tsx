@@ -2,6 +2,7 @@ import * as React from "react";
 import { observer } from "mobx-react-lite";
 import styled from "styled-components";
 import { CellOrganism, Command } from "../../../../simulation/types/cells";
+import { chunk } from "../../../../common/array-utils";
 
 const Container = styled.div`
 margin: 20px 0;
@@ -41,31 +42,17 @@ const Branch = styled.div`
     margin-left: 5px;
 `;
 
-const Argument = styled.div`
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-    max-width: 40px;
-    vertical-align: middle;
-    text-align: center;
-`;
-
 export const Program = observer(({organism}: {organism: CellOrganism}) => (
     <Container>
         <Title>Program</Title>
         <Listing>
-            {organism.genome.program.map((instruction, i) => (
+            {chunk(organism.genome.program, 3).map(([command, argument, goto], i) => (
                 <Line key={i}>
                     <LineNumber active={i === organism.programCounter}>{i}</LineNumber>
                     <Instruction>
-                        {Command[instruction.code]}
-                        ({instruction.args.map((arg, j) => (
-                            <span key={j}>
-                                <Argument title={arg.toString()} >{arg}</Argument>
-                                {instruction.args.length - 1 === j ? '' : ', '}
-                            </span>
-                        ))})
-                        {instruction.branches.map((branch, j) => <Branch key={j}>{branch}</Branch>)}
+                        {Command[command]}
+                        <span>({argument})</span>
+                        <Branch>{goto}</Branch>
                     </Instruction>
                 </Line>
             ))}

@@ -1,6 +1,6 @@
-import { Organ, CURRENT_VERSION as GENOME_VERSION } from '../cell/type/organism/genome';
+import { Organ, GENOME_VERSION } from '../cell/type/organism-cell';
 import { Direction } from '../cell/type/organism/direction';
-import { InstructionConfig, Command } from '../cell/type/organism/program';
+import { Command } from '../cell/type/organism/interpreter';
 import { CellType } from '../cell/abstract-cell';
 
 export { CellType, Organ, Direction, Command, GENOME_VERSION };
@@ -8,8 +8,8 @@ export { CellType, Organ, Direction, Command, GENOME_VERSION };
 export interface GenomeSerialized {
     color: string;
     organs: Organ[];
-    program: InstructionConfig[];
-    version: 1;
+    program: number[];
+    version: number;
 }
 
 export interface CellOrganism {

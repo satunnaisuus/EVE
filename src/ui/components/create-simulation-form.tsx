@@ -91,13 +91,11 @@ export const CreateSimulationForm = ({options}: Props) => {
                     <Select onSelect={(value) => setLoop(value as GridLoopType)} options={LoopTypes} value={loop} />
                 </FormRow>
 
-                <FormRow label='Program length'>
-                    <NumberInput min={0} onChange={(value) => setProgramLength(value)} value={programLength} />
-                </FormRow>
+                <RangeRow label='Program length' min={7} max={256} step={1} onChange={(value) => setProgramLength(value)} value={programLength} />
 
                 <RangeRow label='Initial population' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setPopulation(value)} value={population} />
 
-                <RangeRow label='Initial energy' postfix='%' min={0} max={100} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
+                <RangeRow label='Initial energy' min={0} max={255} step={1} onChange={(value) => setInitialEnergy(value)} value={initialEnergy} />
 
                 <RangeRow label='Light depth' postfix='%' min={0} max={100} step={0.1} onChange={(value) => setLightDepth(value)} value={lightDepth} />
 

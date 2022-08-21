@@ -1,21 +1,39 @@
 import { EmptyCell } from "./type/empty-cell";
-import { Genome, Organ } from "./type/organism/genome";
 import { OrganicCell } from "./type/organic-cell";
-import { OrganismCell } from "./type/organism-cell";
+import { createPrimitiveProgram, MAX_ENERGY, Organ, OrganismCell } from "./type/organism-cell";
 import { WallCell } from "./type/wall-cell";
 import { AbstractCell } from "./abstract-cell";
 import { Direction, randomDirection } from "./type/organism/direction";
 import { Color } from "../../common/color";
-import { InstructionConfig, Program } from "./type/organism/program";
+import { Interpreter } from "./type/organism/interpreter";
 import { Cell, CellType } from "../types/cells";
 
 export interface CreateOptions {
     genome?: {
         color: string;
         organs: Organ[];
-        program: InstructionConfig[];
+        program: number[];
     } 
 }
+
+export const PRIMITIVE_ORGANS: Organ[] = [
+    Organ.EYE,
+    Organ.CHLOROPLAST,
+    Organ.NONE,
+    Organ.NONE,
+    Organ.REPRODUCTOR,
+    Organ.NONE,
+    Organ.NONE,
+    Organ.NONE,
+    Organ.MOUTH,
+    Organ.NONE,
+    Organ.NONE,
+    Organ.NONE,
+    Organ.FIN,
+    Organ.NONE,
+    Organ.NONE,
+    Organ.NONE
+];
 
 export class CellFactory {
     private wall: WallCell;
@@ -24,8 +42,15 @@ export class CellFactory {
 
     private id = 0;
 
-    constructor(private programLength: number) {
+    private organics: {[key: number]: OrganicCell} = {};
 
+    constructor(private programLength: number) {
+        for (let i = 0; i <= MAX_ENERGY; i++) {
+            this.organics[i] = new OrganicCell(i);
+        }
+
+        this.wall = new WallCell();
+        this.empty = new EmptyCell();
     }
 
     create(type: CellType, options: CreateOptions): AbstractCell {
@@ -36,11 +61,9 @@ export class CellFactory {
                 return this.createEmpty();
             case CellType.ORGANISM:
                 return this.createOrganism(
-                    options.genome ? new Genome(
-                        new Program(options.genome.program),
-                        Color.fromHex(options.genome.color),
-                        options.genome.organs
-                    ) : Genome.createRandom(this.programLength),
+                    options.genome ? options.genome.organs : PRIMITIVE_ORGANS,
+                    options.genome ? Color.fromHex(options.genome.color) : Color.random(),
+                    options.genome ? new Uint8Array(options.genome.program) : createPrimitiveProgram(this.programLength),
                     255,
                     randomDirection(),
                     new Color(255, 255, 255)
@@ -61,11 +84,9 @@ export class CellFactory {
             case CellType.ORGANISM:
                 return new OrganismCell(
                     cell.id,
-                    new Genome(
-                        new Program(cell.genome.program),
-                        Color.fromHex(cell.genome.color),
-                        cell.genome.organs
-                    ),
+                    cell.genome.organs,
+                    Color.fromHex(cell.genome.color),
+                    new Uint8Array(cell.genome.program),
                     cell.energy,
                     cell.direction,
                     Color.fromHex(cell.supplyColor),
@@ -75,26 +96,26 @@ export class CellFactory {
     }
 
     createWall(): WallCell {
-        if (this.wall) {
-            return this.wall;
-        }
-
-        return this.wall = new WallCell();
+        return this.wall;
     }
 
     createEmpty(): EmptyCell {
-        if (this.empty) {
-            return this.empty;
-        }
-
-        return this.empty = new EmptyCell();
+        return this.empty;
     }
 
-    createOrganism(genome: Genome, energy: number, direction: Direction, supplyColor: Color): OrganismCell {
-        return new OrganismCell(++this.id, genome, energy, direction, supplyColor);
+    createOrganism(organs: Organ[], color: Color, program: Uint8Array, energy: number, direction: Direction, supplyColor: Color): OrganismCell {
+        return new OrganismCell(
+            ++this.id,
+            organs,
+            color,
+            program,
+            energy,
+            direction,
+            supplyColor
+        );
     }
 
     createOrganic(energy: number): OrganicCell {
-        return new OrganicCell(energy);
+        return this.organics[energy];
     }
 }

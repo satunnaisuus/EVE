@@ -1,11 +1,11 @@
 import { CellContext } from "../../../cell-context";
-import { MAX_ENERGY, OrganismCell } from "../../organism-cell";
+import { OrganismCell } from "../../organism-cell";
 import { AbstractInstruction } from "../abstract-instruction";
 
 export class EnergyGtInstruction extends AbstractInstruction {
-    execute(organism: OrganismCell, context: CellContext, args: number[], branches: number[]): boolean {
-        if (organism.getEnergy() > MAX_ENERGY * args[0]) {
-            organism.setProgramCounter(branches[0]);
+    execute(organism: OrganismCell, context: CellContext, arg: number, goto: number): boolean {
+        if (organism.getEnergy() > arg) {
+            organism.setProgramCounter(goto);
         } else {
             organism.addProgramCounterRelative(1);
         }
@@ -13,11 +13,11 @@ export class EnergyGtInstruction extends AbstractInstruction {
         return false;
     }
 
-    getArgsCount(): number {
-        return 1;
+    hasArgument(): boolean {
+        return true;
     }
 
-    getBranchesCount(): number {
-        return 1;
+    hasGoto(): boolean {
+        return true;
     }
 }

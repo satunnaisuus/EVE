@@ -1,19 +1,20 @@
 import { CellContext } from "../../../cell-context";
+import { OrganismCell } from "../../organism-cell";
 import { AbstractOrgan } from "../abstract-organ";
 
 export class Oxidizer extends AbstractOrgan {
-    use(parameter: number, context: CellContext): boolean {
-        const oxydizersCount = this.organism.getOxidizersCount();
+    use(organism: OrganismCell, parameter: number, context: CellContext): boolean {
+        const oxydizersCount = organism.getOxidizersCount();
         let energy = 0;
 
         for (let i = 1; i <= oxydizersCount; i++) {
             energy += context.getMineralsEnergy() / i;
         }
 
-        this.organism.changeEnergy(energy);
+        organism.changeEnergy(energy);
 
         if (energy > 0) {
-            this.organism.makeMoreBlue(energy);
+            organism.makeMoreBlue(energy);
         }
 
         return true;

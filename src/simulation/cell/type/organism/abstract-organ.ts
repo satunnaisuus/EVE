@@ -2,18 +2,11 @@ import { CellContext } from "../../cell-context";
 import { OrganismCell } from "../organism-cell";
 
 export abstract class AbstractOrgan {
-    constructor(
-        protected organism: OrganismCell,
-        protected position: number
-    ) {
+    abstract use(organism: OrganismCell, parameter: number, context: CellContext, position: number): boolean;
 
-    }
+    abstract sense(organism: OrganismCell, parameter: number, context: CellContext, position: number): boolean;
 
-    abstract use(parameter: number, context: CellContext): boolean;
-
-    abstract sense(parameter: number, context: CellContext): boolean;
-
-    onAttack(power: number, aggressor: OrganismCell, context: CellContext): number {
-        return this.organism.changeEnergy(- power);
+    onAttack(organism: OrganismCell, power: number, aggressor: OrganismCell, context: CellContext): number {
+        return organism.changeEnergy(- power);
     }
 }

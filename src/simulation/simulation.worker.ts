@@ -28,7 +28,7 @@ ctx.addEventListener("message", (event: MessageEvent<WorkerCommand>) => {
             
         case 'makeStep': {
             simulation.makeStep().then((step) => {
-                ctx.postMessage({type: 'makeStep', step: step, id: request.id})
+                ctx.postMessage({type: 'makeStep', step: step, id: request.id});
             });
 
             return;

@@ -1,28 +1,31 @@
 import { CellContext } from "../../../cell-context";
-import { OrganismCell, ORGANS_COUNT } from "../../organism-cell";
+import { OrganismCell } from "../../organism-cell";
 import { AbstractInstruction } from "../abstract-instruction";
 
+export const DIVIDER = 16;
+
 export class ActionInstruction extends AbstractInstruction {
-    execute(organism: OrganismCell, context: CellContext, args: number[]): boolean {
-        const organIndex = Math.floor(args[0] * ORGANS_COUNT);
-        const organ = organism.getOrgan(organIndex);
+    execute(organism: OrganismCell, context: CellContext, arg: number): boolean {
+        const organIndex = Math.trunc(arg / DIVIDER);
+        const parameter = arg - organIndex * DIVIDER;
+        const organ = context.getOrganPool().getOrgan(organism.getOrgan(organIndex));
 
         if (! organ) {
             organism.addProgramCounterRelative(1);
             return false;
         }
 
-        const breakExecution = organ.use(args[1], context);
+        const breakExecution = organ.use(organism, parameter, context, organIndex);
         organism.addProgramCounterRelative(1);
         
         return breakExecution;
     }
 
-    getArgsCount(): number {
-        return 2;
+    hasArgument(): boolean {
+        return true;
     }
 
-    getBranchesCount(): number {
-        return 0;
+    hasGoto(): boolean {
+        return false;
     }
 }

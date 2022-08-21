@@ -1,30 +1,59 @@
 import { Color } from "../../../common/color";
 import { AbstractCell, CellType } from "../abstract-cell";
 import { CellContext } from "../cell-context";
-import { CellFactory } from "../cell-factory";
-import { Direction, directionsList, getOffset, randomDirection, rotateOnOffset } from "./organism/direction";
-import { Genome, Organ } from "./organism/genome";
-import { SimulationParameters } from "../../simulation-parameters";
+import { Direction, directionsList, randomDirection } from "./organism/direction";
 import { shuffle } from "../../../common/array-utils";
-import { AbstractOrgan } from "./organism/abstract-organ";
-import { Armour } from "./organism/organ/armour";
-import { Spine } from "./organism/organ/spine";
-import { Eye } from "./organism/organ/eye";
-import { Chloroplast } from "./organism/organ/chloroplast";
-import { Oxidizer } from "./organism/organ/oxidizer";
-import { Fin } from "./organism/organ/fin";
-import { Mouth } from "./organism/organ/mouth";
 import { Cell } from "../../types/cells";
-import { Reproductor } from "./organism/organ/reproductor";
-import { Fermenter } from "./organism/organ/fermenter";
+import { Command, MAX_ARG_VALUE } from "./organism/interpreter";
+import { randomInt } from "../../../common/random";
 
 export const MAX_ENERGY = 255;
 export const ORGANS_COUNT = 16;
 
+export const GENOME_VERSION = 2;
+
+const SIMILARITY_LIMIT = 1;
+
+export enum Organ {
+    NONE = 0,
+    CHLOROPLAST = 1,
+    OXIDIZER = 2,
+    EYE = 3,
+    REPRODUCTOR = 4,
+    FERMENTER = 5,
+    MOUTH = 6,
+    ARMOUR = 7,
+    FIN = 8,
+    SPINE = 9,
+}
+
+
+
+export function createPrimitiveProgram(size: number): Uint8Array {
+    const program: number[] = [
+        Command.ENERGY_GT, Math.trunc(MAX_ENERGY / 2), 3,
+        Command.ACTION, 16, 0,
+        Command.GOTO, 0, 4,
+        Command.ACTION, 64, 0,
+        Command.SENSE, 2, 6,
+        Command.GOTO, 0, 0,
+        Command.ACTION, 128, 0,
+    ];
+
+    for (let i = program.length / 3; i < size; i++) {
+        program.push(Command.NOTHING, 0, 0);
+    }
+
+    return new Uint8Array(program);
+}
+
+const BASE_ORGANS = [Organ.NONE, Organ.CHLOROPLAST, Organ.OXIDIZER, Organ.REPRODUCTOR, Organ.EYE, Organ.FERMENTER];
+const LIMB_ORGANS = [Organ.NONE, Organ.MOUTH, Organ.ARMOUR, Organ.FIN, Organ.SPINE];
+
 export class OrganismCell extends AbstractCell {
     private programCounter = 0;
 
-    private organs: AbstractOrgan[] = [];
+    private instructionsCount: number;
 
     private oxidizersCount = 0;
 
@@ -36,7 +65,9 @@ export class OrganismCell extends AbstractCell {
 
     constructor(
         private id: number,
-        private genome: Genome,
+        private organs: Organ[],
+        private color: Color,
+        private program: Uint8Array,
         private energy: number,
         private direction: Direction,
         private supplyColor: Color,
@@ -44,49 +75,23 @@ export class OrganismCell extends AbstractCell {
     ) {
         super();
 
-        for (const [i, organ] of genome.getOrgans().entries()) {
-            switch (organ) {
-                case Organ.NONE:
-                    this.organs.push(null);
-                    break;
+        this.instructionsCount = program.length / 3;
 
-                case Organ.EYE:
-                    this.organs.push(new Eye(this, i));
-                    break;
-                
+        for (const organ of organs) {
+            switch (organ) {
                 case Organ.CHLOROPLAST:
-                    this.organs.push(new Chloroplast(this, i));
                     this.chloroplastsCount++;
                     break;
                 
                 case Organ.OXIDIZER:
-                    this.organs.push(new Oxidizer(this, i));
                     this.oxidizersCount++;
                     break;
 
-                case Organ.REPRODUCTOR:
-                    this.organs.push(new Reproductor(this, i));
-                    break;
-
                 case Organ.FERMENTER:
-                    this.organs.push(new Fermenter(this, i));
                     this.fermentersCount++;
                     break;
 
-                case Organ.ARMOUR:
-                    this.organs.push(new Armour(this, i));
-                    break;
-                
-                case Organ.SPINE:
-                    this.organs.push(new Spine(this, i));
-                    break;
-                
-                case Organ.FIN:
-                    this.organs.push(new Fin(this, i));
-                    break;
-                
                 case Organ.MOUTH:
-                    this.organs.push(new Mouth(this, i));
                     this.mouthsCount++;
                     break;
             }
@@ -113,23 +118,19 @@ export class OrganismCell extends AbstractCell {
         return this.direction;
     }
 
-    getGenome(): Genome {
-        return this.genome;
-    }
-
-    update(context: CellContext, parameters: SimulationParameters): void {
+    update(context: CellContext): void {
         if (this.energy > 0) {
-            this.genome.getProgram().execute(this, context);
-            this.changeEnergy(- parameters.stepCost);
+            context.getInterpreter().execute(this, context);
+            this.changeEnergy(- context.getSimulationParameters().stepCost);
         }
 
         if (this.energy === 0) {
-            context.replace((factory: CellFactory) => factory.createEmpty());
+            context.replace(context.getCellFactory().createEmpty());
             return;
         }
 
-        if (this.lifetime >= parameters.organismMaxLifetime) {
-            context.replace((factory: CellFactory) => factory.createOrganic(this.energy));
+        if (this.lifetime >= context.getSimulationParameters().organismMaxLifetime) {
+            context.replace(context.getCellFactory().createOrganic(this.energy));
             return;
         }
 
@@ -141,36 +142,116 @@ export class OrganismCell extends AbstractCell {
     }
 
     divide(context: CellContext): void {
-        if (this.energy > 0) {
-            for (const direction of shuffle(directionsList())) {
-                const offset = getOffset(direction);
-                if (context.getByOffest(offset[0], offset[1]).isEmpty()) {
-                    context.moveByOffest(offset[0], offset[1]);
-                    this.changeEnergy(Math.floor(this.energy / -2));
-                    
-                    if (this.energy > 0) {
-                        context.replace((factory: CellFactory) => {
-                            return factory.createOrganism(
-                                this.genome.clone(context.getSimulationParameters()),
-                                this.energy,
-                                randomDirection(),
-                                this.supplyColor
-                            );
-                        });
-                    
-                        return;
-                    }
-                }
+        if (this.energy === 0) {
+            return;
+        }
+
+        const factory = context.getCellFactory();
+        const parameters = context.getSimulationParameters();
+        const interpreter = context.getInterpreter();
+
+        let emptyDirection = null;
+
+        for (const direction of shuffle(directionsList)) {
+            if (context.getByDirection(direction).isEmpty()) {
+                emptyDirection = direction;
+                break;
             }
         }
 
-        context.replace((factory: CellFactory) => {
-            if (this.energy === 0) {
-                return factory.createEmpty();
-            } else {
-                return factory.createOrganic(this.energy)
+        if (emptyDirection === null) {
+            context.replace(factory.createOrganic(this.energy));
+            return;
+        }
+
+        this.changeEnergy(Math.floor(this.energy / -2));
+
+        let hasMutation = false;
+
+        let color = this.color;
+        let organs = this.organs;
+        let program = this.program;
+
+        const randomNumber = randomInt(1, 100);
+
+        if (parameters.mutationBaseOrgansRate >= randomNumber) {
+            hasMutation = true;
+            organs = organs.slice();
+            organs[randomInt(0, 7)] = BASE_ORGANS[randomInt(0, BASE_ORGANS.length - 1)];
+        }
+
+        if (parameters.mutationLimbOrgansRate >= randomNumber) {
+            hasMutation = true;
+            organs = organs.slice();
+            organs[randomInt(8, 15)] = LIMB_ORGANS[randomInt(0, LIMB_ORGANS.length - 1)];
+        }
+
+        if (parameters.mutationProgramRate >= randomNumber) {
+            hasMutation = true;
+            
+            program = new Uint8Array(program);
+            const indexCommand = randomInt(0, this.instructionsCount - 1) * 3;
+            const indexArgument = indexCommand + 1;
+            const indexGoto = indexCommand + 2;
+
+            let handler = interpreter.getHandler(program[indexCommand]);
+
+            switch (randomInt(0, 2)) {
+                case 0:
+                    program[indexCommand] = randomInt(0, interpreter.getHandlersCount() - 1);
+                    handler = interpreter.getHandler(program[indexCommand]);
+
+                    if (handler.hasArgument()) {
+                        if (program[indexArgument] === 0) {
+                            program[indexArgument] = randomInt(0, MAX_ARG_VALUE);
+                        }
+                    } else {
+                        program[indexArgument] = 0;
+                    }
+
+                    if (handler.hasGoto()) {
+                        if (program[indexGoto] === 0) {
+                            program[indexGoto] = randomInt(0, program.length - 1);
+                        }
+                    } else {
+                        program[indexGoto] = 0;
+                    }
+    
+                    break;
+                
+                case 1:
+                    if (handler.hasArgument()) {
+                        program[indexArgument] = randomInt(0, MAX_ARG_VALUE);
+                    }
+                    break;
+    
+                case 2:
+                    if (handler.hasGoto()) {
+                        program[indexGoto] = randomInt(0, this.instructionsCount - 1);
+                    }
+                    break;
             }
-        });
+        }
+
+        if (hasMutation) {
+            color = new Color(
+                this.color.getRed() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
+                this.color.getGreen() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5),
+                this.color.getBlue() + (Math.random() > 0.5 ? 1 : -1) * randomInt(0, 5)
+            );
+        }
+
+        context.replaceByDirection(
+            emptyDirection,
+            factory.createOrganism(
+                organs,
+                color,
+                program,
+                this.energy,
+                randomDirection(),
+                this.supplyColor
+            )
+        );
     }
 
     changeEnergy(value: number): number {
@@ -191,12 +272,8 @@ export class OrganismCell extends AbstractCell {
         return false;
     }
 
-    isSimilar(cell: OrganismCell): boolean {
-        return this.genome.isSimilar(cell.getGenome());
-    }
-
     getColor(): Color {
-        return this.genome.getColor();
+        return this.color;
     }
 
     getProgramCounter(): number {
@@ -204,7 +281,7 @@ export class OrganismCell extends AbstractCell {
     }
 
     setProgramCounter(value: number): void {
-        if (this.genome.getProgramLength() > value) {
+        if (this.instructionsCount > value) {
             this.programCounter = value;
         } else {
             this.programCounter = 0;
@@ -212,14 +289,14 @@ export class OrganismCell extends AbstractCell {
     }
 
     addProgramCounterRelative(value: number): void {
-        this.setProgramCounter(this.programCounter += value);
+        this.setProgramCounter(this.programCounter + value);
     }
 
     getSupplyColor(): Color {
         return this.supplyColor;
     }
 
-    getOrgan(id: number): AbstractOrgan {
+    getOrgan(id: number): Organ {
         return this.organs[id];
     }
 
@@ -237,20 +314,6 @@ export class OrganismCell extends AbstractCell {
 
     getFermentersCount(): number {
         return this.fermentersCount;
-    }
-
-    onAttack(power: number, enemy: OrganismCell, direction: Direction, context: CellContext): number {
-        if (this.energy === 0) {
-            return 0;
-        }
-
-        const limb = this.organs[8 + rotateOnOffset(this.direction, direction)];
-
-        if (limb === null) {
-            return this.changeEnergy(- power);
-        }
-
-        return limb.onAttack(power, enemy, context);
     }
 
     makeMoreRed(energy: number): void {
@@ -276,15 +339,81 @@ export class OrganismCell extends AbstractCell {
             this.supplyColor.getBlue() + energy
         );
     }
+
+    getOrgans(): Organ[] {
+        return this.organs;
+    }
+
+    getProgram(): Uint8Array {
+        return this.program;
+    }
+
+    getCommand(): Command {
+        return this.program[this.programCounter * 3];
+    }
+
+    getArgument(): number {
+        return this.program[this.programCounter * 3 + 1];
+    }
+
+    getGoto(): number {
+        return this.program[this.programCounter * 3 + 2];
+    }
+
+    isSimilar(organism: OrganismCell): boolean {
+        let diff = 0;
+
+        const otherOragans = organism.getOrgans();
+
+        for (let i = 0; i < 16; i++) {
+            if (this.organs[i] !== otherOragans[i]) {
+                diff++;
+            }
+
+            if (diff > SIMILARITY_LIMIT) {
+                return false;
+            }
+        }
+
+        const other = organism.getProgram();
+        const instructions = this.program;
+
+        if (other.length !== instructions.length) {
+            return false;
+        }
+
+        for (let i = 0; i < other.length; i++) {
+            if (diff > SIMILARITY_LIMIT) {
+                return false;
+            }
+
+            if (other[i] !== instructions[i]) {
+                diff++;
+            }
+        }
+
+        return diff <= SIMILARITY_LIMIT;
+    }
     
     serialize(): Cell {
+        const program = [];
+
+        for (const item of this.program) {
+            program.push(item);
+        }
+
         return {
             id: this.id,
             type: CellType.ORGANISM,
             lifetime: this.lifetime,
             energy: this.energy,
             direction: this.direction,
-            genome: this.genome.serialize(),
+            genome: {
+                organs: this.organs,
+                color: this.color.toHexFormat(),
+                program: program,
+                version: GENOME_VERSION,
+            },
             programCounter: this.programCounter,
             supplyColor: this.supplyColor.toHexFormat(),
         }

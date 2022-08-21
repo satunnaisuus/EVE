@@ -1,10 +1,11 @@
 import { AbstractCell } from "../../../abstract-cell";
 import { CellContext } from "../../../cell-context";
+import { EmptyCell } from "../../empty-cell";
 import { OrganicCell } from "../../organic-cell";
 import { OrganismCell } from "../../organism-cell";
 import { WallCell } from "../../wall-cell";
 import { AbstractOrgan } from "../abstract-organ";
-import { getOffset, rotateOnOffset } from "../direction";
+import { rotateOnOffset } from "../direction";
 
 enum TargetType {
     EMPTY,
@@ -21,26 +22,29 @@ export class Eye extends AbstractOrgan {
         return false;
     }
 
-    sense(parameter: number, context: CellContext): boolean {
-        const offset = getOffset(rotateOnOffset(this.organism.getDirection(), this.position));
-        const target = context.getByOffest(offset[0], offset[1]);
+    sense(organism: OrganismCell, parameter: number, context: CellContext, position: number): boolean {
+        const target = context.getByDirection(
+            rotateOnOffset(organism.getDirection(), position)
+        );
         
-        return this.getTargetType(target) === Math.floor(parameter * PARAMETER_FACTOR);
+        return this.getTargetType(organism, target) === parameter % PARAMETER_FACTOR;
     }
     
-    private getTargetType(cell: AbstractCell): TargetType {
-        if (cell instanceof WallCell) {
+    private getTargetType(organism: OrganismCell, target: AbstractCell): TargetType {
+        if (target instanceof WallCell) {
             return TargetType.WALL;
         }
         
-        if (cell instanceof OrganicCell) {
+        if (target instanceof OrganicCell) {
             return TargetType.ORGANIC;
         }
-        
-        if (cell instanceof OrganismCell) {
-            return this.organism.isSimilar(cell) ? TargetType.ORGANISM_SIMILAR : TargetType.ORGANISM_OTHER;
-        }
 
-        return TargetType.EMPTY;
+        if (target instanceof EmptyCell) {
+            return TargetType.EMPTY;
+        }
+        
+        if (target instanceof OrganismCell) {
+            return organism.isSimilar(target) ? TargetType.ORGANISM_SIMILAR : TargetType.ORGANISM_OTHER;
+        }
     }
 }

@@ -8,3 +8,13 @@ export function shuffle<T>(array: T[]): T[] {
 
     return result;
 }
+
+export function chunk<T>(array: T[], size: number): T[][] {
+    const result = [];
+
+    for (let i = 0; i < Math.ceil(array.length / size); i++) {
+        result.push(array.slice(size * i, size * i + size));
+    }
+
+    return result;
+}

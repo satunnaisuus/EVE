@@ -3,17 +3,17 @@ import { OrganismCell } from "../../organism-cell";
 import { AbstractInstruction } from "../abstract-instruction";
 
 export class GotoInstruction extends AbstractInstruction {
-    execute(organism: OrganismCell, context: CellContext, args: number[], branches: number[]): boolean {
-        organism.setProgramCounter(branches[0]);
+    execute(organism: OrganismCell, context: CellContext, arg: number, goto: number): boolean {
+        organism.setProgramCounter(goto);
         
         return false;
     }
 
-    getArgsCount(): number {
-        return 0;
+    hasArgument(): boolean {
+        return false
     }
 
-    getBranchesCount(): number {
-        return 1;
+    hasGoto(): boolean {
+        return true;
     }
 }
