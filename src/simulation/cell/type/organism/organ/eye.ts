@@ -7,7 +7,7 @@ import { WallCell } from "../../wall-cell";
 import { AbstractOrgan } from "../abstract-organ";
 import { rotateOnOffset } from "../direction";
 
-enum TargetType {
+export enum TargetType {
     EMPTY,
     WALL,
     ORGANIC,
@@ -16,6 +16,8 @@ enum TargetType {
 }
 
 const PARAMETER_FACTOR = Object.keys(TargetType).length / 2 + 1;
+
+export const getTargetFromParameter = (parameter: number) => parameter % PARAMETER_FACTOR;
 
 export class Eye extends AbstractOrgan {
     use(): boolean {

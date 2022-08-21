@@ -3,8 +3,11 @@ import { OrganicCell } from "../../organic-cell";
 import { OrganismCell } from "../../organism-cell";
 import { AbstractOrgan } from "../abstract-organ";
 import { reverseDirection, rotateOnOffset } from "../direction";
+import { PARAMETER_FACTOR } from "../instruction/action-instruction";
 
 const ADDITIONAL_MOUTH_COST = 64;
+
+export const getPowerFromParameter = (parameter: number) => parameter * PARAMETER_FACTOR;
 
 export class Mouth extends AbstractOrgan {
     sense(): boolean {
@@ -32,7 +35,7 @@ export class Mouth extends AbstractOrgan {
         }
         
         if (target instanceof OrganismCell) {
-            const power = parameter;
+            const power = parameter * PARAMETER_FACTOR;
             const attackFactor = context.getSimulationParameters().attackCostRate / 100;
             const attackCost = power * attackFactor;
 
