@@ -11,6 +11,7 @@ import { InfoItem } from "./toolbar/info-item";
 import { CellItem } from "./toolbar/cell-item";
 import { GenomesItem } from "./toolbar/genomes-item";
 import { SavesItem } from "./toolbar/saves-item";
+import { SpeedItem } from "./toolbar/speed-item";
 
 const StyledToolbar = styled.div`
     display: flex;
@@ -47,6 +48,7 @@ export const Toolbar = observer(() => {
             <StyledGroup justify="center">
                 <StartPauseItem />
                 <StepItem />
+                <SpeedItem />
                 <NewSimulationItem />
             </StyledGroup>
             

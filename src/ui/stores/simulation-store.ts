@@ -26,6 +26,9 @@ export class SimulationStore {
     @observable
     private organismsCount = 0;
 
+    @observable
+    private stepDelay = 0;
+
     private rendererStore: RendererStore;
 
     private parameters: SimulationParametersStore;
@@ -73,9 +76,16 @@ export class SimulationStore {
         const tick = () => {
             this.step().then(() => {
                 this.rendererStore.update(() => {
-                    if (! this.paused) {
-                        tick();
+                    if (this.paused) {
+                        return;
                     }
+
+                    if (this.stepDelay === 0) {
+                        tick();
+                        return;
+                    }
+                    
+                    setTimeout(tick, this.stepDelay);
                 });
             });
         }
@@ -160,6 +170,14 @@ export class SimulationStore {
 
     replace(coords: [number, number][], type: CellType, ignore: CellType[], options: CreateOptions): Promise<void> {
         return this.simulation.replace(coords, type, ignore, options);
+    }
+
+    getStepDelay(): number {
+        return this.stepDelay;
+    }
+
+    setStepDelay(delay: number): void {
+        this.stepDelay = delay;
     }
 
     async save(): Promise<void> {
