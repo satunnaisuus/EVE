@@ -32,6 +32,9 @@ export class SimulationStore {
     @observable
     private rendererUpdateFrequency = 1;
 
+    @observable
+    private autosaveFrequency: number = null;
+
     private rendererStore: RendererStore;
 
     private parameters: SimulationParametersStore;
@@ -98,6 +101,10 @@ export class SimulationStore {
                     
                     setTimeout(tick, this.stepDelay);
                 };
+
+                if (this.autosaveFrequency !== null && this.currentStep % this.autosaveFrequency === 0) {
+                    this.save();
+                }
 
                 if (this.currentStep % this.rendererUpdateFrequency === 0) {
                     this.rendererStore.update(() => next());
@@ -205,6 +212,15 @@ export class SimulationStore {
     @action
     setRendererUpdateFrequency(frequency: number): void {
         this.rendererUpdateFrequency = frequency;
+    }
+
+    getAutosaveFrequency(): number {
+        return this.autosaveFrequency;
+    }
+
+    @action
+    setAutosaveFrequency(value: number): void {
+        this.autosaveFrequency = value;
     }
 
     async save(): Promise<void> {
