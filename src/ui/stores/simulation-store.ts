@@ -29,6 +29,9 @@ export class SimulationStore {
     @observable
     private stepDelay = 0;
 
+    @observable
+    private rendererUpdateFrequency = 1;
+
     private rendererStore: RendererStore;
 
     private parameters: SimulationParametersStore;
@@ -75,7 +78,7 @@ export class SimulationStore {
 
         const tick = () => {
             this.step().then(() => {
-                this.rendererStore.update(() => {
+                const next = () => {
                     if (this.paused) {
                         return;
                     }
@@ -86,7 +89,13 @@ export class SimulationStore {
                     }
                     
                     setTimeout(tick, this.stepDelay);
-                });
+                };
+
+                if (this.currentStep % this.rendererUpdateFrequency === 0) {
+                    this.rendererStore.update(() => next());
+                } else {
+                    next();
+                }
             });
         }
 
@@ -176,8 +185,18 @@ export class SimulationStore {
         return this.stepDelay;
     }
 
+    @action
     setStepDelay(delay: number): void {
         this.stepDelay = delay;
+    }
+
+    getRendererUpdateFrequency(): number {
+        return this.rendererUpdateFrequency;
+    }
+
+    @action
+    setRendererUpdateFrequency(frequency: number): void {
+        this.rendererUpdateFrequency = frequency;
     }
 
     async save(): Promise<void> {
