@@ -12,7 +12,7 @@ import { SimulationUIStore } from "./simulation-ui-store";
 
 export class SimulationStore {
     @observable
-    private paused = true;
+    private paused;
 
     @observable
     private ready = false;
@@ -44,10 +44,12 @@ export class SimulationStore {
 
     constructor(
         private simulation: Simulation,
-        private saveStore: SaveStore
+        private saveStore: SaveStore,
+        paused = true,
     ) {
         makeObservable(this);
 
+        this.paused = paused;
         this.options = this.simulation.getOptions();
         this.rendererStore = new RendererStore(this);
         this.parameters = new SimulationParametersStore(this);
@@ -59,7 +61,13 @@ export class SimulationStore {
         });
 
         this.rendererStore.update(() => {
-            runInAction(() => this.ready = true);
+            runInAction(() => {
+                this.ready = true;
+
+                if (! this.paused) {
+                    this.start();
+                }
+            });
         });
 
         this.simulation.getOrganismsCount().then((count) => {

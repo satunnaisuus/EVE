@@ -29,11 +29,11 @@ export class RootStore {
     }
 
     @action
-    newSimulation(options: SimulationOptions): void {
+    newSimulation(options: SimulationOptions, paused: boolean): void {
         createSimulation(options).then((simulation) => {
             runInAction(() => {
                 this.closeSimulation();
-                this.simulationStore = new SimulationStore(simulation, this.saveStore);
+                this.simulationStore = new SimulationStore(simulation, this.saveStore, paused);
                 saveOptions(options);
             });
         });

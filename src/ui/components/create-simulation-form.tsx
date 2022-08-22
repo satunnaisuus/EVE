@@ -59,7 +59,7 @@ export const CreateSimulationForm = ({options}: Props) => {
     const [mineralsGradient, setMineralsGradient] = useState(options.mineralsGradient);
     const [programLength, setProgramLength] = useState(options.programLength);
 
-    const create = () => {
+    const create = (paused: boolean) => {
         store.newSimulation({
             loop: loop,
             width: width,
@@ -71,7 +71,7 @@ export const CreateSimulationForm = ({options}: Props) => {
             mineralsDepth: mineralsDepth,
             mineralsGradient: mineralsGradient,
             programLength: programLength,
-        });
+        }, paused);
     }
 
     return (
@@ -107,7 +107,10 @@ export const CreateSimulationForm = ({options}: Props) => {
 
             </FieldsWrapperStyled>
 
-            <Button apperance='primary' width='100%' onClick={create}>Create</Button>
+            <Row>
+                <Button apperance='primary' width='100%' onClick={() => create(false)}>Start</Button>
+                <Button apperance='secondary' width='100%' onClick={() => create(true)}>Create</Button>
+            </Row>
         </FormStyled>
 
     );
