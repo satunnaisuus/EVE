@@ -1,13 +1,13 @@
 import { CellContext } from "../../../cell-context";
-import { OrganismCell } from "../../organism-cell";
+import { OrganismCell, ORGANS_COUNT } from "../../organism-cell";
 import { AbstractInstruction } from "../abstract-instruction";
 
-export const DIVIDER = 16;
+export const PARAMETER_FACTOR = 17;
 
 export class ActionInstruction extends AbstractInstruction {
     execute(organism: OrganismCell, context: CellContext, arg: number): boolean {
-        const organIndex = Math.trunc(arg / DIVIDER);
-        const parameter = arg - organIndex * DIVIDER;
+        const organIndex = Math.trunc(arg / ORGANS_COUNT);
+        const parameter = arg - organIndex * ORGANS_COUNT;
         const organ = context.getOrganPool().getOrgan(organism.getOrgan(organIndex));
 
         if (! organ) {

@@ -1,7 +1,8 @@
 import { OrganismCell } from "../../organism-cell";
 import { AbstractOrgan } from "../abstract-organ";
+import { PARAMETER_FACTOR } from "../instruction/sense-instruction";
 
-const PARAMETER_FACTOR = 17;
+export const getEnergyFromParameter = (parameter: number) => parameter * PARAMETER_FACTOR;
 
 export class Fermenter extends AbstractOrgan {
     use(): boolean {
