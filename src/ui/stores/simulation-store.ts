@@ -12,7 +12,7 @@ import { SimulationUIStore } from "./simulation-ui-store";
 
 export class SimulationStore {
     @observable
-    private paused;
+    private paused = true;
 
     @observable
     private ready = false;
