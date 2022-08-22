@@ -23,6 +23,8 @@ export class SimulationParameters {
 
     private stepCostValue = 1;
 
+    private moveCostValue = 1;
+
     constructor(options: {[key: string]: any} = {}) {
         if (options['photosynthesisEnergy'] != null) {
             this.photosynthesisEnergy = options['photosynthesisEnergy'];
@@ -70,6 +72,10 @@ export class SimulationParameters {
 
         if (options['stepCost'] != null) {
             this.stepCost = options['stepCost'];
+        }
+
+        if (options['moveCost'] != null) {
+            this.moveCost = options['moveCost'];
         }
     }
 
@@ -169,6 +175,14 @@ export class SimulationParameters {
         return this.stepCostValue;
     }
 
+    set moveCost(value: number) {
+        this.moveCostValue = this.converNumberValue(value, false, 0, 255);
+    }
+
+    get moveCost(): number {
+        return this.moveCostValue;
+    }
+
     serialize(): any {
         return {
             photosynthesisEnergy: this.photosynthesisEnergy,
@@ -183,6 +197,7 @@ export class SimulationParameters {
             spineDamageRate: this.spineDamageRate,
             armourProtectionRate: this.armourProtectionRate,
             stepCost: this.stepCost,
+            moveCost: this.moveCost,
         };
     }
 

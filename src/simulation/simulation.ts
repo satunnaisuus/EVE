@@ -26,6 +26,7 @@ export enum Parameter {
     spineDamageRate = 'spineDamageRate',
     armourProtectionRate = 'armourProtectionRate',
     stepCost = 'stepCost',
+    moveCost = 'moveCost',
 }
 
 export interface Dump {

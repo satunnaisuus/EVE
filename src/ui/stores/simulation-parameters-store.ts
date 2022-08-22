@@ -40,6 +40,9 @@ export class SimulationParametersStore {
     @observable
     private stepCost = 1;
 
+    @observable
+    private moveCost = 1;
+
     constructor(private store: SimulationStore) {
         makeObservable(this);
     }
@@ -58,6 +61,7 @@ export class SimulationParametersStore {
         this.armourProtectionRate = parameters.armourProtectionRate;
         this.spineDamageRate = parameters.spineDamageRate;
         this.stepCost = parameters.stepCost;
+        this.moveCost = parameters.moveCost;
     }
 
     @action
@@ -144,6 +148,13 @@ export class SimulationParametersStore {
         });
     }
 
+    @action
+    setMoveCost(value: number): void {
+        this.store.getSimulation().setParameter(Parameter.moveCost, value).then(value => {
+            runInAction(() => this.moveCost = value);
+        });
+    }
+
     getOrganismMaxLifetime(): number {
         return this.organismMaxLifetime;
     }
@@ -190,5 +201,9 @@ export class SimulationParametersStore {
 
     getStepCost(): number {
         return this.stepCost;
+    }
+
+    getMoveCost(): number {
+        return this.moveCost;
     }
 }

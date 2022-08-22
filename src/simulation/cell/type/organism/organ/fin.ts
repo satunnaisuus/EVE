@@ -23,6 +23,7 @@ export class Fin extends AbstractOrgan {
                 organism.setDirection(rotateRight(organism.getDirection()));
                 return false;
             case MovementType.MOVE_FORWARD:
+                organism.changeEnergy(- context.getSimulationParameters().moveCost);
                 return context.moveByDirection(organism.getDirection());
         }
 

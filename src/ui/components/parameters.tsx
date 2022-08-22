@@ -12,9 +12,10 @@ export const Parameters = observer(() => {
             <RangeRow label={`Lifetime limit`} min={1} max={255} step={1} onChange={(v) => parameters.setOrganismMaxLifetime(v)} value={parameters.getOrganismMaxLifetime()} />
             <RangeRow label={`Photosynthesis energy`} min={0} max={255} step={1} onChange={(v) => parameters.setPhotosynthesisEnergy(v)} value={parameters.getPhotosynthesisEnergy()} />
             <RangeRow label={`Chemosynthesis energy`} min={0} max={255} step={1} onChange={(v) => parameters.setChemosynthesisEnergy(v)} value={parameters.getChemosynthesisEnergy()} />
-            <RangeRow label={`Eat cost`} min={0} max={255} step={1} onChange={(v) => parameters.setEatCost(v)} value={parameters.getEatCost()} />
-            <RangeRow label={`Divide cost`} min={0} max={255} step={1} onChange={(v) => parameters.setDivideCost(v)} value={parameters.getDivideCost()} />
             <RangeRow label={`Simulation step cost`} min={0} max={255} step={1} onChange={(v) => parameters.setStepCost(v)} value={parameters.getStepCost()} />
+            <RangeRow label={`Eat cost`} min={0} max={255} step={1} onChange={(v) => parameters.setEatCost(v)} value={parameters.getEatCost()} />
+            <RangeRow label={`Move cost`} min={0} max={255} step={1} onChange={(v) => parameters.setMoveCost(v)} value={parameters.getMoveCost()} />
+            <RangeRow label={`Divide cost`} min={0} max={255} step={1} onChange={(v) => parameters.setDivideCost(v)} value={parameters.getDivideCost()} />
             <RangeRow label={`Attack cost rate`} postfix='%' min={0} max={100} step={1} onChange={(v) => parameters.setAttackCostRate(v)} value={parameters.getAttackCostRate()} />
             <RangeRow label={`Spine damage rate`} postfix='%' min={0} max={100} step={1} onChange={(v) => parameters.setSpineDamageRate(v)} value={parameters.getSpineDamageRate()} />
             <RangeRow label={`Armour protection rate`} postfix='%' min={0} max={100} step={1} onChange={(v) => parameters.setArmourProtectionRate(v)} value={parameters.getArmourProtectionRate()} />
