@@ -29,14 +29,17 @@ export class RootStore {
     }
 
     @action
-    newSimulation(options: SimulationOptions, paused: boolean): void {
-        createSimulation(options).then((simulation) => {
-            runInAction(() => {
-                this.closeSimulation();
-                this.simulationStore = new SimulationStore(simulation, this.saveStore, paused);
-                saveOptions(options);
-            });
+    async newSimulation(options: SimulationOptions, paused: boolean): Promise<SimulationStore> {
+        const simulation = await createSimulation(options);
+        const store = new SimulationStore(simulation, this.saveStore, paused);
+
+        runInAction(() => {
+            this.closeSimulation();
+            this.simulationStore = store;
+            saveOptions(options);
         });
+
+        return store
     }
 
     @action
